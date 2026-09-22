@@ -427,7 +427,10 @@ export function removeDynamicDocument(id: string): void {
   }
 }
 
-export function searchKnowledgeBase(query: string, topK: number = 4): { doc: DocumentChunk; similarity: number }[] {
+export function searchKnowledgeBase(
+  query: string,
+  topK: number = 4
+): { doc: DocumentChunk; similarity: number; rawCosine: number; displaySimilarity: number }[] {
   const queryTerms = extractTerms(query);
   const termCounts = new Map<string, number>();
   queryTerms.forEach(t => termCounts.set(t, (termCounts.get(t) || 0) + 1));
@@ -444,20 +447,31 @@ export function searchKnowledgeBase(query: string, topK: number = 4): { doc: Doc
 
   const allDocs = getAllDocuments();
   const scored = allDocs.map(doc => {
-    let dot = 0;
+    let rawCosine = 0;
     if (doc.embedding && doc.embedding.length === VOCAB.length) {
       for (let i = 0; i < VOCAB.length; i++) {
-        dot += qNorm[i] * doc.embedding[i];
+        rawCosine += qNorm[i] * doc.embedding[i];
       }
     }
     // Boost score if keyword matches exactly in title or tags
     const titleMatch = doc.source_title.toLowerCase().includes(query.toLowerCase());
     const keywordMatch = doc.metadata.keywords?.some(k => query.toLowerCase().includes(k.toLowerCase()));
-    let finalScore = dot;
-    if (titleMatch) finalScore += 0.25;
-    if (keywordMatch) finalScore += 0.15;
-    
-    return { doc, similarity: Math.min(1.0, Math.max(0.0, finalScore)) };
+    let boosted = rawCosine;
+    if (titleMatch) boosted += 0.25;
+    if (keywordMatch) boosted += 0.15;
+
+    // UI 展示用：稀疏 BoW 下 0.15–0.30 已是强相关，映射到可读百分比
+    const displaySimilarity = Math.min(0.99, Math.max(0, 0.35 + boosted * 1.8));
+    const similarity = Math.min(1.0, Math.max(0.0, boosted));
+
+    return {
+      doc,
+      /** 门禁用：含关键词加成的原始相关分 */
+      similarity,
+      rawCosine: Number(rawCosine.toFixed(4)),
+      /** 仅供 UI 展示，禁止用于 gate 阈值 */
+      displaySimilarity: Number(displaySimilarity.toFixed(3))
+    };
   });
 
   return scored.sort((a, b) => b.similarity - a.similarity).slice(0, topK);

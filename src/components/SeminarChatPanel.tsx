@@ -651,7 +651,7 @@ export const SeminarChatPanel: React.FC<SeminarChatPanelProps> = ({
             }}
             placeholder={
               panelTab === 'cognitive_sync'
-                ? `针对第 ${currentSlide.index} 页《${currentSlide.title}》，提问或要求 KaibanJS 编译...`
+                ? `针对第 ${currentSlide.index} 页《${currentSlide.title}》，提问或要求规则合成草稿...`
                 : selectedAgent === 'deep_epistemic' ? "针对当前Slide或高亮文本，向深度认知引擎提问..." :
                   selectedAgent === 'agenda_guardian' ? "向议程卫士询问当前讨论进展或生成弹幕摘要..." :
                   "输入思想实验自然语言，要求编译为 BDI 仿真代码..."

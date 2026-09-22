@@ -13,7 +13,10 @@ import {
   Lightbulb,
   ExternalLink,
   Sparkles,
-  Shield
+  Shield,
+  SkipForward,
+  SkipBack,
+  Timer
 } from 'lucide-react';
 import { SlideItem, ChatMessage } from '../types';
 import { SEMINAR_SLIDES } from '../data/slides';
@@ -21,6 +24,12 @@ import { PresenterStudyNotesModal } from './PresenterStudyNotesModal';
 import { getPresenterStudyNote } from '../data/presenterNotes';
 import { getPresenterPaceHint, toolLabel } from '../data/presenterPaceHints';
 import { resolveSandboxTemplateId } from '../data/sandboxDemoPresets';
+import {
+  REHEARSAL_45_STOPS,
+  getNextRehearsalStop,
+  getPrevRehearsalStop,
+  getRehearsalStopIndex
+} from '../data/rehearsalScript';
 
 const PACE_STYLE: Record<string, string> = {
   '开场': 'bg-sky-500/15 text-sky-300 border-sky-500/40',
@@ -70,6 +79,7 @@ export const PresentationViewer: React.FC<PresentationViewerProps> = ({
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [selectedText, setSelectedText] = useState<string>('');
   const [selectionBox, setSelectionBox] = useState<{ x: number; y: number } | null>(null);
+  const [rehearsalMode, setRehearsalMode] = useState<boolean>(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const slideContentRef = useRef<HTMLDivElement>(null);
@@ -78,6 +88,10 @@ export const PresentationViewer: React.FC<PresentationViewerProps> = ({
   const paceHint = getPresenterPaceHint(currentIndex);
   const paceTool = toolLabel(paceHint.tool);
   const linkedSandboxId = resolveSandboxTemplateId(currentIndex);
+  const rehearsalIdx = getRehearsalStopIndex(currentIndex);
+  const rehearsalStop = rehearsalIdx >= 0 ? REHEARSAL_45_STOPS[rehearsalIdx] : null;
+  const nextRehearsal = getNextRehearsalStop(currentIndex);
+  const prevRehearsal = getPrevRehearsalStop(currentIndex);
 
   // KaTeX formula renderer helper
   const renderFormula = (latexStr: string) => {
@@ -260,37 +274,84 @@ export const PresentationViewer: React.FC<PresentationViewerProps> = ({
           </div>
         </div>
 
-        {/* 主讲节奏提示条（P0-5）+ 沙盒深链（P2-1） */}
-        <div className="mt-2 flex flex-col sm:flex-row sm:items-center gap-2 text-[11px] text-neutral-400 bg-neutral-900/50 border border-neutral-800/80 rounded-lg px-2.5 py-1.5">
-          <div className="flex items-start gap-2 flex-1 min-w-0">
-            <Lightbulb className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
-            <p className="leading-relaxed">
-              <span className="text-neutral-300 font-medium">{paceHint.pace}：</span>
-              {paceHint.tip}
-            </p>
+        {/* 主讲节奏提示条（P0-5）+ 沙盒深链（P2-1）+ 45′ 彩排（P5-1） */}
+        <div className="mt-2 flex flex-col gap-1.5 text-[11px] text-neutral-400 bg-neutral-900/50 border border-neutral-800/80 rounded-lg px-2.5 py-1.5">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+            <div className="flex items-start gap-2 flex-1 min-w-0">
+              <Lightbulb className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
+              <p className="leading-relaxed">
+                <span className="text-neutral-300 font-medium">{paceHint.pace}：</span>
+                {paceHint.tip}
+              </p>
+            </div>
+            {isPresenter && (
+              <button
+                type="button"
+                onClick={() => setRehearsalMode(v => !v)}
+                className={`shrink-0 self-start sm:self-center inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[10px] font-bold border ${
+                  rehearsalMode
+                    ? 'bg-sky-600 text-white border-sky-400/50'
+                    : 'bg-neutral-800 text-neutral-300 border-neutral-600 hover:border-sky-500/50'
+                }`}
+                title="开启 45′ 极简彩排跳站"
+              >
+                <Timer className="w-3 h-3" />
+                45′彩排
+              </button>
+            )}
+            {linkedSandboxId && onOpenSandboxTemplate && (
+              <button
+                type="button"
+                onClick={() => onOpenSandboxTemplate(linkedSandboxId)}
+                className="shrink-0 self-start sm:self-center px-2.5 py-1 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white text-[10px] font-bold border border-indigo-400/40"
+                title={`打开模板 ${linkedSandboxId}`}
+              >
+                一键打开本页沙盒
+              </button>
+            )}
+            {(currentIndex >= 72 && currentIndex <= 75 && onOpenHarnessDemo) ||
+            (paceHint.tool === 'harness_demo' && onOpenHarnessDemo) ? (
+              <button
+                type="button"
+                onClick={onOpenHarnessDemo}
+                className="shrink-0 self-start sm:self-center inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-amber-700/90 hover:bg-amber-600 text-white text-[10px] font-bold border border-amber-400/40"
+                title="打开 Model+Harness 示范面板（非研讨默认路径）"
+              >
+                <Shield className="w-3 h-3" />
+                Harness 示范
+              </button>
+            ) : null}
           </div>
-          {linkedSandboxId && onOpenSandboxTemplate && (
-            <button
-              type="button"
-              onClick={() => onOpenSandboxTemplate(linkedSandboxId)}
-              className="shrink-0 self-start sm:self-center px-2.5 py-1 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white text-[10px] font-bold border border-indigo-400/40"
-              title={`打开模板 ${linkedSandboxId}`}
-            >
-              一键打开本页沙盒
-            </button>
+          {rehearsalMode && isPresenter && (
+            <div className="flex flex-wrap items-center gap-2 border-t border-neutral-800/80 pt-1.5">
+              <span className="text-sky-300 font-medium">
+                {rehearsalStop
+                  ? `站 ${rehearsalIdx + 1}/${REHEARSAL_45_STOPS.length} · ${rehearsalStop.minutesHint}`
+                  : '不在彩排站 · 可跳下一站'}
+              </span>
+              <span className="text-neutral-400 flex-1 min-w-[8rem]">
+                {rehearsalStop?.action || nextRehearsal?.action || '彩排结束'}
+              </span>
+              <button
+                type="button"
+                disabled={!prevRehearsal}
+                onClick={() => prevRehearsal && onNavigateSlide(prevRehearsal.slideIndex)}
+                className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded border border-neutral-700 disabled:opacity-40 hover:bg-neutral-800"
+              >
+                <SkipBack className="w-3 h-3" />
+                上一站
+              </button>
+              <button
+                type="button"
+                disabled={!nextRehearsal}
+                onClick={() => nextRehearsal && onNavigateSlide(nextRehearsal.slideIndex)}
+                className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded border border-sky-600/50 bg-sky-900/40 text-sky-200 disabled:opacity-40 hover:bg-sky-800/50"
+              >
+                下一站
+                <SkipForward className="w-3 h-3" />
+              </button>
+            </div>
           )}
-          {(currentIndex >= 72 && currentIndex <= 75 && onOpenHarnessDemo) ||
-          (paceHint.tool === 'harness_demo' && onOpenHarnessDemo) ? (
-            <button
-              type="button"
-              onClick={onOpenHarnessDemo}
-              className="shrink-0 self-start sm:self-center inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-amber-700/90 hover:bg-amber-600 text-white text-[10px] font-bold border border-amber-400/40"
-              title="打开 Model+Harness 示范面板（非研讨默认路径）"
-            >
-              <Shield className="w-3 h-3" />
-              Harness 示范
-            </button>
-          ) : null}
         </div>
 
         {/* Slide Main Content Area */}

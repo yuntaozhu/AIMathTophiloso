@@ -187,8 +187,12 @@ export const HarnessDemoPanel: React.FC<HarnessDemoPanelProps> = ({
                     )}
                     {g.name === 'citation' && g.passed && (g.evidence as any)?.sourceTitle && (
                       <p className="mt-1 text-neutral-400">
-                        锚定：{(g.evidence as any).sourceTitle}（sim=
-                        {(g.evidence as any).similarity}）
+                        锚定：{(g.evidence as any).sourceTitle}
+                        （gate分={(g.evidence as any).similarity}
+                        {(g.evidence as any).displaySimilarity != null
+                          ? ` · 展示≈${Math.round((g.evidence as any).displaySimilarity * 100)}%`
+                          : ''}
+                        ）
                       </p>
                     )}
                     {g.name === 'counterfactual' && (g.evidence as any)?.falsificationHint && (

@@ -136,11 +136,11 @@ export const KnowledgeBaseExplorer: React.FC<KnowledgeBaseExplorerProps> = ({
   );
 
   // Perform search or filter
-  let displayChunks: { doc: any; similarity?: number }[] = [];
+  let displayChunks: { doc: any; similarity?: number; displaySimilarity?: number; rawCosine?: number }[] = [];
   if (searchQuery.trim()) {
     displayChunks = searchKnowledgeBase(searchQuery, 12);
   } else {
-    displayChunks = currentDocuments.map(d => ({ doc: d, similarity: 1.0 }));
+    displayChunks = currentDocuments.map(d => ({ doc: d, similarity: 1.0, displaySimilarity: 1.0 }));
   }
 
   if (selectedDomain) {
@@ -329,7 +329,7 @@ export const KnowledgeBaseExplorer: React.FC<KnowledgeBaseExplorerProps> = ({
               </button>
             </div>
           ) : (
-            displayChunks.map(({ doc, similarity }) => {
+            displayChunks.map(({ doc, similarity, displaySimilarity, rawCosine }) => {
               const isSelected = selectedDocId === doc.id;
               const targetSlideInfo = RAG_THESIS_REGISTRY[doc.id];
 
@@ -399,8 +399,11 @@ export const KnowledgeBaseExplorer: React.FC<KnowledgeBaseExplorerProps> = ({
                       {/* Right action/badge */}
                       <div className="flex items-center space-x-2 shrink-0">
                         {similarity !== undefined && searchQuery.trim() && (
-                          <span className="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[11px] font-mono">
-                            匹配度 {(similarity * 100).toFixed(1)}%
+                          <span
+                            className="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[11px] font-mono"
+                            title={`gate分=${similarity.toFixed(3)} · rawCosine=${(rawCosine ?? 0).toFixed(3)}（展示分已校准，勿与 gate 阈值混用）`}
+                          >
+                            匹配度 {((displaySimilarity ?? similarity) * 100).toFixed(1)}%
                           </span>
                         )}
 

@@ -9,7 +9,8 @@
     "build:api": "esbuild server.ts --bundle --platform=node --format=cjs --outfile=api/index.js --packages=external --external:vite --external:@vitejs/* --external:@tailwindcss/* --footer:js=\"module.exports = server;\"",
     "build:server": "esbuild server.ts --bundle --platform=node --format=cjs --packages=external --sourcemap --outfile=dist/server.cjs",
     "start": "node dist/server.cjs",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "test": "tsx --test scripts/phase5-smoke.test.ts"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",

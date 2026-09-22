@@ -55,7 +55,7 @@ function jaccard(a: string[], b: string[]): number {
   return union === 0 ? 0 : inter / union;
 }
 
-/** Gate 1：断言须锚定知识库 chunk（看原始相似度，不放行无底本） */
+/** Gate 1：断言须锚定知识库 chunk（用 raw/boosted 分，不用展示校准分） */
 export function runCitationGate(thesis: string): GateResult {
   const hits = searchKnowledgeBase(thesis, 4);
   const top = hits[0];
@@ -72,6 +72,8 @@ export function runCitationGate(thesis: string): GateResult {
           id: h.doc.id,
           title: h.doc.source_title,
           similarity: Number(h.similarity.toFixed(4)),
+          rawCosine: h.rawCosine,
+          displaySimilarity: h.displaySimilarity,
           excerpt: h.doc.chunk_text.slice(0, 120)
         }))
       },
@@ -87,6 +89,8 @@ export function runCitationGate(thesis: string): GateResult {
       chunkId: top.doc.id,
       sourceTitle: top.doc.source_title,
       similarity: Number(top.similarity.toFixed(4)),
+      rawCosine: top.rawCosine,
+      displaySimilarity: top.displaySimilarity,
       quote: top.doc.chunk_text.slice(0, 180),
       pageOrSection: top.doc.metadata.section || top.doc.metadata.page
     }
