@@ -98,8 +98,9 @@ const CORE_SLIDES: SlideItem[] = [
       "**逻辑等价性**：定理与其所必须依赖的公理具有完全相同的“认识论重量”——它们在算术模型中互为充要条件。"
     ],
     formula: "\\text{Base System } \\mathsf{RCA}_0 \\vdash (\\text{Axiom} \\iff \\text{Theorem})",
-    notes: "逆向数学告诉我们，不是人类任意选择了公理，而是数学定理本身天然地呼唤着属于它的唯一公理系统。",
-    keywords: ["逆向数学", "Reversal", "必然性", "认识论等价"]
+    notes: "逆向数学：不是人类任意选公理，定理本身呼唤其公理系统。对照 Friedman / Simpson 传统（知识库手稿）。",
+    keywords: ["逆向数学", "Reversal", "必然性", "认识论等价"],
+    literatureIds: ["doc-friedman-01", "doc-friedman-pdf-01"]
   },
   {
     index: 8,
@@ -107,7 +108,7 @@ const CORE_SLIDES: SlideItem[] = [
     sectionTitle: "第一章",
     title: "The Big Five：逻辑原子的五重绝对阶梯",
     bullets: [
-      "弗里德曼与其学术导师辛普森（Stephen Simpson）发现了二阶算术子系统的五大逻辑支柱：",
+      "弗里德曼与其学术导师辛普森（Stephen Simpson）发现了二阶算术子系统的五大逻辑支柱（与具体不完备性叙事同一条线索）：",
       "**$\\mathsf{RCA}_0$（递归概括公理）**：仅包含可计算算术，构成最基础的“可计算数学”。",
       "**$\\mathsf{WKL}_0$（弱柯尼希引理）**：无限二叉树必含无限分支；等价于紧致性定理与海涅-博雷尔定理。",
       "**$\\mathsf{ACA}_0$（算术概括公理）**：触及戴德金分割实数完备性与波尔查诺-魏尔斯特拉斯定理。",
@@ -115,8 +116,9 @@ const CORE_SLIDES: SlideItem[] = [
       "**$\\Pi_1^1\\text{-}\\mathsf{CA}_0$（非谓词数学的天花板）**：触及康托尔-本迪克松定理与递归分析极限。"
     ],
     formula: "\\mathsf{RCA}_0 < \\mathsf{WKL}_0 < \\mathsf{ACA}_0 < \\mathsf{ATR}_0 < \\Pi_1^1\\text{-}\\mathsf{CA}_0",
-    notes: "这五大公理层级如同一张元素周期表，给出了数学世界中所有经典定理的逻辑原子重量。",
-    keywords: ["The Big Five", "RCA0", "WKL0", "ACA0", "ATR0", "Pi11-CA0"]
+    notes: "Big Five 如元素周期表。知识库可开 Friedman PDF 作背景。",
+    keywords: ["The Big Five", "RCA0", "WKL0", "ACA0", "ATR0", "Pi11-CA0"],
+    literatureIds: ["doc-friedman-01"]
   },
   {
     index: 9,
@@ -132,8 +134,9 @@ const CORE_SLIDES: SlideItem[] = [
       text: "数学不仅是对世界的描述，其内在的逻辑原子重量证明了真理具有不容置疑的客观拓扑实体。",
       author: "哈维·弗里德曼（Harvey Friedman）"
     },
-    notes: "SRM彻底终结了将逻辑视作纯粹人工约定的相对主义观点，证明真理存在内在的自然阶梯。",
-    keywords: ["严格逆向数学", "SRM", "反基础主义", "真理实体性"]
+    notes: "SRM彻底终结了将逻辑视作纯粹人工约定的相对主义观点，证明真理存在内在的自然阶梯。知识库对照 Friedman 手稿 / BRT。",
+    keywords: ["严格逆向数学", "SRM", "反基础主义", "真理实体性"],
+    literatureIds: ["doc-friedman-01", "doc-friedman-pdf-01"]
   },
   {
     index: 10,
@@ -141,13 +144,14 @@ const CORE_SLIDES: SlideItem[] = [
     sectionTitle: "第一章",
     title: "仿真理论与有理立方体（Rational Cube）模型",
     bullets: [
-      "**摒弃抽象符号**：弗里德曼将战场拉回到最古朴具象的几何土壤——单位有理立方体 $[0, 1]^k \\cap \\mathbb{Q}^k$。",
+      "**摒弃抽象符号**：弗里德曼将战场拉回到最古朴具象的几何土壤——单位有理立方体 $[0, 1]^k \\cap \\mathbb{Q}^k$（见 **Boolean Relation Theory** / 具体不完备性手稿中的可讲几何模型）。",
       "**仿射变换与下落对称性**：研究有理点集在保序仿射投影下的几何嵌套结构。",
       "**极大仿真的临界态**：若一个点集保持了内部对称性约束，且任何额外新增点都会不可逆地破坏该结构，则称为处于“极大临界态”。"
     ],
     formula: "Q^k = \\{ (x_1, \\dots, x_k) \\in \\mathbb{Q}^k \\mid 0 \\le x_i \\le 1 \\}",
-    notes: "有理立方体模型是极其漂亮的纯几何模型，初中生都能理解其定义，但其深层性质直通大基数理论。",
-    keywords: ["仿真理论", "有理立方体", "仿射变换", "下落对称性"]
+    notes: "有理立方体：打开知识库 Friedman PDF。初中生能懂定义，深层直通大基数。",
+    keywords: ["仿真理论", "有理立方体", "仿射变换", "下落对称性"],
+    literatureIds: ["doc-friedman-pdf-01", "doc-friedman-01"]
   },
   {
     index: 11,
@@ -155,12 +159,13 @@ const CORE_SLIDES: SlideItem[] = [
     sectionTitle: "第一章",
     title: "下落对称性与大基数的必然遥控",
     bullets: [
-      "**有限网格中的无限倒影**：证明有限局部有理点集存在极大仿真，在逻辑上完全等价于承认马洛基数（Mahlo Cardinals）等大基数的存在。",
+      "**有限网格中的无限倒影**：证明有限局部有理点集存在极大仿真，在逻辑上完全等价于承认马洛基数（Mahlo Cardinals）等大基数的存在——Friedman「具体不完备性」的核心冲击。",
       "**认识论的颠覆**：宏观无穷维度并不悬浮在虚无之中，它如同一只无形的量子之手，精确操控着有限微观世界的点线编织。",
       "**数学物理的隐喻**：正如同位素半衰期受制于亚原子基本力，局部几何构型的稳定性受控于逻辑层级最顶端的大基数公理。"
     ],
-    notes: "大基数不再是集合论学家的形而上学玩具，它成为了证明有限具体数学命题不可或缺的物理规律般的前提。",
-    keywords: ["马洛基数", "大基数", "有限局部", "宏观无穷"]
+    notes: "大基数不再是玩具：与制度「外生锚定」对照。知识库挂载 Friedman 条目。",
+    keywords: ["马洛基数", "大基数", "有限局部", "宏观无穷"],
+    literatureIds: ["doc-friedman-01", "doc-friedman-pdf-01"]
   },
   {
     index: 12,
@@ -168,12 +173,13 @@ const CORE_SLIDES: SlideItem[] = [
     sectionTitle: "第一章",
     title: "AI 数学突破对哲学的启发：真理实体化",
     bullets: [
-      "**系统1与系统2的飞轮效应**：神经大模型生成海量猜想，Lean 4 形式化编译器实施绝对零误差裁决。",
+      "**系统1与系统2的飞轮效应**：神经大模型生成海量猜想，Lean 4 形式化编译器实施绝对零误差裁决（对照开场 **APOLLO / Lean Copilot**）。",
       "**真理并非语言游戏**：机器在万亿次自博弈搜索中，自发发现了人类未曾踏足的高阶拓扑结构，粉碎了语言相对主义。",
       "**本体论的复兴**：促使分析哲学与认识论从20世纪的静态语言语义分析，重新回归对客观高维数学实体的探索。"
     ],
-    notes: "机器证明的成功证明：高阶真理并非人类神经元的幻觉，而是客观存在于高维空间中的实体结构。",
-    keywords: ["真理实体化", "Lean 4", "本体论复兴", "系统1与系统2"]
+    notes: "机器证明：高阶真理是客观结构。可挂 Lean 生态与结构发现条目。",
+    keywords: ["真理实体化", "Lean 4", "本体论复兴", "系统1与系统2"],
+    literatureIds: ["doc-apollo-01", "doc-lean-copilot-01", "doc-structure-discovery-01"]
   },
   {
     index: 13,
@@ -182,8 +188,8 @@ const CORE_SLIDES: SlideItem[] = [
     title: "AI Coding 对人文学科的启示：从文本阐释到执行证伪",
     bullets: [
       "**走出解释学的同义反复**：传统人文学科长期陷于静止的文本注疏与循环论证。",
-      "**可执行的认识论（Executable Epistemology）**：将社会学假设（如阶层流动、制度变迁）翻译为面向对象（OOP）的状态机与转移矩阵。",
-      "**机器证伪机制**：如果一个关于历史因果律的假说无法写成可编译的代码，或者在沙盘运行中必然产生死锁，这即构成了强有力的机器证伪。"
+      "**可执行的认识论（Executable Epistemology）**：将社会学假设翻译为 OOP 状态机——与 **AI-Coding / Harness 工程** 同构：管生成 ≠ 管执行。",
+      "**机器证伪机制**：若历史因果假说无法写成可编译代码，或在沙盘中必然死锁，即构成强证伪。"
     ],
     codeSnippet: `// 认识论操作化接口示例
 interface EpistemicProposition<State, Action> {
@@ -191,8 +197,9 @@ interface EpistemicProposition<State, Action> {
   evaluate(currentState: State, action: Action): ProofResult;
   isFalsifiableInSandbox(ticks: number): boolean;
 }`,
-    notes: "代码是终极的试金石。如果你的社会学理论不能写成明确的代码，那它很可能只是用修辞掩盖了逻辑漏洞。",
-    keywords: ["可执行认识论", "解释学循环", "机器证伪", "状态机"]
+    notes: "打开知识库 AI-Coding / Böckeler harness。代码是试金石。",
+    keywords: ["可执行认识论", "解释学循环", "机器证伪", "状态机", "Harness"],
+    literatureIds: ["doc-aicoding-01", "doc-aicoding-02", "doc-boeckeler-harness-01"]
   },
   {
     index: 14,
@@ -269,8 +276,9 @@ interface EpistemicProposition<State, Action> {
       text: "AI 在纯数学中的探索就如同在相空间中射出一束高能激光，它能照亮某个奇点的存在，却无法替代对整个流形几何测度的严密积分。",
       author: "邓煜（Yu Deng）"
     },
-    notes: "邓煜的波前隐喻给狂热的技术乐观主义泼了一盆极其清醒的冷水，但也指出了AI与深层数理结构结合的正确路径。",
-    keywords: ["邓煜", "波前隐喻", "双曲型偏微分方程", "能量色散"]
+    notes: "邓煜的波前隐喻给狂热的技术乐观主义泼了一盆极其清醒的冷水，但也指出了AI与深层数理结构结合的正确路径。知识库：doc-deng-01～03（PDF/邓煜报告）。",
+    keywords: ["邓煜", "波前隐喻", "双曲型偏微分方程", "能量色散"],
+    literatureIds: ["doc-deng-01", "doc-deng-02", "doc-deng-03"]
   },
   {
     index: 20,
@@ -285,8 +293,9 @@ interface EpistemicProposition<State, Action> {
       "4. **第四阶（拓扑性质）**：剖析相界面与奇异集的分形维数、自相似性与 Cantor 混沌拓扑。",
       "5. **第五阶（完全分类与孤子分辨）**：实现孤子分辨猜想（Soliton Resolution Conjecture），彻底刻画大时间渐近行为。"
     ],
-    notes: "目前大模型多数仅停留在第一阶（找反例），而人类顶尖数学家正在向第二阶至第四阶迈进。",
-    keywords: ["五重认知阶梯", "存在性", "测度", "余维数", "孤子分辨猜想"]
+    notes: "目前大模型多数仅停留在第一阶（找反例），而人类顶尖数学家正在向第二阶至第四阶迈进。知识库：doc-deng-01～03 对应阶梯展开。",
+    keywords: ["五重认知阶梯", "存在性", "测度", "余维数", "孤子分辨猜想", "邓煜"],
+    literatureIds: ["doc-deng-01", "doc-deng-02", "doc-deng-03"]
   },
   {
     index: 21,
@@ -461,8 +470,9 @@ class SocialField {
       "**三因子非线性加权求和**，动态筛选 Top-K 最关键记忆送入认知处理中枢。"
     ],
     formula: "\\text{Score}(m) = \\alpha_{\\text{rec}} \\cdot \\gamma^{\\Delta t} + \\alpha_{\\text{imp}} \\cdot I(m) + \\alpha_{\\text{rel}} \\cdot \\cos(\\vec{v}_{\\text{curr}}, \\vec{v}_m)",
-    notes: "三维检索函数巧妙地平衡了遗忘曲线、事件刺激度与当前情境相关性，构成了数字智能体的海马体。",
-    keywords: ["记忆流", "三维检索", "新近度", "重要度", "相关度", "余弦相似度"]
+    notes: "三维检索=数字海马体。对照 Generative Agents 原文（记忆流评分）。沙盒可拧 α/β/γ。",
+    keywords: ["记忆流", "三维检索", "新近度", "重要度", "相关度", "余弦相似度"],
+    literatureIds: ["doc-generative-agents-pdf", "doc-joonpark-01"]
   },
   {
     index: 33,
@@ -471,11 +481,12 @@ class SocialField {
     title: "顶层规划与递归树形分解：行为的时间相干性",
     bullets: [
       "**杜绝“梦游式行为”**：如果智能体仅靠当前刺激驱动，行为会在几分钟内陷入逻辑分裂与荒诞震荡。",
-      "**自顶向下的规划机制（Top-Down Planning）**：\n- 第一层：确立一天宏大意图（如“准备学术论文演讲”）；\n- 第二层：将一天切分为 4-6 个小时段宏观目标；\n- 第三层：在当前时段内递归细化为 5-15 分钟的微观动作原子序列。",
+      "**自顶向下的规划机制（Top-Down Planning）**（Park et al. Generative Agents）：\n- 第一层：确立一天宏大意图（如“准备学术论文演讲”）；\n- 第二层：将一天切分为 4-6 个小时段宏观目标；\n- 第三层：在当前时段内递归细化为 5-15 分钟的微观动作原子序列。",
       "**动态重规划（Re-planning）**：遭遇突发冲突或外部不可抗力时，在最小破坏原有规划的前提下进行局部树剪枝与修补。"
     ],
-    notes: "通过递归树分解，智能体获得了类似人类的跨时空目的性与行动连贯性。",
-    keywords: ["顶层规划", "递归分解", "时间相干性", "重规划", "原子序列"]
+    notes: "递归树分解=时间相干性。知识库 Generative Agents PDF。",
+    keywords: ["顶层规划", "递归分解", "时间相干性", "重规划", "原子序列"],
+    literatureIds: ["doc-generative-agents-pdf", "doc-joonpark-01"]
   },
   {
     index: 34,
@@ -562,12 +573,13 @@ class SocialField {
     sectionTitle: "第四章",
     title: "反击“RLHF 中庸偏置（Politeness Bias）”：剥除虚伪温情",
     bullets: [
-      "**对齐带来的认识论残缺**：主流商业大模型（GPT-4、Claude 等）经历极其严苛的强化人类反馈学习（RLHF），被训练成了极度客气、妥协、政治正确与理性的“老好人”。",
-      "**学术仿真的灾难**：用 RLHF 对齐后的模型去模拟真实历史社会，智能体会自发坐下来客气协商分配，彻底抹平了**剥削、寻租、贪婪、阶级压迫与零和冲突**。",
-      "**学术反击指令**：在社科底座中必须系统性剥离中庸修辞，强制注入马基雅维利式的自私博弈与权谋计算。"
+      "**对齐残缺**：RLHF 使模型偏客气、妥协——严肃历史仿真会被抹平冲突。",
+      "**评测底本**：**MACHIAVELLI** 基准（arXiv:2304.03279，**doc-machiavelli-01**）在 134 个冒险剧本中量化权力寻求、伤害与伦理违规，并显示**奖励最大化与伦理行为存在张力**。",
+      "**学术反击**：剥离中庸修辞，显式允许自利、欺骗与寻租——否则沙盘只是茶话会。"
     ],
-    notes: "RLHF是工业安全的好助手，但却是严肃社科仿真的毒药。真实历史从不是彬彬有礼的茶话会。",
-    keywords: ["RLHF 偏置", "中庸陷阱", "虚伪温情", "马基雅维利", "严肃仿真"]
+    notes: "打开知识库 MACHIAVELLI。一句：奖励≠伦理，有纸面张力测度。",
+    keywords: ["RLHF", "MACHIAVELLI", "权力寻求", "伦理张力", "马基雅维利"],
+    literatureIds: ["doc-machiavelli-01"]
   },
   {
     index: 41,
@@ -753,13 +765,14 @@ class SocialField {
     sectionTitle: "第五章",
     title: "哥德尔模态逻辑与本体论论证：正向属性与必然存在闭环",
     bullets: [
-      "**哥德尔晚年的终极追求**：哥德尔继承莱布尼茨与安瑟伦，用二阶模态逻辑严密构建了关于上帝必然存在的形式化证明。",
-      "**核心公理骨架**：\n- 公理 1：正向属性（Positive Property）的否定绝非正向属性；\n- 公理 2：包含所有正向属性的实体是可能的；\n- 公理 3：必然存在（Necessary Existence）本身是一项至高无上的正向属性。",
-      "**自动化定理证明器的检验**：2013年 Benzmüller 等人首次将该证明输入 Isabelle/HOL，证实其在逻辑语法上**无任何矛盾，形式完全闭环**。"
+      "**哥德尔晚年追求**：二阶模态逻辑中的本体论论证（正向属性 → 必然存在）。",
+      "**机器检验**：2013 年 **Benzmüller & Paleo** 将 Scott 版论证形式化并机械化（arXiv:1308.4526，**doc-godel-ontological-01**），在高阶逻辑中确认语法闭环——问题转向公理的本体论承诺，而非笔误。",
+      "**对本场**：形而上学论证可进入证明助手；文社哲若永久拒绝任何可失败核验，将停在第二类修辞拼装。"
     ],
     formula: "\\mathsf{Ax}_1: P(\\neg \\phi) \\iff \\neg P(\\phi), \\quad \\mathsf{Th}_1: P(\\phi) \\land \\Box \\forall x (\\phi(x) \\to \\psi(x)) \\implies P(\\psi)",
-    notes: "哥德尔的证明在语法上是无可挑剔的。问题不在于证明是否出错，而在于前提公理的本体论承诺。",
-    keywords: ["哥德尔", "模态逻辑", "本体论论证", "正向属性", "必然存在", "Isabelle"]
+    notes: "知识库打开哥德尔本体论形式化条目。强调：语法闭环 ≠ 神学真理，但证明了可计算化路径存在。",
+    keywords: ["哥德尔", "本体论论证", "Benzmüller", "模态逻辑", "形式化"],
+    literatureIds: ["doc-godel-ontological-01"]
   },
   {
     index: 55,

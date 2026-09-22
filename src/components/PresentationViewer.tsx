@@ -24,6 +24,7 @@ import { PresenterStudyNotesModal } from './PresenterStudyNotesModal';
 import { getPresenterStudyNote } from '../data/presenterNotes';
 import { getPresenterPaceHint, toolLabel } from '../data/presenterPaceHints';
 import { resolveSandboxTemplateId } from '../data/sandboxDemoPresets';
+import { CORE_DOCUMENTS } from '../data/knowledgeBase';
 import {
   REHEARSAL_45_STOPS,
   getNextRehearsalStop,
@@ -272,6 +273,29 @@ export const PresentationViewer: React.FC<PresentationViewerProps> = ({
               </span>
             ))}
           </div>
+          {!!currentSlide.literatureIds?.length && (
+            <div className="mt-1.5 flex items-center gap-1.5 overflow-x-auto scrollbar-none">
+              <BookMarked className="w-3 h-3 text-sky-400/80 shrink-0" />
+              {currentSlide.literatureIds.slice(0, 6).map((id) => {
+                const doc = CORE_DOCUMENTS.find(d => d.id === id);
+                const label = doc
+                  ? (doc.source_title.length > 28 ? doc.source_title.slice(0, 28) + '…' : doc.source_title)
+                  : id.replace(/^doc-/, '');
+                return (
+                  <span
+                    key={id}
+                    className="text-[10px] px-2 py-0.5 rounded-md bg-sky-500/10 text-sky-300/90 border border-sky-500/25 shrink-0"
+                    title={doc?.source_title || id}
+                  >
+                    {label}
+                  </span>
+                );
+              })}
+              {currentSlide.literatureIds.length > 6 && (
+                <span className="text-[10px] text-neutral-500 shrink-0">+{currentSlide.literatureIds.length - 6}</span>
+              )}
+            </div>
+          )}
         </div>
 
         {/* 主讲节奏提示条（P0-5）+ 沙盒深链（P2-1）+ 45′ 彩排（P5-1） */}

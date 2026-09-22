@@ -204,36 +204,42 @@ ${activeThesis.epistemicMappingToSlide}`;
     const slideTitleLower = currentSlide.title.toLowerCase();
 
     CORE_DOCUMENTS.forEach((doc, docIdx) => {
+      const litIds = currentSlide.literatureIds || [];
+      const pinnedBySlide = litIds.includes(doc.id);
       const docKeywords = (doc.metadata.keywords || []).map(k => k.toLowerCase());
-      const isRelevant = 
+      const isRelevant =
+        pinnedBySlide ||
         keywords.some(k => docKeywords.some(dk => dk.includes(k) || k.includes(dk))) ||
         keywords.some(k => doc.source_title.toLowerCase().includes(k) || doc.chunk_text.toLowerCase().includes(k)) ||
         slideCitations.some(c => c.sourceTitle.includes(doc.source_title) || doc.source_title.includes(c.sourceTitle)) ||
-        docIdx < 5; // Ensure at least key philosophical/mathematical roots are available
+        (!litIds.length && docIdx < 5);
 
       if (isRelevant) {
         const docNodeId = `rag-${doc.id}`;
         if (!addedNodeIds.has(docNodeId)) {
           let paradigm: 'logic' | 'pde' | 'agent' | 'physics' | 'general' = 'general';
-          let nodeColor = '#a855f7'; // Purple default
+          let nodeColor = pinnedBySlide ? '#38bdf8' : '#a855f7';
 
-          if (doc.source_title.includes('弗里德曼') || doc.source_title.includes('不完备性')) {
+          if (doc.source_title.includes('弗里德曼') || doc.source_title.includes('不完备') || doc.source_title.includes('Gödel') || doc.source_title.includes('Godel')) {
             paradigm = 'logic';
-            nodeColor = '#ec4899'; // Pink/Magenta for Logic
-          } else if (doc.source_title.includes('邓煜') || doc.source_title.includes('布克马斯特') || doc.source_title.includes('欧拉')) {
+            nodeColor = pinnedBySlide ? '#f472b6' : '#ec4899';
+          } else if (doc.source_title.includes('邓煜') || doc.source_title.includes('布克马斯特') || doc.source_title.includes('欧拉') || doc.source_title.includes('Córdoba') || doc.source_title.includes('Cordoba')) {
             paradigm = 'pde';
-            nodeColor = '#06b6d4'; // Cyan for PDE/Manifold
-          } else if (doc.source_title.includes('智能体') || doc.source_title.includes('Park') || doc.source_title.includes('DFM')) {
+            nodeColor = pinnedBySlide ? '#22d3ee' : '#06b6d4';
+          } else if (doc.source_title.includes('智能体') || doc.source_title.includes('Park') || doc.source_title.includes('Simulacra') || doc.source_title.includes('MACHIAVELLI') || doc.source_title.includes('DFM') || doc.source_title.includes('Harness') || doc.source_title.includes('SWE-agent') || doc.source_title.includes('ReAct')) {
             paradigm = 'agent';
-            nodeColor = '#10b981'; // Emerald for Agent
+            nodeColor = pinnedBySlide ? '#34d399' : '#10b981';
           } else if (doc.source_title.includes('热力学') || doc.source_title.includes('朗之万') || doc.source_title.includes('p-bit')) {
             paradigm = 'physics';
-            nodeColor = '#f97316'; // Orange for Physics/Hardware
+            nodeColor = '#f97316';
+          } else if (doc.source_title.includes('Lean') || doc.source_title.includes('APOLLO') || doc.source_title.includes('theorem') || doc.source_title.includes('Proof')) {
+            paradigm = 'logic';
+            nodeColor = pinnedBySlide ? '#c084fc' : '#a855f7';
           }
 
           const ragNode: OntologyNode = {
             id: docNodeId,
-            label: doc.metadata.authors ? `${doc.metadata.authors.split(' ')[0]}` : doc.source_title.slice(0, 10),
+            label: doc.metadata.authors ? `${doc.metadata.authors.split(/[,\s]/)[0]}` : doc.source_title.slice(0, 10),
             fullTitle: doc.source_title,
             category: 'knowledge',
             paradigm,
@@ -241,8 +247,10 @@ ${activeThesis.epistemicMappingToSlide}`;
             authors: doc.metadata.authors,
             sectionOrPage: doc.metadata.section || `P.${doc.metadata.page}`,
             quote: doc.chunk_text.slice(0, 220) + '...',
-            description: `RAG 知识库原典文献：${doc.metadata.section || '核心理论'}`,
-            radius: 20,
+            description: pinnedBySlide
+              ? `本页锚定文献（literatureIds）：${doc.metadata.section || doc.id}`
+              : `RAG 知识库原典文献：${doc.metadata.section || '核心理论'}`,
+            radius: pinnedBySlide ? 24 : 20,
             color: nodeColor
           };
           nodes.push(ragNode);
