@@ -8,10 +8,33 @@ import { SeminarChatPanel } from './components/SeminarChatPanel';
 import { CodeSandbox } from './components/CodeSandbox';
 import { KnowledgeBaseExplorer } from './components/KnowledgeBaseExplorer';
 import { SeminarMinutesModal } from './components/SeminarMinutesModal';
+import { HarnessDemoPanel } from './components/HarnessDemoPanel';
 import { PresenterAgendaToast } from './components/PresenterAgendaToast';
 import { buildAnchoredQuery } from './utils/discussionAnchor';
 import { getPresenterPaceHint } from './data/presenterPaceHints';
 import { resolveSandboxTemplateId } from './data/sandboxDemoPresets';
+
+/** P3：客户端写入研讨日志（沙盒结论 / 带标签发言） */
+async function ingestSeminarLog(payload: {
+  slide_index: number;
+  user_query?: string;
+  ai_response?: string;
+  agent_role: string;
+  kind?: 'qa' | 'agenda' | 'sandbox' | 'user' | 'system';
+  discussion_tag?: string;
+  is_barrage?: boolean;
+  highlighted_text?: string;
+}) {
+  try {
+    await fetch('/api/seminar/log', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+  } catch {
+    /* non-blocking */
+  }
+}
 
 export default function App() {
   // Navigation & Sync State
@@ -29,6 +52,7 @@ export default function App() {
   const [barrageEnabled, setBarrageEnabled] = useState<boolean>(true);
   const [isKnowledgeBaseOpen, setIsKnowledgeBaseOpen] = useState<boolean>(false);
   const [isMinutesModalOpen, setIsMinutesModalOpen] = useState<boolean>(false);
+  const [isHarnessDemoOpen, setIsHarnessDemoOpen] = useState<boolean>(false);
 
   // Code Sandbox Custom Injection
   const [sandboxCustomCode, setSandboxCustomCode] = useState<string | undefined>(undefined);
@@ -397,6 +421,19 @@ export class KaibanStateMachineRunner {
       setMessages(prev => [...prev, userMsg]);
     }
 
+    // 正式发言（含异议/追问/补充）写入 seminar_logs，供按页纪要归类
+    if (!isBarrage || meta?.discussionTag) {
+      void ingestSeminarLog({
+        slide_index: currentSlideIndex,
+        user_query: content,
+        agent_role: 'user',
+        kind: 'user',
+        discussion_tag: meta?.discussionTag,
+        is_barrage: isBarrage,
+        highlighted_text: highlightedText || undefined
+      });
+    }
+
     setIsLoadingAi(true);
 
     const anchoredQuery = buildAnchoredQuery(
@@ -415,7 +452,8 @@ export class KaibanStateMachineRunner {
           body: JSON.stringify({
             query: anchoredQuery,
             slideIndex: currentSlideIndex,
-            highlightedText: highlightedText || null
+            highlightedText: highlightedText || null,
+            discussionTag: meta?.discussionTag || null
           })
         });
         const data = await res.json();
@@ -499,6 +537,13 @@ export class KaibanStateMachineRunner {
         } else {
           setMessages(prev => [...prev, aiMsg]);
         }
+        void ingestSeminarLog({
+          slide_index: currentSlideIndex,
+          user_query: anchoredQuery,
+          ai_response: aiMsg.content,
+          agent_role: 'sandbox_compiler',
+          kind: 'sandbox'
+        });
       }
     } catch (err) {
       console.error("Failed to query AI service:", err);
@@ -536,12 +581,20 @@ export class KaibanStateMachineRunner {
     }
   };
 
-  const handleRegenerateMinutes = async () => {
+  const handleRegenerateMinutes = async (humanNotes?: {
+    anomaly?: string;
+    strongestObjection?: string;
+    unresolved?: string;
+  }) => {
     setIsGeneratingMinutes(true);
     try {
       const res = await fetch('/api/seminar/generate-summary', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mode: 'structured',
+          humanNotes: humanNotes || undefined
+        })
       });
       const data = await res.json();
       setMinutesText(data.markdownSummary);
@@ -578,7 +631,7 @@ export class KaibanStateMachineRunner {
     setActiveTab('sandbox');
   };
 
-  /** P2-3：调参结论写入研讨流 */
+  /** P2-3：调参结论写入研讨流 + seminar_logs */
   const handleSandboxRunComplete = (summaryMarkdown: string) => {
     const msg: ChatMessage = {
       id: `sandbox-run-${Date.now()}`,
@@ -594,6 +647,13 @@ export class KaibanStateMachineRunner {
     } else {
       setMessages(prev => [...prev, msg]);
     }
+    void ingestSeminarLog({
+      slide_index: currentSlideIndex,
+      user_query: '沙盒调参运行',
+      ai_response: summaryMarkdown,
+      agent_role: 'sandbox_compiler',
+      kind: 'sandbox'
+    });
   };
 
   // Quick Ask Handler from Slide Insight or Notes
@@ -663,6 +723,7 @@ export class KaibanStateMachineRunner {
               barrageEnabled={barrageEnabled}
               onSendToSandbox={handleSendToSandbox}
               onOpenSandboxTemplate={handleOpenSandboxTemplate}
+              onOpenHarnessDemo={() => setIsHarnessDemoOpen(true)}
               onQuickAsk={handleQuickAskQuestion}
             />
           ) : (
@@ -731,6 +792,12 @@ export class KaibanStateMachineRunner {
         minutesSource={minutesSource}
         isGenerating={isGeneratingMinutes}
         onRegenerate={handleRegenerateMinutes}
+      />
+
+      <HarnessDemoPanel
+        isOpen={isHarnessDemoOpen}
+        onClose={() => setIsHarnessDemoOpen(false)}
+        slideIndex={currentSlideIndex}
       />
 
       <PresenterAgendaToast

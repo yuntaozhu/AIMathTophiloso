@@ -9,6 +9,12 @@ import { SEMINAR_SLIDES } from "./src/data/slides";
 import { getPresenterStudyNote } from "./src/data/presenterNotes";
 import { findPhilologicalCollation, PHILOLOGICAL_CORPUS } from "./src/data/philologyCorpus";
 import { generateViaAiGateway } from "./src/services/aiGateway";
+import {
+  appendSeminarLog,
+  getSeminarLogs,
+  buildStructuredMinutes
+} from "./src/server/seminarLogStore";
+import { runHarnessDemo } from "./src/services/harnessRunner";
 
 dotenv.config();
 
@@ -34,21 +40,7 @@ function getAI(): GoogleGenAI | null {
   return aiClient;
 }
 
-// In-memory seminar database tables conforming to specified schemas:
-// 1. documents: mapped from CORE_DOCUMENTS
-// 2. seminar_logs: persisted logs of slide_index, user_query, ai_response, agent_role
-interface StoredSeminarLog {
-  id: string;
-  slide_index: number;
-  user_query: string;
-  ai_response: string;
-  agent_role: string;
-  timestamp: string;
-  highlighted_text?: string;
-  citations?: any[];
-}
 
-const seminarLogs: StoredSeminarLog[] = [];
 
 // Realtime Server-Authoritative State
 let currentSlideIndex = 1;
@@ -79,7 +71,7 @@ io.on("connection", (socket) => {
     userCount: connectedUsers.size,
     laserPointer: activeLaserPointer,
     activeHighlight,
-    historyLogs: seminarLogs.slice(-20)
+    historyLogs: getSeminarLogs().slice(-20)
   });
 
   io.emit("attendees:update", {
@@ -425,6 +417,8 @@ ${discussionContext || "暂无用户发言"}
   "barrageSummary": "弹幕摘要"
 }`;
 
+    let payload: Record<string, unknown> | null = null;
+
     // Check if Doubao API key is configured
     const doubaoKey = process.env.DOUBAO_API_KEY;
     if (doubaoKey && doubaoKey.trim().length > 0) {
@@ -445,7 +439,7 @@ ${discussionContext || "暂无用户发言"}
         if (doubaoRes.ok) {
           const dData = await doubaoRes.json();
           const parsed = JSON.parse(dData.choices[0].message.content);
-          return res.json({ ...parsed, source: "live_ai", provider: "doubao" });
+          payload = { ...parsed, source: "live_ai", provider: "doubao" };
         }
       } catch (dErr) {
         // Fallback to Gemini smoothly if Volcengine model endpoint returns 404 or needs deployment endpoint
@@ -453,33 +447,47 @@ ${discussionContext || "暂无用户发言"}
     }
 
     // Default fast low-latency fallback with Gemini 3.8 Flash
-    const ai = getAI();
-    if (ai) {
-      try {
-        const response = await ai.models.generateContent({
-          model: "gemini-3.8-flash",
-          contents: prompt,
-          config: {
-            responseMimeType: "application/json"
-          }
-        });
-        const parsed = JSON.parse(response.text?.trim() || "{}");
-        return res.json({ ...parsed, source: "live_ai", provider: "gemini" });
-      } catch (geminiErr: any) {
-        // Fallback gracefully on temporary upstream 503/429/high-demand
+    if (!payload) {
+      const ai = getAI();
+      if (ai) {
+        try {
+          const response = await ai.models.generateContent({
+            model: "gemini-3.8-flash",
+            contents: prompt,
+            config: {
+              responseMimeType: "application/json"
+            }
+          });
+          const parsed = JSON.parse(response.text?.trim() || "{}");
+          payload = { ...parsed, source: "live_ai", provider: "gemini" };
+        } catch (geminiErr: any) {
+          // Fallback gracefully on temporary upstream 503/429/high-demand
+        }
       }
     }
 
     // Offline / robust fallback
-    return res.json({
-      isDrifting: false,
-      driftScore: 18,
-      reason: "讨论聚焦于当前PPT阐述的‘系统1灵感与系统2形式化Kernel’双轮协同机制。",
-      guidingQuestion: `在当前第${currentSlide.index}页中，如何将社科反思性映射至状态机闭环中？`,
-      barrageSummary: "聚焦形式化内核与社科反思性",
-      source: "offline_fallback",
-      fromFallback: true
+    if (!payload) {
+      payload = {
+        isDrifting: false,
+        driftScore: 18,
+        reason: "讨论聚焦于当前PPT阐述的‘系统1灵感与系统2形式化Kernel’双轮协同机制。",
+        guidingQuestion: `在当前第${currentSlide.index}页中，如何将社科反思性映射至状态机闭环中？`,
+        barrageSummary: "聚焦形式化内核与社科反思性",
+        source: "offline_fallback",
+        fromFallback: true
+      };
+    }
+
+    appendSeminarLog({
+      slide_index: currentSlide.index,
+      user_query: (currentDiscussion || "").slice(0, 240) || "(议程体检)",
+      ai_response: `偏移 ${payload.driftScore}% · ${payload.reason}\n引导：${payload.guidingQuestion}`,
+      agent_role: "agenda_guardian",
+      kind: "agenda"
     });
+
+    return res.json(payload);
   } catch (err: any) {
     res.status(500).json({ error: err.message });
   }
@@ -488,7 +496,7 @@ ${discussionContext || "暂无用户发言"}
 // 3. Deep Epistemic Cognitive Engine (基于 Gemini 高上下文 RAG 推理与跨域映射)
 app.post("/api/gemini/epistemic", async (req, res) => {
   try {
-    const { query, slideIndex, highlightedText } = req.body;
+    const { query, slideIndex, highlightedText, discussionTag } = req.body;
     const currentSlide = SEMINAR_SLIDES.find(s => s.index === slideIndex) || SEMINAR_SLIDES[0];
 
     // Retrieve Top-K RAG Knowledge Chunks
@@ -595,18 +603,17 @@ interface EpistemicAgent {
 正如哈维·弗里德曼在“有理立方体”模型中指出的【文献引用：哈维·弗里德曼《具体数学不完备性与逆向数学》】，局部一阶规则系统无法在其内部完成自洽证明。社会科学企图仅靠微观理性人的局部契约消弭全面内卷，在认识论上必然遭遇不完备性死锁，必须依赖高阶宪制元规则作为“大基数公理”实施外生锚定。`;
     }
 
-    // Persist to seminar_logs table
-    const logEntry: StoredSeminarLog = {
-      id: `log-${Date.now()}`,
+    // Persist to seminar_logs (JSONL + memory)
+    const logEntry = appendSeminarLog({
       slide_index: slideIndex,
       user_query: query,
       ai_response: aiAnswer,
       agent_role: "deep_epistemic",
-      timestamp: new Date().toISOString(),
       highlighted_text: highlightedText,
-      citations
-    };
-    seminarLogs.push(logEntry);
+      citations,
+      discussion_tag: discussionTag || undefined,
+      kind: "qa"
+    });
 
     res.json({
       status: "success",
@@ -823,30 +830,119 @@ interface SlideEpistemicModel {
 });
 
 // 7. Seminar Logs & Academic Minutes Synthesis
-app.get("/api/seminar/logs", (req, res) => {
+app.get("/api/seminar/logs", (_req, res) => {
+  const logs = getSeminarLogs();
   res.json({
     status: "success",
-    logs: seminarLogs
+    logs,
+    count: logs.length
   });
+});
+
+/** Client ingest：沙盒调参结论、异议标签发言等写入 JSONL */
+app.post("/api/seminar/log", (req, res) => {
+  try {
+    const body = req.body || {};
+    const entry = appendSeminarLog({
+      slide_index: Number(body.slide_index) || currentSlideIndex || 1,
+      user_query: String(body.user_query || ""),
+      ai_response: String(body.ai_response || ""),
+      agent_role: String(body.agent_role || "user"),
+      highlighted_text: body.highlighted_text,
+      citations: body.citations,
+      discussion_tag: body.discussion_tag,
+      kind: body.kind || "user",
+      is_barrage: Boolean(body.is_barrage)
+    });
+    res.json({ status: "success", logId: entry.id, entry });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/** Phase 4：Harness 示范（默认可关；不进入研讨默认路径） */
+app.post("/api/harness/run", (req, res) => {
+  try {
+    const { thesis, claimClass, slideIndex } = req.body || {};
+    const run = runHarnessDemo({
+      thesis,
+      claimClass,
+      slideIndex: Number(slideIndex) || currentSlideIndex || 64
+    });
+
+    appendSeminarLog({
+      slide_index: run.slideIndex,
+      user_query: run.thesis.slice(0, 280),
+      ai_response: `Harness ${run.passed ? "PASS" : "BLOCK"} · gates=${run.gates
+        .map(g => `${g.name}:${g.exitCode}`)
+        .join(",")}`,
+      agent_role: "system",
+      kind: "system"
+    });
+
+    res.json({
+      status: "success",
+      run,
+      demoOnly: true
+    });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 app.post("/api/seminar/generate-summary", async (req, res) => {
   try {
+    const logs = getSeminarLogs();
+    // P3-1：默认按页结构化；可选 mode=narrative 走长文（需 AI）
+    const mode = (req.body?.mode as string) || "structured";
+    const humanNotes = req.body?.humanNotes as
+      | { anomaly?: string; strongestObjection?: string; unresolved?: string }
+      | undefined;
+
+    if (mode !== "narrative") {
+      let markdown = buildStructuredMinutes(logs);
+      if (humanNotes) {
+        markdown = markdown
+          .replace(
+            /1\. \*\*现场调参反常\*\*：/,
+            `1. **现场调参反常**：${humanNotes.anomaly || ""}`
+          )
+          .replace(
+            /2\. \*\*最强异议\*\*：/,
+            `2. **最强异议**：${humanNotes.strongestObjection || ""}`
+          )
+          .replace(
+            /3\. \*\*会后未决\*\*：/,
+            `3. **会后未决**：${humanNotes.unresolved || ""}`
+          );
+      }
+      return res.json({
+        status: "success",
+        title: "可计算认识论：本场按页研讨纪要",
+        generatedAt: new Date().toLocaleString("zh-CN"),
+        markdownSummary: markdown,
+        mode: "structured",
+        logCount: logs.length,
+        source: "offline_fallback",
+        fromFallback: true
+      });
+    }
+
     const ai = getAI();
-    const logSummary = seminarLogs.map((l, i) => `[第${l.slide_index}页提问 ${i+1}] 参会者: ${l.user_query}\nAI核心论点: ${l.ai_response.slice(0, 200)}...`).join("\n\n");
+    const logSummary = logs
+      .map(
+        (l, i) =>
+          `[第${l.slide_index}页 ${l.kind || l.agent_role} ${i + 1}] ${l.user_query}\n→ ${(l.ai_response || "").slice(0, 200)}...`
+      )
+      .join("\n\n");
 
-    const prompt = `请基于本次学术研讨会记录，生成一份结构极其严谨、具有深邃跨学科压迫感的《学术研讨会深度会议纪要与理论共识报告》。
-研讨会主题：可计算认识论：从数学范式跃迁到人文社科的 AI 代码落地引擎
-讨论记录汇总：
-${logSummary || "（研讨会贯穿了六大部分：纯数学形式化证明闭环、社科开放性壁垒与卢卡斯批判、代码作为认识论界面、斯坦福生成式智能体微架构、突破RLHF陷阱的严肃仿真、明清基层财政与罗尔斯无知之幕实证案例）"}
+    const prompt = `请基于本次学术研讨会按页日志，生成一份精炼 Markdown 纪要（勿空泛）。
+主题：可计算认识论
+日志：
+${logSummary || "（尚无日志）"}
 
-请按以下学术大纲撰写 Markdown 报告：
-1. 研讨会综述与时代认识论范式转移（涵盖 2026 年流体力学奇点攻破、邓煜波前隐喻与数学界深蓝时刻）
-2. 核心争鸣一：形式化编译闭环 vs 社会科学开放性与意义剩余（保罗·利科与卢卡斯反思性）
-3. 核心争鸣二：Ontology as Code 与面向对象状态机对经院哲学的降维解构
-4. 多智能体架构升级共识：从 Smallville 老好人玩具到注入资源硬约束与马基雅维利博弈的严肃社科碰撞机
-5. 两个经典实证沙盘的方法论启示：明清基层抗粮雪崩与罗尔斯无知之幕的相变测度
-6. 结论与学者责任的终极重塑（警惕本体论暴政）`;
+大纲：1) 综述 2) 形式化 vs 开放性 3) Ontology as Code 4) 多智能体升级 5) 沙盒实证 6) 未决与学者责任
+文末保留「人工补记三句」空行。`;
 
     let summaryText = "";
     let summarySource: "live_ai" | "offline_fallback" = "offline_fallback";
@@ -859,46 +955,22 @@ ${logSummary || "（研讨会贯穿了六大部分：纯数学形式化证明闭
         summaryText = response.text || "";
         if (summaryText) summarySource = "live_ai";
       } catch (genErr: any) {
-        // Graceful fallback to deterministic report
+        // Graceful fallback
       }
     }
 
     if (!summaryText) {
+      summaryText = buildStructuredMinutes(logs);
       summarySource = "offline_fallback";
-      summaryText = `# 《可计算认识论》学术研讨会深度纪要与理论共识报告
-**研讨会日期**：2026年9月 · 深度前沿交叉研究组
-**核心议题**：从数学范式跃迁到人文社科的 AI 代码落地引擎
-
----
-
-### 一、 研讨会综述与时代认识论范式转移
-2026年，国际数学界迎来了划时代的“深蓝时刻”：在 Lean 4 定理证明器的严格机器验证下，以特里斯坦·布克马斯特与阿尔珀厄为代表的学者借助大模型集群攻克了光滑外力驱动下的流体奇点难题。菲尔兹奖得主邓煜提出的“波前（Wavefront）隐喻”与偏微分方程奇异性分析的五重认知阶梯（存在性 $\\to$ 测度 $\\to$ 余维数 $\\to$ 拓扑性质 $\\to$ 完全分类），为本次研讨奠定了坚实的数理基石。
-
-### 二、 核心争鸣：形式化编译闭环 vs 社科开放性壁垒
-数学成功依赖于形式闭合的世界，而社会系统内生着卢卡斯批判（Lucas Critique）与反思性（Reflexivity）。行为人会因政策预期而重构微观决策，使既有规则发生漂移。保罗·利科所谓的“意义剩余”，提醒我们不可度量的历史苦难无法被高维向量空间无损投影。AI 在人文社科中的正确定位，应是“高维语义拓扑制图者”，而非真理裁决者。
-
-### 三、 破局之钥：Ontology as Code（本体论即代码）
-研讨会达成关键共识：如果说数学落地的尽头是证明（Proof），社科落地的尽头则是**代码执行（Execution）**。将布迪厄的“场域”转化为状态机边界函数，将卢曼的“系统自创生”转化为动态网络权重，是逼迫理论“概念操作化”的最强利器。
-
-### 四、 多智能体微架构的严肃学术升维
-突破斯坦福 Smallville 原型中的“RLHF 中庸客气偏置（Politeness Bias）”。研讨会确立了三大升级路线：
-1. **BDI 状态机与资源硬约束**：引入物质/权力存量矩阵，允许自利寻租与欺骗。
-2. **认知失调与偏见过滤模型**：在记忆检索中加入意识形态亲和度，模拟群体极化。
-3. **二阶反思与制度内生突变**：让底层个体反思博弈规则本身的合法性，涌现阶级觉醒。
-
-### 五、 两个经典实证沙盘的量化启示
-- **明清基层财政危机沙盘**：证实宗族避税网络与白银紧缩冲击将推动财政系统越过余维数-1 临界流形，发生不可逆的自耕农破产与抗粮暴动。
-- **罗尔斯无知之幕可计算验证**：证实一旦移开幕布并施加资源稀缺冲击，在马基雅维利偏置下差异原则契约存在正测度违约崩溃相变。
-
-### 六、 结语：警惕本体论暴政
-代码的逻辑自洽不等于人类经验的真实。一个完美运行的沙盘可能只是参数游戏。AI 代码接管了状态穷举的劳作，但真理的最终开显依然取决于人类学者的本体论承诺与崇高关切。`;
     }
 
     res.json({
       status: "success",
       title: "可计算认识论：学术研讨会深度会议纪要",
-      generatedAt: new Date().toLocaleString(),
+      generatedAt: new Date().toLocaleString("zh-CN"),
       markdownSummary: summaryText,
+      mode: "narrative",
+      logCount: logs.length,
       source: summarySource,
       fromFallback: summarySource !== "live_ai"
     });

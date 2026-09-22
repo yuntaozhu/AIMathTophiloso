@@ -38,3 +38,10 @@ npx vercel --prod
 ```
 
 确保项目开启 **Fluid Compute**（WebSocket 依赖）。
+
+## Phase 4：Harness 示范（可选）
+
+在 **P.64–67** 课件条出现「Harness 示范」按钮（默认可关，不进研讨主路径）。
+
+- API：`POST /api/harness/run` — Gate1 底本 / Gate2 反事实仿真 / Gate3 负知识
+- 向观众说明：这是远期「Model + Harness」治理层原型，不是本场默认问答路径

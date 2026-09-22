@@ -12,7 +12,8 @@ import {
   BookMarked,
   Lightbulb,
   ExternalLink,
-  Sparkles
+  Sparkles,
+  Shield
 } from 'lucide-react';
 import { SlideItem, ChatMessage } from '../types';
 import { SEMINAR_SLIDES } from '../data/slides';
@@ -43,6 +44,7 @@ interface PresentationViewerProps {
   barrageEnabled: boolean;
   onSendToSandbox?: (code: string, title?: string) => void;
   onOpenSandboxTemplate?: (templateId?: string) => void;
+  onOpenHarnessDemo?: () => void;
   onQuickAsk?: (question: string) => void;
 }
 
@@ -59,6 +61,7 @@ export const PresentationViewer: React.FC<PresentationViewerProps> = ({
   barrageEnabled,
   onSendToSandbox,
   onOpenSandboxTemplate,
+  onOpenHarnessDemo,
   onQuickAsk
 }) => {
   const [laserActive, setLaserActive] = useState<boolean>(false);
@@ -274,6 +277,17 @@ export const PresentationViewer: React.FC<PresentationViewerProps> = ({
               title={`打开模板 ${linkedSandboxId}`}
             >
               一键打开本页沙盒
+            </button>
+          )}
+          {currentIndex >= 64 && currentIndex <= 67 && onOpenHarnessDemo && (
+            <button
+              type="button"
+              onClick={onOpenHarnessDemo}
+              className="shrink-0 self-start sm:self-center inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-amber-700/90 hover:bg-amber-600 text-white text-[10px] font-bold border border-amber-400/40"
+              title="打开 Model+Harness 示范面板（非研讨默认路径）"
+            >
+              <Shield className="w-3 h-3" />
+              Harness 示范
             </button>
           )}
         </div>
