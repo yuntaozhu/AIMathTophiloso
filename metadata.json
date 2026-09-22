@@ -1,0 +1,6 @@
+{
+  "name": "可计算认识论",
+  "description": "面向跨学科认知与学术研讨的 AI 协同研讨 Web 应用程序，融合 Reveal.js 同步演示、动态文献 RAG 知识库、双引擎研讨协作面板与可执行 BDI 多智能体代码沙盒。",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
