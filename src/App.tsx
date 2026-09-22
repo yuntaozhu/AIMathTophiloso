@@ -119,10 +119,15 @@ export default function App() {
 
   // Initialize Socket.io once; Vercel Fluid 上优先 websocket（无 sticky polling）
   useEffect(() => {
-    const onVercel = typeof window !== 'undefined' && /vercel\.app$|\.vercel\.app$/.test(window.location.hostname);
+    const host = typeof window !== 'undefined' ? window.location.hostname : '';
+    const onHosted =
+      /vercel\.app$/.test(host) ||
+      host === 'mathtophilosodiss.superegoagent.com' ||
+      host.endsWith('.superegoagent.com');
     const socket = io({
       path: '/socket.io',
-      transports: onVercel ? ['websocket'] : ['websocket', 'polling'],
+      // Fluid / 托管环境必须强制 websocket（禁止 long-polling）
+      transports: onHosted ? ['websocket'] : ['websocket', 'polling'],
       reconnection: true,
       reconnectionAttempts: 12,
       reconnectionDelay: 800,

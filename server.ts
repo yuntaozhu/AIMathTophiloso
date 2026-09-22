@@ -24,6 +24,30 @@ const PORT = Number(process.env.PORT) || 3000;
 
 app.use(express.json());
 
+/** Vercel rewrite `/api/*` → `/api` 会丢掉子路径；从转发头恢复 */
+app.use((req, _res, next) => {
+  if (!process.env.VERCEL) return next();
+  const candidates = [
+    req.headers["x-invoke-path"],
+    req.headers["x-forwarded-uri"],
+    req.headers["x-vercel-forwarded-path"],
+    req.headers["x-matched-path"]
+  ];
+  for (const raw of candidates) {
+    if (typeof raw !== "string" || !raw.startsWith("/")) continue;
+    const pathOnly = raw.split("?")[0];
+    if (pathOnly === "/api" || pathOnly === "/") continue;
+    const queryIdx = typeof req.url === "string" ? req.url.indexOf("?") : -1;
+    const query = queryIdx >= 0 ? req.url.slice(queryIdx) : "";
+    // Socket.IO 默认 path 仍是 /socket.io/...
+    if (pathOnly.startsWith("/socket.io") || pathOnly.startsWith("/api/")) {
+      req.url = pathOnly + query;
+      break;
+    }
+  }
+  next();
+});
+
 app.get("/api/health", (_req, res) => {
   res.json({
     status: "ok",
@@ -1022,7 +1046,11 @@ async function start() {
 const isVercel = Boolean(process.env.VERCEL);
 
 if (!isVercel) {
-  start();
+  // 仅在直接运行 server 入口时 listen；被 api/index.js require 时不抢端口
+  const entry = (process.argv[1] || "").replace(/\\/g, "/");
+  if (/\/server\.(ts|js|cjs|mjs)$/.test(entry)) {
+    start();
+  }
 } else if (process.env.NODE_ENV === "production") {
   // Vercel Fluid：静态前端由 CDN 提供；此处只挂 API + Socket
   const distPath = path.join(process.cwd(), "dist");
