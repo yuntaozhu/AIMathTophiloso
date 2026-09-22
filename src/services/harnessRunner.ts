@@ -109,6 +109,19 @@ function parseMetricValue(value: string | number): number | null {
   return m ? parseFloat(m[0]) : null;
 }
 
+function seriesLastByName(
+  result: { series: { name?: string; data?: (number | [number, number])[] }[] },
+  namePart: string
+): number | null {
+  for (const s of result.series || []) {
+    if (!(s.name || '').includes(namePart) || !Array.isArray(s.data) || !s.data.length) continue;
+    const last = s.data[s.data.length - 1];
+    if (typeof last === 'number') return last;
+    if (Array.isArray(last) && typeof last[1] === 'number') return last[1];
+  }
+  return null;
+}
+
 function primaryMetric(
   result: {
     summaryMetrics: { label: string; value: string | number }[];
@@ -131,6 +144,35 @@ function primaryMetric(
   }
   const first = result.summaryMetrics[0];
   return first ? parseMetricValue(first.value) : null;
+}
+
+function extractComparableMetric(
+  templateId: string,
+  result: {
+    summaryMetrics: { label: string; value: string | number }[];
+    series: { name?: string; data?: (number | [number, number])[] }[];
+  }
+): { value: number | null; label: string } {
+  if (templateId === 'rawls-veil') {
+    const bottom = seriesLastByName(result, '底层');
+    if (bottom != null) return { value: bottom, label: '底层20%均产' };
+    const gini = primaryMetric(result, ['基尼']);
+    return { value: gini, label: '基尼系数' };
+  }
+  if (templateId === 'ming-qing-fiscal') {
+    const survival = seriesLastByName(result, '生存') ?? primaryMetric(result, ['生存']);
+    return { value: survival, label: '小农生存指数' };
+  }
+  if (templateId === 'stanford-agent-memory') {
+    const score = seriesLastByName(result, 'Score') ?? primaryMetric(result, ['检索', '得分']);
+    return { value: score, label: '检索得分' };
+  }
+  if (templateId === 'pde-codim1-manifold') {
+    const amp = seriesLastByName(result, '临界') ?? primaryMetric(result, ['临界', '振幅']);
+    return { value: amp, label: '临界振幅' };
+  }
+  const fallback = primaryMetric(result, ['遵从', '生存', '基尼']);
+  return { value: fallback, label: '主指标' };
 }
 
 /** Gate 2：用已有仿真模板做温和/极端扰动；可观测塌陷才算门禁本身有效 */
@@ -177,22 +219,15 @@ export function runCounterfactualGate(thesis: string): GateResult {
   const mildRun = tmpl.run(mild);
   const extremeRun = tmpl.run(extreme);
 
-  const prefer =
-    templateId === 'ming-qing-fiscal'
-      ? ['生存', '抗粮', '逃税']
-      : templateId === 'pde-codim1-manifold'
-        ? ['临界', '余维', 'σ', '振幅']
-        : templateId === 'stanford-agent-memory'
-          ? ['检索', 'Score', '得分', '反思']
-          : ['底限', '底层', '基尼', '遵从'];
-
-  const mildMetric = primaryMetric(mildRun, prefer);
-  const extremeMetric = primaryMetric(extremeRun, prefer);
+  const mildCmp = extractComparableMetric(templateId, mildRun);
+  const extremeCmp = extractComparableMetric(templateId, extremeRun);
+  const mildMetric = mildCmp.value;
+  const extremeMetric = extremeCmp.value;
 
   const delta =
     mildMetric != null && extremeMetric != null ? Math.abs(extremeMetric - mildMetric) : null;
-  // 遵从率等指标常为 0–100；基尼等为 0–1
-  const threshold = mildMetric != null && Math.abs(mildMetric) > 1.5 ? 8 : 0.08;
+  // 底层均产/生存指数多为 0–100；基尼等为 0–1
+  const threshold = mildMetric != null && Math.abs(mildMetric) > 1.5 ? 5 : 0.05;
   const collapsed = delta != null && delta >= threshold;
 
   if (!collapsed) {
@@ -227,7 +262,7 @@ export function runCounterfactualGate(thesis: string): GateResult {
       mildMetric,
       extremeMetric,
       delta: Number(delta!.toFixed(4)),
-      falsificationHint: `在模板「${tmpl.name}」上，关键指标从 ${mildMetric} → ${extremeMetric}（Δ=${delta!.toFixed(3)}），机制在扰动下塌陷/跃迁，可作为证伪压力证据。`,
+      falsificationHint: `在模板「${tmpl.name}」上，${mildCmp.label} 从 ${mildMetric} → ${extremeMetric}（Δ=${delta!.toFixed(3)}），机制在扰动下塌陷/跃迁，可作为证伪压力证据。`,
       mildLogs: mildRun.agentLogs.slice(0, 2),
       extremeLogs: extremeRun.agentLogs.slice(0, 2)
     }

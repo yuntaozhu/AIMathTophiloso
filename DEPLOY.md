@@ -44,4 +44,13 @@ npx vercel --prod
 在 **P.64–67** 课件条出现「Harness 示范」按钮（默认可关，不进研讨主路径）。
 
 - API：`POST /api/harness/run` — Gate1 底本 / Gate2 反事实仿真 / Gate3 负知识
-- 向观众说明：这是远期「Model + Harness」治理层原型，不是本场默认问答路径
+## 冒烟检查（部署后）
+
+```bash
+curl -s https://ai-math-tophiloso.vercel.app/api/health
+curl -s -X POST https://ai-math-tophiloso.vercel.app/api/harness/run \
+  -H "Content-Type: application/json" \
+  -d "{\"slideIndex\":64}"
+```
+
+期望：`health` 返回 `{ status: "ok" }`；Harness 返回 `gates` 三道 exit 码。若 `/api/*` 报 `FUNCTION_INVOCATION_FAILED`，优先检查 `tsconfig` 的 `types`（需含 `node`）与 Fluid WebSocket 是否开启。

@@ -20,9 +20,18 @@ dotenv.config();
 
 const app = express();
 const server = http.createServer(app);
-const PORT = 3000;
+const PORT = Number(process.env.PORT) || 3000;
 
 app.use(express.json());
+
+app.get("/api/health", (_req, res) => {
+  res.json({
+    status: "ok",
+    service: "ai-math-tophiloso",
+    vercel: Boolean(process.env.VERCEL),
+    time: new Date().toISOString()
+  });
+});
 
 // Initialize Gemini client with proper User-Agent telemetry
 let aiClient: GoogleGenAI | null = null;
@@ -54,7 +63,8 @@ const io = new SocketIOServer(server, {
   cors: {
     origin: "*",
     methods: ["GET", "POST"]
-  }
+  },
+  transports: process.env.VERCEL ? ["websocket"] : ["websocket", "polling"]
 });
 
 io.on("connection", (socket) => {
@@ -62,6 +72,13 @@ io.on("connection", (socket) => {
   const isFirst = connectedUsers.size === 0;
   connectedUsers.set(socket.id, { id: socket.id, name: userName, isPresenter: isFirst });
   if (isFirst) presenterSocketId = socket.id;
+
+  let historyLogs: unknown[] = [];
+  try {
+    historyLogs = getSeminarLogs().slice(-20);
+  } catch {
+    historyLogs = [];
+  }
 
   // Send initial authoritative sync state
   socket.emit("sync:state", {
@@ -71,7 +88,7 @@ io.on("connection", (socket) => {
     userCount: connectedUsers.size,
     laserPointer: activeLaserPointer,
     activeHighlight,
-    historyLogs: getSeminarLogs().slice(-20)
+    historyLogs
   });
 
   io.emit("attendees:update", {
