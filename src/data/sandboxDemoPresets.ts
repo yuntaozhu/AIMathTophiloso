@@ -70,16 +70,16 @@ export const DEMO_PRESETS_BY_TEMPLATE: Record<string, DemoPreset[]> = {
   ]
 };
 
-/** 页码 → 沙盒模板 ID（P2-1；含开场 15 页偏移） */
+/** 页码 → 沙盒模板 ID（P2-1；含 Lean + 开场论点偏移） */
 export const SLIDE_TO_SANDBOX_TEMPLATE: Record<number, string> = {
-  36: 'pde-codim1-manifold',
   37: 'pde-codim1-manifold',
-  46: 'stanford-agent-memory',
+  38: 'pde-codim1-manifold',
   47: 'stanford-agent-memory',
-  67: 'rawls-veil',
+  48: 'stanford-agent-memory',
   68: 'rawls-veil',
-  77: 'ming-qing-fiscal',
-  78: 'ming-qing-fiscal'
+  69: 'rawls-veil',
+  78: 'ming-qing-fiscal',
+  79: 'ming-qing-fiscal'
 };
 
 export function resolveSandboxTemplateId(slideIndex: number): string | null {

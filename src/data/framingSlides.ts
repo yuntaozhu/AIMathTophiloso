@@ -4,14 +4,33 @@ import { SlideItem } from '../types';
  * 开场核心论点：AI Math 突破对文社哲的启发
  * （插入于深蓝时刻之后、六章导览之前）
  *
- * 含两段：
- * A. 反差 / 启发 / Harness 初论（P.3–P.8）
- * B. Liouville–Goldbach 启发的「结构型证明发现」与 Type-3 Harness（P.9–P.15）
- * 收束：Harness 公式 + 哲学边界（P.16–P.17）
+ * P.3：Lean 专讲（破局点机制）
+ * A. 反差 / 启发（P.4–P.9）
+ * B. 结构型证明发现 Type-3（P.10–P.16）
+ * 收束：Harness 公式 + 护城河（P.17–P.18）
  */
 export const FRAMING_SLIDES: SlideItem[] = [
   {
     index: 3,
+    sectionNumber: 0,
+    sectionTitle: '开场 · Lean',
+    title: 'Lean 是什么：交互式证明器与 0/1 真值机',
+    subtitle: '布克马斯特–阿尔珀厄欧拉爆破工作的关键底座——本场研究的破局节点',
+    details:
+      '猜想草稿（可错）→ 写成 Lean 形式语句 → 内核逐行类型检查 → 通过=定理成立 / 失败=证明有洞\n人机协作：数学家+AI 提出策略；Lean 从不“相信修辞”，只接受可编译的证明对象',
+    bullets: [
+      '**一句话定义**：Lean 是微软研究院发起的**交互式定理证明器（ITP）**——把数学命题与证明写成可编译的程序；内核像编译器一样做**类型检查**，通过则证明成立，报错则存在逻辑漏洞。',
+      '**为何叫“交互式”**：不是扔进黑盒等结果。人（或 AI）逐步给出策略、引理与计算步骤；Lean 随时反馈哪一步尚未闭合——像结对编程，搭档是冷酷的逻辑机。',
+      '**与 ChatGPT 的本质差别**：大模型产出的是**看似合理的自然语言**；Lean 验收的是**机器可核验的证明对象**。前者可流畅胡说，后者失败即 `error`，无法用辞藻蒙混。',
+      '**欧拉爆破节点**：有限时间爆破证明极长、依赖精细估计；人写易漏；在 **Lean 4** 中形式化后，每一步不等式与极限交换都被内核钉死——这才使“百年流体奇点”成为可公开复核的里程碑。',
+      '**对本场的意义**：数学突破的关键不是“模型更会聊天”，而是接上了 **可失败的 System 2**。后文的 Harness，正是文社哲侧对外挂一层“类 Lean”治理的工程翻译。'
+    ],
+    notes:
+      '口播 2–3 分钟：① Lean=证明编译器；② 交互=人机逐步填洞；③ 不等于 LLM；④ 欧拉爆破因可复核才成破局点；⑤ 衔接到“文社哲缺这类编译器”。勿展开依赖类型论细节。',
+    keywords: ['Lean 4', '交互式证明器', '类型检查', '0/1 真值', '欧拉爆破', 'System 2']
+  },
+  {
+    index: 4,
     sectionNumber: 0,
     sectionTitle: '开场论点',
     title: '核心反差：数学已有范式突破，文社哲尚未有',
@@ -26,7 +45,7 @@ export const FRAMING_SLIDES: SlideItem[] = [
     keywords: ['范式突破', 'AlphaProof', 'AlphaGeometry', '文社哲', '反差']
   },
   {
-    index: 4,
+    index: 5,
     sectionNumber: 0,
     sectionTitle: '开场论点',
     title: '溯源对照：两套研究范式的底盘差异',
@@ -42,7 +61,7 @@ export const FRAMING_SLIDES: SlideItem[] = [
     keywords: ['Lean', 'Ground Truth', '形式验证', '解释学深渊', '自博弈']
   },
   {
-    index: 5,
+    index: 6,
     sectionNumber: 0,
     sectionTitle: '开场论点',
     title: '为什么数学能突破，而文社哲步履维艰？',
@@ -57,7 +76,7 @@ export const FRAMING_SLIDES: SlideItem[] = [
     keywords: ['形式验证', '反思性', '卢卡斯批判', '具身', 'Dasein']
   },
   {
-    index: 6,
+    index: 7,
     sectionNumber: 0,
     sectionTitle: '开场论点',
     title: '启发①：从真理证明者 → 概念压力测试机',
@@ -72,7 +91,7 @@ export const FRAMING_SLIDES: SlideItem[] = [
     keywords: ['概念压力测试', '思想实验', '罗尔斯', '边界案例', '承重极限']
   },
   {
-    index: 7,
+    index: 8,
     sectionNumber: 0,
     sectionTitle: '开场论点',
     title: '启发②：从计量拟合 → 反事实沙箱与合成社会',
@@ -87,7 +106,7 @@ export const FRAMING_SLIDES: SlideItem[] = [
     keywords: ['反事实', 'Self-play', '合成社会', '涌现', '制度冲击']
   },
   {
-    index: 8,
+    index: 9,
     sectionNumber: 0,
     sectionTitle: '开场论点',
     title: '启发③：破解显著性悖论，守住人类护城河',
@@ -104,7 +123,7 @@ export const FRAMING_SLIDES: SlideItem[] = [
 
   // ——— B. 结构型证明发现（Liouville–Goldbach 启发）———
   {
-    index: 9,
+    index: 10,
     sectionNumber: 0,
     sectionTitle: '开场论点 · 结构发现',
     title: '认知转折：从“见证搜索”到“结构发现”',
@@ -119,7 +138,7 @@ export const FRAMING_SLIDES: SlideItem[] = [
     keywords: ['结构发现', '见证搜索', 'Liouville-Goldbach', '约束传播', '概念性矛盾']
   },
   {
-    index: 10,
+    index: 11,
     sectionNumber: 0,
     sectionTitle: '开场论点 · 结构发现',
     title: '能力谱系映射：Calculator → Lemma → Structure',
@@ -135,7 +154,7 @@ export const FRAMING_SLIDES: SlideItem[] = [
     keywords: ['三类能力', 'Calculator', 'Lemma Search', 'Structure Discovery', '范式映射']
   },
   {
-    index: 11,
+    index: 12,
     sectionNumber: 0,
     sectionTitle: '开场论点 · 结构发现',
     title: '认识论核心：内在张力如何逼出隐藏刚性',
@@ -150,7 +169,7 @@ export const FRAMING_SLIDES: SlideItem[] = [
     keywords: ['内在张力', 'Additive-Multiplicative', '隐藏刚性', '结构链条', '跨域母体']
   },
   {
-    index: 12,
+    index: 13,
     sectionNumber: 0,
     sectionTitle: '开场论点 · 结构发现',
     title: '社科映射：个体理性与宏观秩序的结构性张力',
@@ -165,7 +184,7 @@ export const FRAMING_SLIDES: SlideItem[] = [
     keywords: ['制度拓扑', '多智能体', '约束传播', '必然性', '外生冲击']
   },
   {
-    index: 13,
+    index: 14,
     sectionNumber: 0,
     sectionTitle: '开场论点 · 结构发现',
     title: '人文与哲学：语义张力 · 先验论证的计算化',
@@ -180,7 +199,7 @@ export const FRAMING_SLIDES: SlideItem[] = [
     keywords: ['语义张力', '不可通约', '先验论证', '应力分析', '意识形态闭环']
   },
   {
-    index: 14,
+    index: 15,
     sectionNumber: 0,
     sectionTitle: '开场论点 · 结构发现',
     title: '架构融合：Type-3 结构发现 Harness',
@@ -196,7 +215,7 @@ export const FRAMING_SLIDES: SlideItem[] = [
     keywords: ['Type-3 Harness', '约束传播', '刚性门', 'Exit Non-Zero', '隐藏不变量']
   },
   {
-    index: 15,
+    index: 16,
     sectionNumber: 0,
     sectionTitle: '开场论点 · 结构发现',
     title: '关键提问：那个中间引理，究竟是谁想到的？',
@@ -211,7 +230,7 @@ export const FRAMING_SLIDES: SlideItem[] = [
     keywords: ['关键引理', 'Audit Log', '归因', '涌现', '学术公信力']
   },
   {
-    index: 16,
+    index: 17,
     sectionNumber: 0,
     sectionTitle: '开场论点',
     title: '方法论收束：Agent = Model + Harness',
@@ -221,14 +240,14 @@ export const FRAMING_SLIDES: SlideItem[] = [
     bullets: [
       '**失败诊断**：文社哲直接用大模型常败在只做调词与塞资料，缺少运行边界与验证门禁。',
       '**四支柱 + 结构引擎**：本体论沙箱 · 负知识 · 反事实/刚性门禁 · 全链路审计 · **局部→全局约束传播**。',
-      '**本场演示**：收束段（约 P.79+）可开「Harness 示范」——展示可失败门禁与审计树，而非假装已裁决真理。',
+      '**本场演示**：收束段（约 P.80+）可开「Harness 示范」——展示可失败门禁与审计树，而非假装已裁决真理。',
       '**公式**：$Agent = Model + Harness$（能力看模型，差距看那一圈）。'
     ],
     notes: '把 Type-3 嵌回公式。点一下稍后 Harness 面板。',
     keywords: ['Harness', 'Exit Non-Zero', '负知识', '约束传播', '审计']
   },
   {
-    index: 17,
+    index: 18,
     sectionNumber: 0,
     sectionTitle: '开场论点',
     title: '学者新护城河与本场方向',

@@ -309,7 +309,7 @@ export const PresentationViewer: React.FC<PresentationViewerProps> = ({
                 一键打开本页沙盒
               </button>
             )}
-            {(currentIndex >= 79 && currentIndex <= 82 && onOpenHarnessDemo) ||
+            {(currentIndex >= 80 && currentIndex <= 83 && onOpenHarnessDemo) ||
             (paceHint.tool === 'harness_demo' && onOpenHarnessDemo) ? (
               <button
                 type="button"

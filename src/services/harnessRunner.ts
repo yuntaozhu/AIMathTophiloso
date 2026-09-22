@@ -353,7 +353,7 @@ const DEFAULT_THESIS =
 export function runHarnessDemo(input: HarnessRunInput = {}): HarnessRun {
   const thesis = (input.thesis || DEFAULT_THESIS).trim();
   const claimClass: ClaimClass = input.claimClass || 'hypothesis';
-  const slideIndex = input.slideIndex || 79;
+  const slideIndex = input.slideIndex || 80;
   const auditTrace: AuditNode[] = [];
   const rejectedHypotheses: string[] = [];
 

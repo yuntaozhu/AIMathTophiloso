@@ -85,7 +85,7 @@ export const HarnessDemoPanel: React.FC<HarnessDemoPanelProps> = ({
                 Model + Harness 示范层
               </h2>
               <p className="text-xs text-amber-200/80 mt-0.5">
-                远期学术治理原型 · 默认关闭 · 非本场研讨主路径（建议在 P.79 讲解释学双循环时打开）
+                远期学术治理原型 · 默认关闭 · 非本场研讨主路径（建议在 P.80 讲解释学双循环时打开）
               </p>
             </div>
           </div>
