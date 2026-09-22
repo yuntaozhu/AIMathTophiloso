@@ -26,6 +26,7 @@ import { getPresenterPaceHint, toolLabel } from '../data/presenterPaceHints';
 import { resolveSandboxTemplateId } from '../data/sandboxDemoPresets';
 import { CORE_DOCUMENTS } from '../data/knowledgeBase';
 import { openMingQingSimulator } from '../sim/mingqing';
+import { openTrolleyEthicsDemo } from '../sim/trolley';
 import {
   REHEARSAL_45_STOPS,
   getNextRehearsalStop,
@@ -322,6 +323,17 @@ export const PresentationViewer: React.FC<PresentationViewerProps> = ({
               >
                 <Timer className="w-3 h-3" />
                 45′彩排
+              </button>
+            )}
+            {currentIndex === 67 && (
+              <button
+                type="button"
+                onClick={() => openTrolleyEthicsDemo({ newTab: true })}
+                className="shrink-0 self-start sm:self-center inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-amber-600 hover:bg-amber-500 text-white text-[10px] font-bold border border-amber-400/40"
+                title="打开电车难题 U_net=0 三维相界面演示"
+              >
+                <ExternalLink className="w-3 h-3" />
+                打开电车难题演示
               </button>
             )}
             {linkedSandboxId && onOpenSandboxTemplate && (

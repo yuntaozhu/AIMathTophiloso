@@ -78,6 +78,8 @@ const HINT_BY_SLIDE: Record<number, PresenterPaceHint> = {
   58: { pace: '深讲', tool: 'none', tip: 'BDI 硬约束：物质存量三维矩阵。' },
   64: { pace: '共议', tool: 'agenda_guardian', tip: '黑暗丛林与利他：短共议或并入大讨论。' },
 
+  66: { pace: '快翻', tool: 'none', tip: '思想实验 → 数字风洞铺垫。' },
+  67: { pace: '深讲', tool: 'none', tip: '点「打开电车难题演示」→ /#/sim/trolley-ethics；拧 α / C_punish。' },
   68: { pace: '深讲', tool: 'sandbox_rawls', tip: '无知之幕收敛：立刻衔接到沙盒。' },
   69: { pace: '沙盒', tool: 'sandbox_rawls', tip: '拧 scarcityShock / machiavellianWeight，对照“结构张力”叙事。' },
   70: { pace: '深讲', tool: 'knowledge_base', tip: '哥德尔本体论：Benzmüller 形式化条目。' },
