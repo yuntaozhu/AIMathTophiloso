@@ -41,13 +41,15 @@ npx vercel --prod
 
 确保项目开启 **Fluid Compute**（WebSocket 依赖）。`vercel.json` 中 `functions` 指向 `api/index.js`（勿用 `.cjs`，Vercel 不识别）。
 
-## 课件与工具页码（含开场论点 8 页）
+## 课件与工具页码（含开场论点 15 页）
 
 | 用途 | 页码 |
 |---|---|
-| 开场论点 | P.3–P.10 |
+| 开场论点（反差 / 启发） | P.3–P.8 |
+| 结构发现（Liouville–Goldbach 启示 / Type-3） | P.9–P.15 |
+| Harness 公式 + 护城河收束 | P.16–P.17 |
 | PDE / 记忆流 / 罗尔斯 / 明清沙盒 | 见控台「一键打开本页沙盒」 |
-| Harness 示范 | P.72–P.75（或控台「Harness 示范」） |
+| Harness 示范 | P.79–P.82（或控台「Harness 示范」） |
 | 45′ 彩排跳站 | 主讲控台开启「45′彩排」 |
 
 ## Phase 4：Harness 示范

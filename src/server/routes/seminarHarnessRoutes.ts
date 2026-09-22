@@ -60,7 +60,7 @@ export function registerSeminarHarnessRoutes(
       const run = runHarnessDemo({
         thesis,
         claimClass,
-        slideIndex: Number(slideIndex) || opts.getCurrentSlideIndex() || 72
+        slideIndex: Number(slideIndex) || opts.getCurrentSlideIndex() || 79
       });
 
       appendSeminarLog({

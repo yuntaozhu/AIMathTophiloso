@@ -32,7 +32,7 @@ describe('harnessRunner', () => {
   });
 
   it('full demo run returns three gates', () => {
-    const run = runHarnessDemo({ slideIndex: 72 });
+    const run = runHarnessDemo({ slideIndex: 79 });
     assert.equal(run.gates.length, 3);
     assert.ok(run.auditTrace.length >= 3);
     assert.ok(run.demoDisclaimer.includes('Harness'));
