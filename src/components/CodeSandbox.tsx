@@ -1,123 +1,200 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import ReactECharts from 'echarts-for-react';
 import { 
   Play, 
-  RotateCcw, 
   Settings2, 
   Code2, 
   LineChart as ChartIcon, 
   Terminal, 
   Cpu, 
   Sliders, 
-  FileText,
-  Sparkles,
   ArrowLeft,
-  Layers,
   Workflow,
-  CheckCircle2,
-  AlertTriangle
+  AlertTriangle,
+  GitCompare
 } from 'lucide-react';
 import { SIMULATION_TEMPLATES, SimulationTemplate, SimulationRunResult } from '../data/simulationTemplates';
 import { executeCustomCodeSimulation } from '../utils/customCodeExecutor';
+import {
+  DEMO_PRESETS_BY_TEMPLATE,
+  DemoPresetId,
+  buildSandboxRunSummary
+} from '../data/sandboxDemoPresets';
 
 interface CodeSandboxProps {
   customCode?: string;
   customTitle?: string;
+  /** P2-1：从课件深链打开指定模板 */
+  initialTemplateId?: string;
+  slideIndex?: number;
   onClose?: () => void;
+  /** P2-3：真仿真跑完后把结论写回研讨流 */
+  onRunComplete?: (summaryMarkdown: string) => void;
 }
 
 export const CodeSandbox: React.FC<CodeSandboxProps> = ({
   customCode,
   customTitle,
-  onClose
+  initialTemplateId,
+  slideIndex = 1,
+  onClose,
+  onRunComplete
 }) => {
-  const [selectedTemplate, setSelectedTemplate] = useState<SimulationTemplate>(SIMULATION_TEMPLATES[0]);
-  const [params, setParams] = useState<Record<string, any>>(SIMULATION_TEMPLATES[0].defaultParams);
-  const [editableCode, setEditableCode] = useState<string>(SIMULATION_TEMPLATES[0].code);
+  const resolveInitial = (): SimulationTemplate => {
+    if (initialTemplateId) {
+      return SIMULATION_TEMPLATES.find(t => t.id === initialTemplateId) || SIMULATION_TEMPLATES[0];
+    }
+    return SIMULATION_TEMPLATES[0];
+  };
+
+  const initial = resolveInitial();
+  const [selectedTemplate, setSelectedTemplate] = useState<SimulationTemplate>(initial);
+  const [params, setParams] = useState<Record<string, any>>({ ...initial.defaultParams });
+  const [editableCode, setEditableCode] = useState<string>(initial.code);
   const [runResult, setRunResult] = useState<SimulationRunResult | null>(null);
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<'editor' | 'params'>('params');
   const [isCustomMode, setIsCustomMode] = useState<boolean>(false);
   const [customModelTitle, setCustomModelTitle] = useState<string>('');
+  const [activePreset, setActivePreset] = useState<DemoPresetId | null>(null);
+  const lastSummaryRef = useRef<string>('');
 
-  // Synchronize when customCode prop arrives (e.g. from KaibanJS or Chat)
+  // P2-1：外部指定模板时切换到真仿真
   useEffect(() => {
-    if (customCode && customCode.trim().length > 0) {
+    if (!initialTemplateId) return;
+    const tmpl = SIMULATION_TEMPLATES.find(t => t.id === initialTemplateId);
+    if (!tmpl) return;
+    setIsCustomMode(false);
+    setSelectedTemplate(tmpl);
+    setParams({ ...tmpl.defaultParams });
+    setEditableCode(tmpl.code);
+    setActiveTab('params');
+    setActivePreset(null);
+    const result = tmpl.run(tmpl.defaultParams);
+    setRunResult(result);
+  }, [initialTemplateId]);
+
+  // 自定义/规则合成代码：预览模式
+  useEffect(() => {
+    if (customCode && customCode.trim().length > 0 && !initialTemplateId) {
       setEditableCode(customCode);
       setIsCustomMode(true);
-      setActiveTab('editor'); // Immediately bring user to Code Editor view to inspect the imported state machine
-      const title = customTitle || 'KaibanJS 状态机模型';
+      setActiveTab('editor');
+      const title = customTitle || '规则合成预览模型';
       setCustomModelTitle(title);
-      
-      // Execute the newly imported code simulation
       setIsRunning(true);
       const timer = setTimeout(() => {
         try {
           const result = executeCustomCodeSimulation(customCode, title, params);
           setRunResult(result);
         } catch (err) {
-          console.error("Custom simulation execution error:", err);
+          console.error('Custom simulation execution error:', err);
         } finally {
           setIsRunning(false);
         }
       }, 150);
-
       return () => clearTimeout(timer);
     }
-  }, [customCode, customTitle]);
+  }, [customCode, customTitle, initialTemplateId]);
+
+  const presets = !isCustomMode ? DEMO_PRESETS_BY_TEMPLATE[selectedTemplate.id] || [] : [];
 
   const handleSelectTemplate = (tmpl: SimulationTemplate) => {
     setIsCustomMode(false);
     setSelectedTemplate(tmpl);
-    setParams(tmpl.defaultParams);
+    setParams({ ...tmpl.defaultParams });
     setEditableCode(tmpl.code);
+    setActivePreset(null);
+    setActiveTab('params');
     setRunResult(tmpl.run(tmpl.defaultParams));
   };
 
-  const handleParamChange = (key: string, value: any) => {
-    const updated = { ...params, [key]: value };
-    setParams(updated);
+  const handleApplyPreset = (presetId: DemoPresetId) => {
+    const preset = presets.find(p => p.id === presetId);
+    if (!preset) return;
+    const nextParams = { ...selectedTemplate.defaultParams, ...preset.params };
+    setParams(nextParams);
+    setActivePreset(presetId);
+    setIsCustomMode(false);
+    setActiveTab('params');
+    runTemplate(nextParams, preset.label);
   };
 
-  const handleRun = () => {
+  const handleParamChange = (key: string, value: any) => {
+    setActivePreset(null);
+    setParams(prev => ({ ...prev, [key]: value }));
+  };
+
+  const emitRunSummary = (
+    result: SimulationRunResult,
+    runParams: Record<string, any>,
+    presetLabel?: string
+  ) => {
+    if (isCustomMode || !onRunComplete) return;
+    const md = buildSandboxRunSummary({
+      templateId: selectedTemplate.id,
+      templateName: selectedTemplate.name,
+      slideIndex,
+      presetLabel,
+      params: runParams,
+      result
+    });
+    if (md === lastSummaryRef.current) return;
+    lastSummaryRef.current = md;
+    onRunComplete(md);
+  };
+
+  const runTemplate = (runParams: Record<string, any>, presetLabel?: string) => {
     setIsRunning(true);
     setTimeout(() => {
       try {
-        if (isCustomMode && editableCode) {
-          const result = executeCustomCodeSimulation(editableCode, customModelTitle || '自定义状态机', params);
-          setRunResult(result);
-        } else {
-          const result = selectedTemplate.run(params);
-          setRunResult(result);
-        }
+        const result = selectedTemplate.run(runParams);
+        setRunResult(result);
+        emitRunSummary(result, runParams, presetLabel);
       } catch (err) {
-        console.error("Simulation execution error:", err);
+        console.error('Simulation execution error:', err);
       } finally {
         setIsRunning(false);
       }
-    }, 200);
+    }, 180);
+  };
+
+  const handleRun = () => {
+    if (isCustomMode && editableCode) {
+      setIsRunning(true);
+      setTimeout(() => {
+        try {
+          const result = executeCustomCodeSimulation(
+            editableCode,
+            customModelTitle || '自定义状态机',
+            params
+          );
+          setRunResult(result);
+        } catch (err) {
+          console.error('Simulation execution error:', err);
+        } finally {
+          setIsRunning(false);
+        }
+      }, 200);
+      return;
+    }
+    runTemplate(params, activePreset ? presets.find(p => p.id === activePreset)?.label : undefined);
   };
 
   useEffect(() => {
-    // Initial run only if not in custom mode
-    if (!customCode) {
+    if (!customCode && !initialTemplateId) {
       setRunResult(selectedTemplate.run(selectedTemplate.defaultParams));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Configure ECharts options
   const getEChartsOption = () => {
     if (!runResult) return {};
-
     return {
       backgroundColor: '#0a0a0a',
       title: {
         text: runResult.chartTitle,
-        textStyle: {
-          color: '#e5e5e5',
-          fontSize: 14,
-          fontWeight: 600
-        },
+        textStyle: { color: '#e5e5e5', fontSize: 14, fontWeight: 600 },
         left: 10,
         top: 10
       },
@@ -127,41 +204,33 @@ export const CodeSandbox: React.FC<CodeSandboxProps> = ({
         borderColor: '#404040',
         textStyle: { color: '#f5f5f5' }
       },
-      legend: {
-        bottom: 10,
-        textStyle: { color: '#a3a3a3' }
-      },
-      grid: {
-        left: '4%',
-        right: '4%',
-        bottom: '14%',
-        top: '18%',
-        containLabel: true
-      },
+      legend: { bottom: 10, textStyle: { color: '#a3a3a3' } },
+      grid: { left: '4%', right: '4%', bottom: '14%', top: '18%', containLabel: true },
       xAxis: {
         ...runResult.xAxis,
         axisLine: { lineStyle: { color: '#404040' } },
         axisLabel: { color: '#a3a3a3' },
         splitLine: { lineStyle: { color: '#1f1f1f' } }
       },
-      yAxis: Array.isArray(runResult.yAxis) ? runResult.yAxis.map((ya: any) => ({
-        ...ya,
-        axisLine: { lineStyle: { color: '#404040' } },
-        axisLabel: { color: '#a3a3a3' },
-        splitLine: { lineStyle: { color: '#1f1f1f' } }
-      })) : {
-        ...runResult.yAxis,
-        axisLine: { lineStyle: { color: '#404040' } },
-        axisLabel: { color: '#a3a3a3' },
-        splitLine: { lineStyle: { color: '#1f1f1f' } }
-      },
+      yAxis: Array.isArray(runResult.yAxis)
+        ? runResult.yAxis.map((ya: any) => ({
+            ...ya,
+            axisLine: { lineStyle: { color: '#404040' } },
+            axisLabel: { color: '#a3a3a3' },
+            splitLine: { lineStyle: { color: '#1f1f1f' } }
+          }))
+        : {
+            ...runResult.yAxis,
+            axisLine: { lineStyle: { color: '#404040' } },
+            axisLabel: { color: '#a3a3a3' },
+            splitLine: { lineStyle: { color: '#1f1f1f' } }
+          },
       series: runResult.series
     };
   };
 
   return (
     <div className="flex-1 flex flex-col bg-neutral-950 text-neutral-100 overflow-hidden select-text">
-      {/* Sandbox Top Control Bar */}
       <div className="p-3 bg-neutral-900 border-b border-neutral-800 flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center space-x-2">
           {onClose && (
@@ -191,15 +260,14 @@ export const CodeSandbox: React.FC<CodeSandboxProps> = ({
               )}
             </h2>
             <p className="text-xs text-neutral-400">
-              {isCustomMode 
-                ? `预览模式：${customModelTitle || 'Kaiban/自定义代码'} — 按关键词路由预制曲线，不执行源码`
-                : '模板仿真：参数会真实参与计算并重绘 ECharts'}
+              {isCustomMode
+                ? `预览模式：${customModelTitle || '规则合成代码'} — 关键词路由预制曲线`
+                : '模板仿真：参数真实参与计算；可用「温和 / 极端」一键对比'}
             </p>
           </div>
         </div>
 
-        {/* Template Selector & Run Button */}
-        <div className="flex items-center space-x-2">
+        <div className="flex flex-wrap items-center gap-2">
           <select
             value={isCustomMode ? 'custom-active' : selectedTemplate.id}
             onChange={(e) => {
@@ -215,7 +283,7 @@ export const CodeSandbox: React.FC<CodeSandboxProps> = ({
           >
             {isCustomMode && (
               <option value="custom-active">
-                ⚡ [KaibanJS 状态机] {customModelTitle || '导入的代码模型'}
+                ⚡ [预览] {customModelTitle || '导入的代码模型'}
               </option>
             )}
             {SIMULATION_TEMPLATES.map(t => (
@@ -236,11 +304,8 @@ export const CodeSandbox: React.FC<CodeSandboxProps> = ({
         </div>
       </div>
 
-      {/* Main Workspace Split: Left Controls/Code, Right ECharts/Metrics */}
       <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
-        {/* Left Column: Code Editor & Parameter Sliders */}
         <div className="w-full lg:w-5/12 bg-neutral-950 border-r border-neutral-800 flex flex-col overflow-hidden">
-          {/* Sub Tabs */}
           <div className="flex items-center border-b border-neutral-800 bg-neutral-900/60 px-3 text-xs">
             <button
               onClick={() => setActiveTab('editor')}
@@ -252,9 +317,6 @@ export const CodeSandbox: React.FC<CodeSandboxProps> = ({
             >
               <Code2 className="w-3.5 h-3.5" />
               <span>BDI 代码模型 (IDE)</span>
-              {isCustomMode && (
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              )}
             </button>
             <button
               onClick={() => setActiveTab('params')}
@@ -276,18 +338,11 @@ export const CodeSandbox: React.FC<CodeSandboxProps> = ({
                   <div className="p-2.5 rounded-lg bg-amber-950/40 border border-amber-500/40 flex items-start text-[11px] text-amber-100 gap-2">
                     <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
                     <span>
-                      <strong>诚实标签：</strong>自定义/Kaiban 代码不会在浏览器中执行。
-                      下方图表是按标题与关键词匹配的<strong>可视化预览</strong>。
-                      需要真调参请切换到罗尔斯 / PDE / 明清 / 记忆流等模板。
+                      <strong>诚实标签：</strong>规则合成/自定义代码不会执行。
+                      图表为关键词<strong>可视化预览</strong>。真调参请切到内置模板。
                     </span>
                   </div>
                 )}
-                <div className="flex items-center justify-between text-[11px] text-neutral-400">
-                  <span>JavaScript / TypeScript 模型源码：</span>
-                  <span className="text-[10px] text-neutral-500 font-mono">
-                    {isCustomMode ? '预览路由 · 非 eval' : '模板 run() 真计算'}
-                  </span>
-                </div>
                 <textarea
                   value={editableCode}
                   onChange={(e) => {
@@ -302,103 +357,105 @@ export const CodeSandbox: React.FC<CodeSandboxProps> = ({
               <div className="space-y-4">
                 <div className="p-3 rounded-lg bg-neutral-900 border border-neutral-800">
                   <div className="font-semibold text-neutral-200 mb-1">
-                    {isCustomMode ? (customModelTitle || 'KaibanJS 状态机模型') : selectedTemplate.name}
+                    {isCustomMode ? customModelTitle || '预览模型' : selectedTemplate.name}
                   </div>
                   <p className="text-neutral-400 leading-relaxed text-[11px]">
-                    {isCustomMode 
-                      ? '预览说明：曲线由关键词路由生成，用于现场叙事对照，不代表源码已在沙盒中执行。切换到内置模板可进行真实参数扰动。' 
+                    {isCustomMode
+                      ? '预览模式不写研讨结论。切换模板后运行，才会把调参结论写入研讨流。'
                       : selectedTemplate.description}
                   </p>
-                  <div className="mt-2 text-[10px] text-amber-400/80 font-mono">
-                    理论锚点: {isCustomMode ? '可计算认识论与机器可证伪性闭环' : selectedTemplate.theoryRef}
-                  </div>
                 </div>
 
-                {/* Sliders for current template parameters */}
+                {/* P2-2 演讲预设 */}
+                {!isCustomMode && presets.length > 0 && (
+                  <div className="space-y-2">
+                    <div className="text-neutral-300 font-semibold text-xs flex items-center space-x-1">
+                      <GitCompare className="w-3.5 h-3.5 text-sky-400" />
+                      <span>演讲预设一键对比</span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      {presets.map(p => (
+                        <button
+                          key={p.id}
+                          type="button"
+                          onClick={() => handleApplyPreset(p.id)}
+                          disabled={isRunning}
+                          className={`text-left p-2.5 rounded-lg border text-[11px] transition-all ${
+                            activePreset === p.id
+                              ? 'bg-sky-500/20 border-sky-500/50 text-sky-100'
+                              : 'bg-neutral-900 border-neutral-800 text-neutral-300 hover:border-sky-500/40'
+                          }`}
+                        >
+                          <div className="font-bold mb-0.5">{p.label}</div>
+                          <div className="text-neutral-400 leading-snug">{p.blurb}</div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 <div className="space-y-3">
                   <div className="text-neutral-300 font-semibold text-xs flex items-center space-x-1">
                     <Settings2 className="w-3.5 h-3.5 text-amber-400" />
                     <span>微观动力学调节滑块</span>
                   </div>
-
                   {Object.entries(params).map(([key, val]) => (
                     <div key={key} className="p-2.5 rounded bg-neutral-900 border border-neutral-800 space-y-1">
                       <div className="flex justify-between text-[11px]">
                         <span className="font-mono text-neutral-300">{key}</span>
-                        <span className="font-mono text-amber-400 font-semibold">{val}</span>
+                        <span className="font-mono text-amber-400 font-semibold">{String(val)}</span>
                       </div>
                       <input
                         type="range"
-                        min={typeof val === 'number' && val <= 1 ? "0.05" : "10"}
-                        max={typeof val === 'number' && val <= 1 ? "1.0" : "100"}
-                        step={typeof val === 'number' && val <= 1 ? "0.05" : "5"}
-                        value={val}
+                        min={typeof val === 'number' && val <= 2 ? '0.05' : '10'}
+                        max={typeof val === 'number' && val <= 2 ? '2.0' : '100'}
+                        step={typeof val === 'number' && val <= 2 ? '0.05' : '5'}
+                        value={Number(val)}
                         onChange={(e) => handleParamChange(key, parseFloat(e.target.value))}
                         className="w-full accent-amber-500 cursor-pointer h-1 bg-neutral-800 rounded-lg appearance-none"
                       />
                     </div>
                   ))}
                 </div>
-
-                <div className="p-3 rounded-lg bg-amber-950/20 border border-amber-900/30 text-[11px] text-amber-300/90 leading-relaxed">
-                  💡 提示：拖动滑块后点击“运行沙盘仿真”，观察右侧相变界面的分叉、基尼系数剧变或吸引盆爆破。
-                </div>
               </div>
             )}
           </div>
         </div>
 
-        {/* Right Column: Dynamic ECharts Visualizer & Summary Logs */}
-        <div className="w-full lg:w-7/12 flex flex-col bg-neutral-950 overflow-hidden">
-          {/* Chart Container */}
-          <div className="flex-1 min-h-[340px] p-2 bg-neutral-950">
+        <div className="flex-1 flex flex-col bg-neutral-950 overflow-hidden">
+          <div className="px-3 py-2 border-b border-neutral-800 flex items-center space-x-2 text-xs text-neutral-400">
+            <ChartIcon className="w-3.5 h-3.5 text-amber-400" />
+            <span>动力学相变图谱 / 指标卡</span>
+          </div>
+          <div className="flex-1 p-2 min-h-[280px]">
             {runResult ? (
-              <ReactECharts
-                option={getEChartsOption()}
-                style={{ height: '100%', width: '100%' }}
-                opts={{ renderer: 'canvas' }}
-              />
+              <ReactECharts option={getEChartsOption()} style={{ height: '100%', minHeight: 320 }} />
             ) : (
-              <div className="h-full flex items-center justify-center text-neutral-500 text-xs">
-                正在加载图表数据...
-              </div>
+              <div className="h-full flex items-center justify-center text-neutral-500 text-xs">等待运行…</div>
             )}
           </div>
-
-          {/* Bottom Metrics & Micro-History Logs */}
-          <div className="border-t border-neutral-800 bg-neutral-900 p-3 space-y-3">
-            {/* Key Metric Badges */}
-            {runResult && runResult.summaryMetrics && (
-              <div className="grid grid-cols-3 gap-2">
-                {runResult.summaryMetrics.map((m, i) => (
-                  <div key={i} className="p-2 rounded bg-neutral-950 border border-neutral-800">
-                    <div className="text-[10px] text-neutral-400">{m.label}</div>
-                    <div className="text-sm md:text-base font-bold text-amber-400 font-mono mt-0.5">
-                      {m.value}
-                    </div>
-                    {m.change && (
-                      <div className="text-[10px] text-neutral-500 mt-0.5">{m.change}</div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {/* Micro-Historical Deep Description Logs */}
-            {runResult && runResult.agentLogs && runResult.agentLogs.length > 0 && (
-              <div className="p-2.5 rounded bg-neutral-950 border border-neutral-800 text-[11px] space-y-1">
-                <div className="font-semibold text-neutral-300 flex items-center space-x-1">
-                  <Terminal className="w-3 h-3 text-amber-400" />
-                  <span>内循环微观史学深描日志 (Hermeneutic Logs)</span>
+          {runResult && (
+            <div className="border-t border-neutral-800 p-3 grid grid-cols-1 md:grid-cols-3 gap-2">
+              {runResult.summaryMetrics.map((m, i) => (
+                <div key={i} className="p-2 rounded-lg bg-neutral-900 border border-neutral-800 text-[11px]">
+                  <div className="text-neutral-400">{m.label}</div>
+                  <div className="text-neutral-100 font-semibold mt-0.5">{m.value}</div>
+                  {m.change && <div className="text-amber-400/80 text-[10px] mt-0.5">{m.change}</div>}
                 </div>
-                {runResult.agentLogs.map((log, idx) => (
-                  <div key={idx} className="text-neutral-400 font-mono text-[10px] leading-relaxed">
-                    {log}
-                  </div>
-                ))}
+              ))}
+            </div>
+          )}
+          {runResult?.agentLogs?.length ? (
+            <div className="border-t border-neutral-800 p-3 max-h-28 overflow-y-auto text-[10px] text-neutral-400 space-y-1">
+              <div className="flex items-center gap-1 text-neutral-300 font-semibold mb-1">
+                <Terminal className="w-3 h-3" />
+                <span>运行日志</span>
               </div>
-            )}
-          </div>
+              {runResult.agentLogs.map((log, i) => (
+                <div key={i} className="font-mono">· {log}</div>
+              ))}
+            </div>
+          ) : null}
         </div>
       </div>
     </div>

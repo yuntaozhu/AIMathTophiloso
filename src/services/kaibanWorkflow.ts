@@ -1,4 +1,4 @@
-import { Agent, Task, Team } from 'kaibanjs';
+import { Agent } from 'kaibanjs';
 
 export interface WorkflowStatusUpdate {
   step: string;
@@ -22,11 +22,8 @@ export interface EpistemicSynthesisResult {
 }
 
 /**
- * Creates and runs a KaibanJS multi-agent workflow for computable epistemology synthesis.
- * The team consists of three specialized academic agents:
- * 1. Paradigm Theorist (范式学者): Identifies foundational mathematics/physics paradigms.
- * 2. Formalization Architect (形式化架构师): Generates Ontology as Code interfaces.
- * 3. Epistemic Critic (认识论裁判官): Checks for RLHF bias, validates falsifiability.
+ * 规则合成器：按课件关键词生成 Ontology/映射草稿。
+ * 注意：未实际调度 KaibanJS Task/Team；输出为模板规则，非多智能体真裁决。
  */
 export async function runKaibanEpistemicWorkflow(
   slide: {
@@ -53,9 +50,9 @@ export async function runKaibanEpistemicWorkflow(
     });
   };
 
-  addStep('KaibanJS 编排调度器', '初始化多智能体学术团队 (KaibanJS Team)', 'running', '装载 3 个专业角色并分配依赖图谱');
+  addStep('规则合成调度器', '装载模板规则图谱（非 KaibanJS Team 真运行）', 'running', '按课件关键词匹配预设范式');
 
-  // Agent 1: Paradigm Theorist
+  // Agent instances kept for API surface compatibility; not executed via Task/Team
   const paradigmTheorist = new Agent({
     name: '范式认知学者 (Paradigm Theorist)',
     role: '跨域数学哲学与相变理论家',
@@ -63,7 +60,6 @@ export async function runKaibanEpistemicWorkflow(
     background: '精通哈维·弗里德曼逆向数学、邓煜无穷维相空间奇异性理论、Bourgain测度及布克马斯特流体爆破。坚决排斥庸俗隐喻，要求严格本征谱与相界对应。'
   });
 
-  // Agent 2: Formalization Architect
   const formalizationArchitect = new Agent({
     name: '形式化架构师 (Formalization Architect)',
     role: 'Ontology as Code 与 BDI 状态机设计专家',
@@ -71,7 +67,6 @@ export async function runKaibanEpistemicWorkflow(
     background: '精通 Joon Park 生成式智能体微架构、BDI状态机、马基雅维利博弈注入以及存量硬约束建模。拒绝老好人偏置。'
   });
 
-  // Agent 3: Epistemic Critic
   const epistemicCritic = new Agent({
     name: '认识论裁判官 (Epistemic Critic)',
     role: '逻辑一致性与机器证伪裁判',
@@ -79,9 +74,14 @@ export async function runKaibanEpistemicWorkflow(
     background: '严苛的分析哲学与可计算认知批评家，坚持以 Lean 4 / 沙盒模拟可复现性为唯一真理检验标准。'
   });
 
-  addStep('范式认知学者', `解析 Slide P.${slide.index} 《${slide.title}》数理底层`, 'completed', `关键词提取: ${(slide.keywords || []).join(', ') || '可计算认识论'}`);
-  addStep('形式化架构师', '构建面向对象的本体论代码接口 (Ontology as Code)', 'completed', '注入马基雅维利自利偏置与资源硬约束状态矩阵');
-  addStep('认识论裁判官', '执行反中庸偏置审核与可证伪性裁决', 'completed', '通过：命题具备有限步长内的数值或相变可证伪性');
+  void paradigmTheorist;
+  void formalizationArchitect;
+  void epistemicCritic;
+  void queryContext;
+
+  addStep('范式模板', `解析 Slide P.${slide.index} 《${slide.title}》`, 'completed', `关键词: ${(slide.keywords || []).join(', ') || '可计算认识论'}`);
+  addStep('形式化模板', '生成 Ontology as Code 接口草稿', 'completed', '规则匹配，非 LLM 多智能体协商');
+  addStep('说明写入', '标注「草稿 / 未机器证伪」', 'completed', '禁止宣称已通过形式化审定');
 
   // Synthesize tailored deep analysis based on slide topics
   let paradigm = "非线性偏微分方程中心稳定流形与余维数相变";
@@ -176,11 +176,11 @@ export interface ComputableEpistemicNode<TState, TEvent> {
     slideTitle: slide.title,
     sectionTitle: slide.sectionTitle,
     paradigm,
-    formalAnalysis: `已通过 KaibanJS 多智能体工作流对第 ${slide.index} 页《${slide.title}》完成全景编排：\n- 核心范式识别：${paradigm}\n- 关联命题数：${(slide.bullets || []).length} 条要点均已绑定至形式化约束\n- 机器可证伪性：已建立状态转移映射与相界判决标准`,
+    formalAnalysis: `已通过规则合成器对第 ${slide.index} 页《${slide.title}》生成草稿：\n- 核心范式识别：${paradigm}\n- 关联命题数：${(slide.bullets || []).length} 条\n- 性质：模板匹配草稿，非 Lean/沙盒真证伪`,
     crossDomainMapping,
     ontologyCode,
     bdiSimulationSuggestion: bdiSuggestion,
-    verificationVerdict: "【KaibanJS 认识论裁判官 审定】通过。该命题已摆脱纯文本静止注疏，具备明确的高维拓扑映射与面向对象代码化接口，杜绝了 RLHF 中庸偏置。",
+    verificationVerdict: "【规则合成器说明】本输出为课件关键词匹配的接口/映射草稿，未经过 KaibanJS Task/Team 真调度，也未完成形式化或数值证伪。请用沙盒模板做真调参对比。",
     workflowSteps: steps
   };
 }

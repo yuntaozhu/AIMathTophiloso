@@ -11,6 +11,7 @@ import { SeminarMinutesModal } from './components/SeminarMinutesModal';
 import { PresenterAgendaToast } from './components/PresenterAgendaToast';
 import { buildAnchoredQuery } from './utils/discussionAnchor';
 import { getPresenterPaceHint } from './data/presenterPaceHints';
+import { resolveSandboxTemplateId } from './data/sandboxDemoPresets';
 
 export default function App() {
   // Navigation & Sync State
@@ -32,6 +33,7 @@ export default function App() {
   // Code Sandbox Custom Injection
   const [sandboxCustomCode, setSandboxCustomCode] = useState<string | undefined>(undefined);
   const [sandboxCustomTitle, setSandboxCustomTitle] = useState<string | undefined>(undefined);
+  const [sandboxTemplateId, setSandboxTemplateId] = useState<string | undefined>(undefined);
 
   // Anti-Drift State
   const [antiDriftData, setAntiDriftData] = useState<{
@@ -199,13 +201,13 @@ export default function App() {
 
     return `/**
  * ==============================================================================
- * 🏛️ 可计算认识论形式化状态机 (KaibanJS Multi-Agent Pipeline)
+ * 🏛️ 规则合成器 · Ontology 接口草稿
  * ==============================================================================
  * 幻灯片编号   : Slide P.${workflowResult.slideIndex}
  * 议题名称     : 《${workflowResult.slideTitle || '学术研讨'}》
  * 所属板块     : ${workflowResult.sectionTitle || '核心研讨'}
  * 核心理论范式 : ${workflowResult.paradigm || '可计算认识论'}
- * 认识论裁判   : ${workflowResult.verificationVerdict || '已通过机器可证伪性检验'}
+ * 合成说明     : ${workflowResult.verificationVerdict || '草稿 · 未机器证伪'}
  * 序列化时间戳 : ${new Date().toISOString()}
  * ==============================================================================
  */
@@ -288,7 +290,8 @@ export class KaibanStateMachineRunner {
 
         // 4. 确保 CodeSandbox 的 customCode 属性能够完全接收结构化数据
         setSandboxCustomCode(structuredCode);
-        setSandboxCustomTitle(`KaibanJS P.${currentSlideIndex} 《${currentSlide.title}》状态机模型`);
+        setSandboxCustomTitle(`规则合成 P.${currentSlideIndex} 《${currentSlide.title}》接口草稿`);
+        setSandboxTemplateId(undefined);
         
         // 5. 状态检查完成，开启沙盒加载许可
         setIsSandboxCodeSerialized(true);
@@ -296,9 +299,9 @@ export class KaibanStateMachineRunner {
         // Also inject into discussion message stream
         const workflowMsg: ChatMessage = {
           id: `kaiban-${Date.now()}`,
-          sender: 'KaibanJS 多智能体协同流水线',
+          sender: '规则合成器（模板编排）',
           role: 'sandbox_compiler',
-          content: `### 🎯 KaibanJS 多智能体工作流执行完毕（Slide P.${currentSlideIndex}）\n\n**理论范式**：${data.result.paradigm}\n\n**认识论跨域映射**：\n${data.result.crossDomainMapping}\n\n**终审可证伪裁决**：\n${data.result.verificationVerdict}`,
+          content: `### 规则合成完成（Slide P.${currentSlideIndex}）\n\n**理论范式**：${data.result.paradigm}\n\n**跨域映射草稿**：\n${data.result.crossDomainMapping}\n\n**说明**：${data.result.verificationVerdict}\n\n> 导入沙盒后为**可视化预览**，非真执行。真调参请用本页深链模板。`,
           timestamp: new Date().toLocaleTimeString(),
           slideIndex: currentSlideIndex,
           sandboxCode: structuredCode
@@ -550,13 +553,46 @@ export class KaibanStateMachineRunner {
     }
   };
 
-  // Send generated code directly to Code Sandbox
+  // Send generated code directly to Code Sandbox (preview path)
   const handleSendToSandbox = (code: string, title?: string) => {
     if (code && typeof code === 'string' && code.trim().length > 0) {
+      setSandboxTemplateId(undefined);
       setSandboxCustomCode(code);
       setSandboxCustomTitle(title);
       setIsSandboxCodeSerialized(true);
       setActiveTab('sandbox');
+    }
+  };
+
+  /** P2-1：课件页一键打开对应真仿真模板 */
+  const handleOpenSandboxTemplate = (templateId?: string) => {
+    const id = templateId || resolveSandboxTemplateId(currentSlideIndex);
+    if (!id) {
+      setActiveTab('sandbox');
+      return;
+    }
+    setSandboxCustomCode(undefined);
+    setSandboxCustomTitle(undefined);
+    setSandboxTemplateId(id);
+    setIsSandboxCodeSerialized(true);
+    setActiveTab('sandbox');
+  };
+
+  /** P2-3：调参结论写入研讨流 */
+  const handleSandboxRunComplete = (summaryMarkdown: string) => {
+    const msg: ChatMessage = {
+      id: `sandbox-run-${Date.now()}`,
+      sender: '沙盒调参记录',
+      role: 'sandbox_compiler',
+      content: summaryMarkdown,
+      timestamp: new Date().toLocaleTimeString(),
+      slideIndex: currentSlideIndex,
+      responseSource: 'live_ai'
+    };
+    if (socketRef.current) {
+      socketRef.current.emit('chat:send', msg);
+    } else {
+      setMessages(prev => [...prev, msg]);
     }
   };
 
@@ -626,6 +662,7 @@ export class KaibanStateMachineRunner {
               barrageMessages={messages.filter(m => m.isBarrage)}
               barrageEnabled={barrageEnabled}
               onSendToSandbox={handleSendToSandbox}
+              onOpenSandboxTemplate={handleOpenSandboxTemplate}
               onQuickAsk={handleQuickAskQuestion}
             />
           ) : (
@@ -635,10 +672,10 @@ export class KaibanStateMachineRunner {
                 <div className="p-6 rounded-xl bg-neutral-900 border border-neutral-800 shadow-2xl flex flex-col items-center space-y-3 max-w-md text-center">
                   <div className="w-8 h-8 rounded-full border-2 border-indigo-500 border-t-transparent animate-spin" />
                   <div className="font-semibold text-neutral-100 text-sm">
-                    正在执行 KaibanJS 状态机结构化序列化...
+                    正在执行规则合成与结构化序列化...
                   </div>
                   <p className="text-xs text-neutral-400 leading-relaxed">
-                    状态检查进行中：正在对 Slide P.{currentSlideIndex} 生成的 BDI 状态机进行语法完整性与本体论接口序列化校验，确保沙盒完整接收结构化代码。
+                    正在根据 Slide P.{currentSlideIndex} 生成接口草稿（预览用，非真执行）。
                   </p>
                 </div>
               </div>
@@ -646,7 +683,10 @@ export class KaibanStateMachineRunner {
               <CodeSandbox
                 customCode={sandboxCustomCode}
                 customTitle={sandboxCustomTitle}
+                initialTemplateId={sandboxTemplateId}
+                slideIndex={currentSlideIndex}
                 onClose={() => setActiveTab('presentation')}
+                onRunComplete={handleSandboxRunComplete}
               />
             )
           )}

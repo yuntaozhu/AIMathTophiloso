@@ -19,6 +19,7 @@ import { SEMINAR_SLIDES } from '../data/slides';
 import { PresenterStudyNotesModal } from './PresenterStudyNotesModal';
 import { getPresenterStudyNote } from '../data/presenterNotes';
 import { getPresenterPaceHint, toolLabel } from '../data/presenterPaceHints';
+import { resolveSandboxTemplateId } from '../data/sandboxDemoPresets';
 
 const PACE_STYLE: Record<string, string> = {
   '开场': 'bg-sky-500/15 text-sky-300 border-sky-500/40',
@@ -41,6 +42,7 @@ interface PresentationViewerProps {
   barrageMessages: ChatMessage[];
   barrageEnabled: boolean;
   onSendToSandbox?: (code: string, title?: string) => void;
+  onOpenSandboxTemplate?: (templateId?: string) => void;
   onQuickAsk?: (question: string) => void;
 }
 
@@ -56,6 +58,7 @@ export const PresentationViewer: React.FC<PresentationViewerProps> = ({
   barrageMessages,
   barrageEnabled,
   onSendToSandbox,
+  onOpenSandboxTemplate,
   onQuickAsk
 }) => {
   const [laserActive, setLaserActive] = useState<boolean>(false);
@@ -71,6 +74,7 @@ export const PresentationViewer: React.FC<PresentationViewerProps> = ({
   const currentStudyNote = getPresenterStudyNote(currentSlide);
   const paceHint = getPresenterPaceHint(currentIndex);
   const paceTool = toolLabel(paceHint.tool);
+  const linkedSandboxId = resolveSandboxTemplateId(currentIndex);
 
   // KaTeX formula renderer helper
   const renderFormula = (latexStr: string) => {
@@ -253,13 +257,25 @@ export const PresentationViewer: React.FC<PresentationViewerProps> = ({
           </div>
         </div>
 
-        {/* 主讲节奏提示条（P0-5） */}
-        <div className="mt-2 flex items-start gap-2 text-[11px] text-neutral-400 bg-neutral-900/50 border border-neutral-800/80 rounded-lg px-2.5 py-1.5">
-          <Lightbulb className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
-          <p className="leading-relaxed">
-            <span className="text-neutral-300 font-medium">{paceHint.pace}：</span>
-            {paceHint.tip}
-          </p>
+        {/* 主讲节奏提示条（P0-5）+ 沙盒深链（P2-1） */}
+        <div className="mt-2 flex flex-col sm:flex-row sm:items-center gap-2 text-[11px] text-neutral-400 bg-neutral-900/50 border border-neutral-800/80 rounded-lg px-2.5 py-1.5">
+          <div className="flex items-start gap-2 flex-1 min-w-0">
+            <Lightbulb className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
+            <p className="leading-relaxed">
+              <span className="text-neutral-300 font-medium">{paceHint.pace}：</span>
+              {paceHint.tip}
+            </p>
+          </div>
+          {linkedSandboxId && onOpenSandboxTemplate && (
+            <button
+              type="button"
+              onClick={() => onOpenSandboxTemplate(linkedSandboxId)}
+              className="shrink-0 self-start sm:self-center px-2.5 py-1 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white text-[10px] font-bold border border-indigo-400/40"
+              title={`打开模板 ${linkedSandboxId}`}
+            >
+              一键打开本页沙盒
+            </button>
+          )}
         </div>
 
         {/* Slide Main Content Area */}

@@ -411,8 +411,8 @@ export const SeminarChatPanel: React.FC<SeminarChatPanelProps> = ({
                       isGuardian ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' :
                       'bg-indigo-500/20 text-indigo-400 border border-indigo-500/30'
                     }`}>
-                      {isEpistemic ? '深度认知引擎 (Gemini)' :
-                       isGuardian ? '议程管理 (Doubao)' : '沙盘编译 (KaibanJS/BDI)'}
+                      {isEpistemic ? '深度认知引擎' :
+                       isGuardian ? '议程管理' : '沙盘 / 规则合成'}
                     </span>
                   )}
                   <span className="font-medium text-neutral-300">{msg.sender}</span>

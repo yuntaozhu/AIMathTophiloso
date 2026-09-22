@@ -249,12 +249,12 @@ export const CognitiveEngineSyncPanel: React.FC<CognitiveEngineSyncPanelProps> =
         </div>
       )}
 
-      {/* 2. KaibanJS Multi-Agent Workflow Orchestration Section */}
+      {/* 2. 规则合成器（原 Kaiban 叙事收敛） */}
       <div className="p-3 bg-neutral-950/80 rounded-xl border border-indigo-500/30 space-y-2.5">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-1.5 text-xs font-semibold text-neutral-200">
             <Workflow className="w-3.5 h-3.5 text-indigo-400" />
-            <span>KaibanJS 多智能体协同流水线</span>
+            <span>规则合成器（课件 → 接口草稿）</span>
           </div>
           <button
             onClick={onTriggerWorkflow}
@@ -262,26 +262,26 @@ export const CognitiveEngineSyncPanel: React.FC<CognitiveEngineSyncPanelProps> =
             className="flex items-center space-x-1 px-2.5 py-1 rounded-md bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white font-medium text-[11px] shadow-sm transition-all"
           >
             <Zap className={`w-3 h-3 ${isRunningWorkflow ? 'animate-spin' : ''}`} />
-            <span>{isRunningWorkflow ? '编排中...' : '编排本页多智能体'}</span>
+            <span>{isRunningWorkflow ? '合成中...' : '生成本页草稿'}</span>
           </button>
         </div>
 
         <p className="text-[10px] text-neutral-400 leading-normal">
-          利用 <strong>KaibanJS</strong> 统一调度【范式学者】、【形式化架构师】与【认识论裁判官】三阶协同工作流，针对当前课件进行反中庸偏置审查与机器可证伪性推演。
+          按课件关键词匹配预设范式与 Ontology 接口草稿。<strong>不是</strong> KaibanJS 真多智能体裁决；真调参请用「一键打开本页沙盒」。
         </p>
 
         {/* Workflow steps visualizer */}
         {kaibanWorkflow && (
           <div className="space-y-2 mt-2 pt-2 border-t border-neutral-800">
             <div className="text-[10px] font-semibold text-indigo-300 flex items-center space-x-1">
-              <CheckCircle2 className="w-3 h-3 text-emerald-400" />
-              <span>智能体协同执行图谱 (Team Status)：</span>
+              <CheckCircle2 className="w-3 h-3 text-amber-400" />
+              <span>合成步骤（规则模板）：</span>
             </div>
 
             <div className="space-y-1.5">
               {kaibanWorkflow.workflowSteps.map((step, idx) => (
                 <div key={idx} className="p-1.5 bg-neutral-900 rounded border border-neutral-800 flex items-start space-x-1.5 text-[10px]">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1 shrink-0" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 mt-1 shrink-0" />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between">
                       <span className="font-semibold text-neutral-200">{step.agent}</span>
@@ -297,8 +297,8 @@ export const CognitiveEngineSyncPanel: React.FC<CognitiveEngineSyncPanelProps> =
             </div>
 
             {/* Verdict */}
-            <div className="p-2 bg-neutral-900 rounded border border-indigo-500/20 text-[10px] text-neutral-300">
-              <span className="font-semibold text-indigo-400 block mb-0.5">终审裁决：</span>
+            <div className="p-2 bg-neutral-900 rounded border border-amber-500/20 text-[10px] text-neutral-300">
+              <span className="font-semibold text-amber-400 block mb-0.5">合成说明（非审定）：</span>
               <p className="leading-relaxed">{kaibanWorkflow.verificationVerdict}</p>
             </div>
 
@@ -307,12 +307,12 @@ export const CognitiveEngineSyncPanel: React.FC<CognitiveEngineSyncPanelProps> =
               <div className="pt-1">
                 <button
                   onClick={() => {
-                    onSendToSandbox(kaibanWorkflow.ontologyCode, `KaibanJS P.${currentSlide.index} 《${currentSlide.title}》状态机模型`);
+                    onSendToSandbox(kaibanWorkflow.ontologyCode, `规则合成 P.${currentSlide.index} 《${currentSlide.title}》接口草稿`);
                   }}
                   className="w-full flex items-center justify-center space-x-1.5 py-1.5 px-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium border border-indigo-400/40 text-[11px] shadow-sm transition-all"
                 >
                   <Play className="w-3 h-3 text-amber-300" />
-                  <span>将 KaibanJS 生成的状态机导入代码沙盒并执行</span>
+                  <span>导入沙盒作可视化预览（非真执行）</span>
                 </button>
               </div>
             )}
