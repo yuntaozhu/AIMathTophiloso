@@ -1,13 +1,16 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { SEMINAR_SLIDES } from './data/slides';
-import { ChatMessage, AgentRole, SlideItem, SlideEpistemicInsight, KaibanWorkflowResult, Citation } from './types';
+import { ChatMessage, AgentRole, SlideItem, SlideEpistemicInsight, KaibanWorkflowResult, Citation, DiscussionTag, ResponseSource } from './types';
 import { HeaderBar } from './components/HeaderBar';
 import { PresentationViewer } from './components/PresentationViewer';
 import { SeminarChatPanel } from './components/SeminarChatPanel';
 import { CodeSandbox } from './components/CodeSandbox';
 import { KnowledgeBaseExplorer } from './components/KnowledgeBaseExplorer';
 import { SeminarMinutesModal } from './components/SeminarMinutesModal';
+import { PresenterAgendaToast } from './components/PresenterAgendaToast';
+import { buildAnchoredQuery } from './utils/discussionAnchor';
+import { getPresenterPaceHint } from './data/presenterPaceHints';
 
 export default function App() {
   // Navigation & Sync State
@@ -41,8 +44,9 @@ export default function App() {
 
   // Minutes text
   const [minutesText, setMinutesText] = useState<string>('');
-  const [minutesSource, setMinutesSource] = useState<string | undefined>(undefined);
+  const [minutesSource, setMinutesSource] = useState<ResponseSource | undefined>(undefined);
   const [isGeneratingMinutes, setIsGeneratingMinutes] = useState<boolean>(false);
+  const [showAgendaToast, setShowAgendaToast] = useState<boolean>(false);
 
   // Slide-Synchronized Cognitive Engine State
   const [slideInsight, setSlideInsight] = useState<SlideEpistemicInsight | null>(null);
@@ -364,7 +368,12 @@ export class KaibanStateMachineRunner {
   };
 
   // Send message and trigger AI workflow
-  const handleSendMessage = async (content: string, role: AgentRole, isBarrage: boolean) => {
+  const handleSendMessage = async (
+    content: string,
+    role: AgentRole,
+    isBarrage: boolean,
+    meta?: { discussionTag?: DiscussionTag }
+  ) => {
     const userMsgId = `usr-${Date.now()}`;
     const userMsg: ChatMessage = {
       id: userMsgId,
@@ -374,7 +383,8 @@ export class KaibanStateMachineRunner {
       timestamp: new Date().toLocaleTimeString(),
       slideIndex: currentSlideIndex,
       highlightedText: highlightedText || undefined,
-      isBarrage
+      isBarrage,
+      discussionTag: meta?.discussionTag
     };
 
     // Emit via WebSocket to all connected peers
@@ -386,6 +396,13 @@ export class KaibanStateMachineRunner {
 
     setIsLoadingAi(true);
 
+    const anchoredQuery = buildAnchoredQuery(
+      content,
+      currentSlide,
+      highlightedText,
+      meta?.discussionTag
+    );
+
     try {
       if (role === 'deep_epistemic') {
         // Call Gemini Deep Epistemic Engine with RAG
@@ -393,7 +410,7 @@ export class KaibanStateMachineRunner {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            query: content,
+            query: anchoredQuery,
             slideIndex: currentSlideIndex,
             highlightedText: highlightedText || null
           })
@@ -423,18 +440,26 @@ export class KaibanStateMachineRunner {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             slideIndex: currentSlideIndex,
-            currentDiscussion: content,
+            currentDiscussion: anchoredQuery,
             recentMessages: messages.slice(-5)
           })
         });
         const data = await res.json();
         setAntiDriftData(data);
+        if (isPresenter && (data.isDrifting || data.driftScore > 45)) {
+          setShowAgendaToast(true);
+        }
+
+        // 参会侧：短摘要；主讲侧：仍保留完整记录在消息流，Toast 另给收束建议
+        const guardianContent = isPresenter
+          ? `**【主讲收束建议】** 偏移 ${data.driftScore}%\n${data.reason}\n\n→ ${data.guidingQuestion}`
+          : `**【议程提示】** 偏移 ${data.driftScore}% · ${data.reason}`;
 
         const aiMsg: ChatMessage = {
           id: `guardian-${Date.now()}`,
           sender: '议程管理智能体 (Doubao)',
           role: 'agenda_guardian',
-          content: `**【议程分析报告】**\n- **议程偏移指数**：${data.driftScore}%\n- **议题对齐研判**：${data.reason}\n- **引导性学术追问**：${data.guidingQuestion}\n- **弹幕摘要**：${data.barrageSummary}`,
+          content: guardianContent,
           timestamp: new Date().toLocaleTimeString(),
           slideIndex: currentSlideIndex,
           antiDriftAlert: data,
@@ -451,7 +476,7 @@ export class KaibanStateMachineRunner {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            promptText: content,
+            promptText: anchoredQuery,
             slideIndex: currentSlideIndex
           })
         });
@@ -492,6 +517,9 @@ export class KaibanStateMachineRunner {
       });
       const data = await res.json();
       setAntiDriftData(data);
+      if (isPresenter && (data.isDrifting || data.driftScore > 45)) {
+        setShowAgendaToast(true);
+      }
     } catch (err) {
       console.error(err);
     }
@@ -643,6 +671,7 @@ export class KaibanStateMachineRunner {
           isRunningWorkflow={isRunningWorkflow}
           onTriggerKaibanWorkflow={handleTriggerKaibanWorkflow}
           onNavigateSlide={handleNavigateSlide}
+          isPresenter={isPresenter}
         />
       </div>
 
@@ -659,9 +688,29 @@ export class KaibanStateMachineRunner {
         isOpen={isMinutesModalOpen}
         onClose={() => setIsMinutesModalOpen(false)}
         minutesText={minutesText}
-        minutesSource={minutesSource as any}
+        minutesSource={minutesSource}
         isGenerating={isGeneratingMinutes}
         onRegenerate={handleRegenerateMinutes}
+      />
+
+      <PresenterAgendaToast
+        open={Boolean(isPresenter && showAgendaToast && antiDriftData)}
+        driftScore={antiDriftData?.driftScore ?? 0}
+        reason={antiDriftData?.reason || ''}
+        guidingQuestion={antiDriftData?.guidingQuestion || ''}
+        suggestSlideHint={
+          getPresenterPaceHint(currentSlideIndex).pace === '共议'
+            ? '当前为共议卡点页，优先回收「异议」标签发言。'
+            : '可回到最近共议页（如 P.14 / 26 / 37）收束。'
+        }
+        onDismiss={() => setShowAgendaToast(false)}
+        onAskGuiding={() => {
+          if (!antiDriftData?.guidingQuestion) return;
+          setShowAgendaToast(false);
+          handleSendMessage(antiDriftData.guidingQuestion, 'deep_epistemic', false, {
+            discussionTag: '追问'
+          });
+        }}
       />
     </div>
   );

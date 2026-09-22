@@ -8,6 +8,9 @@ export type ResponseSource =
   | 'cache'
   | 'unverified_fallback';
 
+/** 共议弹幕/发言快捷标签（P1-4） */
+export type DiscussionTag = '异议' | '追问' | '补充';
+
 export interface SlideItem {
   index: number;
   sectionNumber?: number;
@@ -47,6 +50,7 @@ export interface ChatMessage {
   sandboxCode?: string;
   simulationConfig?: SimulationConfig;
   responseSource?: ResponseSource;
+  discussionTag?: DiscussionTag;
   antiDriftAlert?: {
     isDrifting: boolean;
     reason: string;

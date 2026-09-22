@@ -137,6 +137,7 @@ io.on("connection", (socket) => {
     simulationConfig?: any;
     antiDriftAlert?: any;
     responseSource?: string;
+    discussionTag?: string;
     timestamp?: string;
   }) => {
     const newMsg = {
@@ -152,7 +153,8 @@ io.on("connection", (socket) => {
       sandboxCode: msg.sandboxCode,
       simulationConfig: msg.simulationConfig,
       antiDriftAlert: msg.antiDriftAlert,
-      responseSource: msg.responseSource
+      responseSource: msg.responseSource,
+      discussionTag: msg.discussionTag
     };
 
     io.emit("chat:received", newMsg);

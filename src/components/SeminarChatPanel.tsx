@@ -19,18 +19,27 @@ import {
   Network,
   X
 } from 'lucide-react';
-import { ChatMessage, AgentRole, SlideItem, SlideEpistemicInsight, KaibanWorkflowResult, Citation } from '../types';
+import { ChatMessage, AgentRole, SlideItem, SlideEpistemicInsight, KaibanWorkflowResult, Citation, DiscussionTag } from '../types';
 import { CognitiveEngineSyncPanel } from './CognitiveEngineSyncPanel';
 import { LiteratureOntologyGraph } from './LiteratureOntologyGraph';
 import { RagLiteratureThesis } from '../data/ragLiteratureAnalyzer';
 import { ResponseSourceBadge } from './ResponseSourceBadge';
+import { isDiscussionSlide } from '../data/presenterPaceHints';
+import { formatAnchorChip } from '../utils/discussionAnchor';
 
 /** 弹幕短反馈上限；超长自动降为正式发言 */
 export const BARRAGE_MAX_CHARS = 48;
 
+const DISCUSSION_TAGS: DiscussionTag[] = ['异议', '追问', '补充'];
+
 interface SeminarChatPanelProps {
   messages: ChatMessage[];
-  onSendMessage: (content: string, role: AgentRole, isBarrage: boolean) => void;
+  onSendMessage: (
+    content: string,
+    role: AgentRole,
+    isBarrage: boolean,
+    meta?: { discussionTag?: DiscussionTag }
+  ) => void;
   currentSlide: SlideItem;
   highlightedText: string | null;
   onClearHighlight: () => void;
@@ -44,7 +53,6 @@ interface SeminarChatPanelProps {
     guidingQuestion: string;
     barrageSummary: string;
   } | null;
-  // Deep Cognitive Engine Synchronized Props
   slideInsight: SlideEpistemicInsight | null;
   isLoadingInsight: boolean;
   onRefreshInsight: () => void;
@@ -53,6 +61,7 @@ interface SeminarChatPanelProps {
   isRunningWorkflow: boolean;
   onTriggerKaibanWorkflow: () => void;
   onNavigateSlide?: (slideIndex: number) => void;
+  isPresenter?: boolean;
 }
 
 export const SeminarChatPanel: React.FC<SeminarChatPanelProps> = ({
@@ -72,17 +81,35 @@ export const SeminarChatPanel: React.FC<SeminarChatPanelProps> = ({
   kaibanWorkflow,
   isRunningWorkflow,
   onTriggerKaibanWorkflow,
-  onNavigateSlide
+  onNavigateSlide,
+  isPresenter = false
 }) => {
-  const [panelTab, setPanelTab] = useState<'cognitive_sync' | 'discussion'>('cognitive_sync');
+  const discussionMode = isDiscussionSlide(currentSlide.index);
+  const [panelTab, setPanelTab] = useState<'cognitive_sync' | 'discussion'>(
+    discussionMode ? 'discussion' : 'cognitive_sync'
+  );
   const [inputText, setInputText] = useState<string>('');
   const [selectedAgent, setSelectedAgent] = useState<AgentRole>('deep_epistemic');
   /** 正式发言默认关闭弹幕，避免深讲刷屏（P0-6） */
   const [isBarrageCheck, setIsBarrageCheck] = useState<boolean>(false);
+  const [discussionTag, setDiscussionTag] = useState<DiscussionTag | null>(null);
+  const [tagFilter, setTagFilter] = useState<DiscussionTag | '全部'>('全部');
   const [showOntologyGraph, setShowOntologyGraph] = useState<boolean>(false);
   const [selectedCitationForGraph, setSelectedCitationForGraph] = useState<Citation | null>(null);
   const [activeRagThesis, setActiveRagThesis] = useState<RagLiteratureThesis | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // 进入章末共议页时自动切到研讨池并弱化认知侧栏抢戏（P1-2）
+  useEffect(() => {
+    if (discussionMode) {
+      setPanelTab('discussion');
+    }
+  }, [discussionMode, currentSlide.index]);
+
+  const visibleMessages =
+    tagFilter === '全部'
+      ? messages
+      : messages.filter(m => m.role !== 'user' || m.discussionTag === tagFilter);
 
   const handleOpenOntologyGraph = (citation?: Citation) => {
     if (citation) {
@@ -110,8 +137,19 @@ export const SeminarChatPanel: React.FC<SeminarChatPanelProps> = ({
     if (!inputText.trim() || isLoading) return;
     const text = inputText.trim();
     const asBarrage = isBarrageCheck && text.length <= BARRAGE_MAX_CHARS;
-    onSendMessage(text, selectedAgent, asBarrage);
+    onSendMessage(text, selectedAgent, asBarrage, {
+      discussionTag: discussionTag || undefined
+    });
     setInputText('');
+  };
+
+  const handleQuickTagBarrage = (tag: DiscussionTag) => {
+    setDiscussionTag(tag);
+    setIsBarrageCheck(true);
+    setPanelTab('discussion');
+    if (!inputText.trim()) {
+      setInputText(tag === '异议' ? '不同意当前映射：' : tag === '追问' ? '请问：' : '补充一点：');
+    }
   };
 
   const handleQuickPrompt = (prompt: string) => {
@@ -164,6 +202,44 @@ export const SeminarChatPanel: React.FC<SeminarChatPanelProps> = ({
             <span>多智能体研讨池 ({messages.length})</span>
           </button>
         </div>
+      </div>
+
+      {/* P1-1 锚定条 + P1-2 共议模式横幅 */}
+      <div className="px-2.5 py-1.5 border-b border-neutral-800 bg-neutral-950/80 space-y-1.5">
+        <div className="flex items-center justify-between gap-2 text-[10px]">
+          <span className="px-2 py-0.5 rounded-md bg-sky-500/15 text-sky-300 border border-sky-500/35 font-semibold truncate">
+            {formatAnchorChip(currentSlide.index, currentSlide.title)}
+          </span>
+          {highlightedText && (
+            <button
+              type="button"
+              onClick={onClearHighlight}
+              className="shrink-0 text-amber-400/90 hover:text-amber-300 flex items-center gap-0.5"
+              title="清除高亮锚定"
+            >
+              <Quote className="w-3 h-3" />
+              <span>有高亮</span>
+              <X className="w-3 h-3" />
+            </button>
+          )}
+        </div>
+        {discussionMode && (
+          <div className="flex items-center justify-between gap-2 rounded-lg border border-emerald-500/40 bg-emerald-950/30 px-2 py-1.5">
+            <div className="text-[11px] text-emerald-200 leading-snug">
+              <span className="font-bold">共议模式</span>
+              <span className="text-emerald-400/80"> · 请用标签收集异议；主讲可用议程卫士收束</span>
+            </div>
+            {isPresenter && (
+              <button
+                type="button"
+                onClick={onTriggerAntiDrift}
+                className="shrink-0 px-2 py-0.5 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 text-[10px] font-semibold border border-emerald-500/40"
+              >
+                收集异议体检
+              </button>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Anti-Drift Score & Guiding Question Banner */}
@@ -297,7 +373,26 @@ export const SeminarChatPanel: React.FC<SeminarChatPanelProps> = ({
             </button>
           </div>
 
-          {messages.map((msg) => {
+          {/* P1-4 标签筛选 */}
+          <div className="flex flex-wrap items-center gap-1 mb-1">
+            <span className="text-[10px] text-neutral-500 mr-1">筛选</span>
+            {(['全部', ...DISCUSSION_TAGS] as const).map(tag => (
+              <button
+                key={tag}
+                type="button"
+                onClick={() => setTagFilter(tag)}
+                className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border transition-colors ${
+                  tagFilter === tag
+                    ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
+                    : 'bg-neutral-950 text-neutral-400 border-neutral-800 hover:text-neutral-200'
+                }`}
+              >
+                {tag}
+              </button>
+            ))}
+          </div>
+
+          {visibleMessages.map((msg) => {
             const isUser = msg.role === 'user';
             const isEpistemic = msg.role === 'deep_epistemic';
             const isGuardian = msg.role === 'agenda_guardian';
@@ -323,6 +418,11 @@ export const SeminarChatPanel: React.FC<SeminarChatPanelProps> = ({
                   <span className="font-medium text-neutral-300">{msg.sender}</span>
                   <span className="text-[10px] text-neutral-500">{msg.timestamp}</span>
                   <ResponseSourceBadge source={msg.responseSource} />
+                  {msg.discussionTag && (
+                    <span className="text-[9px] bg-rose-500/20 text-rose-300 border border-rose-500/30 px-1 rounded font-semibold">
+                      {msg.discussionTag}
+                    </span>
+                  )}
                   {msg.isBarrage && (
                     <span className="text-[9px] bg-neutral-800 text-amber-300 px-1 rounded">弹幕</span>
                   )}
@@ -450,6 +550,27 @@ export const SeminarChatPanel: React.FC<SeminarChatPanelProps> = ({
 
       {/* Chat Input Box */}
       <form onSubmit={handleSubmit} className="p-3 border-t border-neutral-800 bg-neutral-950 shrink-0">
+        {/* P1-4 快捷标签 */}
+        <div className="flex flex-wrap items-center gap-1 mb-1.5">
+          <span className="text-[10px] text-neutral-500">标签</span>
+          {DISCUSSION_TAGS.map(tag => (
+            <button
+              key={tag}
+              type="button"
+              onClick={() => {
+                setDiscussionTag(prev => (prev === tag ? null : tag));
+                if (tag === '异议' || tag === '追问') handleQuickTagBarrage(tag);
+              }}
+              className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border transition-colors ${
+                discussionTag === tag
+                  ? 'bg-rose-500/25 text-rose-200 border-rose-500/50'
+                  : 'bg-neutral-900 text-neutral-400 border-neutral-800 hover:text-neutral-200'
+              }`}
+            >
+              {tag}
+            </button>
+          ))}
+        </div>
         <div className="flex items-center justify-between mb-1.5 text-[11px] text-neutral-400">
           <label className="flex items-center space-x-1 cursor-pointer select-none">
             <input

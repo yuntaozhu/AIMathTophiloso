@@ -70,6 +70,11 @@ export function getPresenterPaceHint(slideIndex: number): PresenterPaceHint {
   return HINT_BY_SLIDE[slideIndex] || DEFAULT_HINT;
 }
 
+/** 章末共议卡点页（P1-2） */
+export function isDiscussionSlide(slideIndex: number): boolean {
+  return getPresenterPaceHint(slideIndex).pace === '共议';
+}
+
 export function toolLabel(tool: SuggestedTool): string {
   switch (tool) {
     case 'knowledge_base':

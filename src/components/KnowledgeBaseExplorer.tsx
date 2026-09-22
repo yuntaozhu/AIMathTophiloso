@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { 
   BookOpen, 
   Search, 
@@ -16,7 +16,8 @@ import {
   ChevronDown,
   ChevronUp,
   RotateCcw,
-  Globe
+  Globe,
+  Languages
 } from 'lucide-react';
 import { 
   getAllDocuments, 
@@ -26,6 +27,10 @@ import {
 } from '../data/knowledgeBase';
 import { RAG_THESIS_REGISTRY } from '../data/ragLiteratureAnalyzer';
 import { PhilosophyApiExplorer } from './PhilosophyApiExplorer';
+import { PhilologicalCollationViewer } from './PhilologicalCollationViewer';
+import { ResponseSourceBadge } from './ResponseSourceBadge';
+import { fetchPhilologicalCollation } from '../services/philologyService';
+import { PhilologicalCollation, ResponseSource } from '../types';
 
 interface KnowledgeBaseExplorerProps {
   isOpen: boolean;
@@ -46,6 +51,10 @@ export const KnowledgeBaseExplorer: React.FC<KnowledgeBaseExplorerProps> = ({
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [selectedDocId, setSelectedDocId] = useState<string | null>(null);
   const [refreshTrigger, setRefreshTrigger] = useState<number>(0);
+  const [collation, setCollation] = useState<PhilologicalCollation | null>(null);
+  const [collationSource, setCollationSource] = useState<ResponseSource | null>(null);
+  const [collationLoading, setCollationLoading] = useState<boolean>(false);
+  const [collationWarning, setCollationWarning] = useState<string | null>(null);
 
   // Get dynamic documents pool (including imported ones)
   const currentDocuments = useMemo(() => {
@@ -57,6 +66,67 @@ export const KnowledgeBaseExplorer: React.FC<KnowledgeBaseExplorerProps> = ({
     if (!selectedDocId) return [];
     return findRelatedDocuments(selectedDocId, 3);
   }, [selectedDocId, refreshTrigger]);
+
+  const selectedDoc = useMemo(
+    () => currentDocuments.find(d => d.id === selectedDocId) || null,
+    [currentDocuments, selectedDocId]
+  );
+
+  // P1-5：选中文献时加载多语言对勘；找不到底本显示失败态，不伪装成功
+  useEffect(() => {
+    if (!selectedDoc) {
+      setCollation(null);
+      setCollationSource(null);
+      setCollationWarning(null);
+      return;
+    }
+
+    let cancelled = false;
+    setCollationLoading(true);
+    setCollationWarning(null);
+
+    fetchPhilologicalCollation(selectedDoc)
+      .then(result => {
+        if (cancelled) return;
+        const raw = String(result.source || '');
+        const mapped: ResponseSource =
+          raw === 'local_corpus' || raw === 'authoritative_corpus' || raw === 'curated_corpus'
+            ? 'curated_corpus'
+            : raw === 'live_ai' || raw === 'gemini_scholarly_search'
+              ? 'live_ai'
+              : raw === 'cache'
+                ? 'cache'
+                : 'unverified_fallback';
+        setCollationSource(mapped);
+
+        if (
+          raw === 'fallback' ||
+          raw === 'unverified_fallback' ||
+          raw === 'curated_archetype_fallback'
+        ) {
+          setCollation(null);
+          setCollationWarning(
+            '未找到与该文献匹配的原典对勘底本，已拒绝使用默认康德 CPR 冒充。请换一篇有策展语料的文献，或稍后再试在线检索。'
+          );
+        } else {
+          setCollation(result.collation);
+          setCollationWarning(null);
+        }
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setCollation(null);
+        setCollationSource('unverified_fallback');
+        setCollationWarning('原典对勘检索失败。');
+      })
+      .finally(() => {
+        if (!cancelled) setCollationLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedDoc]);
 
   if (!isOpen) return null;
 
@@ -111,7 +181,7 @@ export const KnowledgeBaseExplorer: React.FC<KnowledgeBaseExplorerProps> = ({
                   动态文献 RAG 知识库与哲学原典系统
                 </h2>
                 <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-mono">
-                  pgvector / embeddings
+                  本地词袋检索
                 </span>
                 <span className="hidden sm:inline text-[10px] px-2 py-0.5 rounded bg-sky-500/20 text-sky-300 font-mono">
                   Top-3 向量相似度推荐
@@ -402,6 +472,32 @@ export const KnowledgeBaseExplorer: React.FC<KnowledgeBaseExplorerProps> = ({
                   {/* ========================================================= */}
                   {isSelected && (
                     <div className="border-t border-amber-500/30 bg-neutral-900/90 p-4 space-y-3 animate-fade-in">
+                      {/* P1-5 多语言原典对勘 */}
+                      <div className="rounded-xl border border-sky-500/30 bg-neutral-950/60 p-3 space-y-2">
+                        <div className="flex items-center gap-1.5 text-xs font-bold text-sky-300">
+                          <Languages className="w-3.5 h-3.5" />
+                          <span>多语言原典对勘</span>
+                          <ResponseSourceBadge source={collationSource} />
+                        </div>
+                        {collationWarning ? (
+                          <div className="text-[11px] text-rose-300 bg-rose-950/40 border border-rose-500/30 rounded-lg px-2.5 py-2 leading-relaxed">
+                            {collationWarning}
+                          </div>
+                        ) : (
+                          <PhilologicalCollationViewer
+                            collation={collation}
+                            isLoading={collationLoading}
+                            docTitle={doc.source_title}
+                            targetSlideIndex={targetSlideInfo?.targetSlideIndex}
+                            onNavigateSlide={onNavigateSlide}
+                            onAskWithCollation={(q) => {
+                              onAskWithDoc(doc.source_title, q);
+                              onClose();
+                            }}
+                          />
+                        )}
+                      </div>
+
                       {/* Section Title & Vector Search Stats */}
                       <div className="flex flex-wrap items-center justify-between gap-2">
                         <div className="flex items-center space-x-2">

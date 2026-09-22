@@ -64,9 +64,9 @@ export async function fetchPhilologicalCollation(
     };
   }
 
-  // Default fallback to Kant CPR
+  // Default fallback to Kant CPR — client must treat as failure for mismatched docs
   return {
     collation: PHILOLOGICAL_CORPUS['doc-kant-cpr'],
-    source: 'fallback'
+    source: 'unverified_fallback'
   };
 }
