@@ -25,6 +25,7 @@ import { getPresenterStudyNote } from '../data/presenterNotes';
 import { getPresenterPaceHint, toolLabel } from '../data/presenterPaceHints';
 import { resolveSandboxTemplateId } from '../data/sandboxDemoPresets';
 import { CORE_DOCUMENTS } from '../data/knowledgeBase';
+import { openMingQingSimulator } from '../sim/mingqing';
 import {
   REHEARSAL_45_STOPS,
   getNextRehearsalStop,
@@ -324,14 +325,27 @@ export const PresentationViewer: React.FC<PresentationViewerProps> = ({
               </button>
             )}
             {linkedSandboxId && onOpenSandboxTemplate && (
-              <button
-                type="button"
-                onClick={() => onOpenSandboxTemplate(linkedSandboxId)}
-                className="shrink-0 self-start sm:self-center px-2.5 py-1 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white text-[10px] font-bold border border-indigo-400/40"
-                title={`打开模板 ${linkedSandboxId}`}
-              >
-                一键打开本页沙盒
-              </button>
+              <>
+                {linkedSandboxId === 'ming-qing-fiscal' && (
+                  <button
+                    type="button"
+                    onClick={() => openMingQingSimulator({ scenario: 'baseline', newTab: true })}
+                    className="shrink-0 self-start sm:self-center inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-violet-600 hover:bg-violet-500 text-white text-[10px] font-bold border border-violet-400/40"
+                    title="打开明清财政动力学 Web 仪表板（三节点 + Harness）"
+                  >
+                    <ExternalLink className="w-3 h-3" />
+                    打开演化仪表板
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={() => onOpenSandboxTemplate(linkedSandboxId)}
+                  className="shrink-0 self-start sm:self-center px-2.5 py-1 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white text-[10px] font-bold border border-indigo-400/40"
+                  title={`打开模板 ${linkedSandboxId}`}
+                >
+                  一键打开本页沙盒
+                </button>
+              </>
             )}
             {(currentIndex >= 80 && currentIndex <= 83 && onOpenHarnessDemo) ||
             (paceHint.tool === 'harness_demo' && onOpenHarnessDemo) ? (

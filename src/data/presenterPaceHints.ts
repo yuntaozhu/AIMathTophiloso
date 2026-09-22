@@ -82,8 +82,8 @@ const HINT_BY_SLIDE: Record<number, PresenterPaceHint> = {
   69: { pace: '沙盒', tool: 'sandbox_rawls', tip: '拧 scarcityShock / machiavellianWeight，对照“结构张力”叙事。' },
   70: { pace: '深讲', tool: 'knowledge_base', tip: '哥德尔本体论：Benzmüller 形式化条目。' },
 
-  78: { pace: '深讲', tool: 'sandbox_mingqing', tip: '明清内卷沙盘背景：预备调参。' },
-  79: { pace: '沙盒', tool: 'sandbox_mingqing', tip: '白银紧缩 → 抗粮；对照余维数-1 叙事。' },
+  78: { pace: '深讲', tool: 'sandbox_mingqing', tip: '点「打开演化仪表板」→ /#/sim/ming-qing；预备对照五场景。' },
+  79: { pace: '沙盒', tool: 'sandbox_mingqing', tip: '仪表板：baseline 播到 1644，再切海运/实物直征。' },
 
   80: { pace: '收束', tool: 'harness_demo', tip: '解释学双循环；可开 Type-3 Harness 示范面板。' },
   82: { pace: '收束', tool: 'none', tip: '意义剩余：必讲伦理刹车。' },

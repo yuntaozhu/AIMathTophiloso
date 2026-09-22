@@ -1,3 +1,5 @@
+import { precomputeTrajectory } from '../sim/mingqing/engine';
+
 export interface SimulationTemplate {
   id: string;
   name: string;
@@ -181,53 +183,54 @@ class HistoricalAgent {
   }
 }`,
     run: (params) => {
-      const shock = Number(params.silverInflowShock || 0.70);
-      const clanProt = Number(params.clansProtectionFactor || 0.60);
-      const corruption = Number(params.bureaucracyCorruption || 0.50);
+      // 轻量沙盒：调用同一套动力学引擎采样关键年份（ESM 静态导入）
+      void params;
+      const result = precomputeTrajectory('baseline');
+      const sampleYears = [1628, 1632, 1636, 1639, 1642, 1644, 1650];
+      const byYear = (y: number) =>
+        result.frames.reduce((best, f) =>
+          Math.abs(f.state.t - y) < Math.abs(best.state.t - y) ? f : best
+        ).state;
 
-      const years = [1620, 1624, 1628, 1632, 1636, 1640, 1644];
-      const peasantSurvival: number[] = [];
-      const stateTaxDeficit: number[] = [];
-      const revoltRisk: number[] = [];
-      const logs: string[] = [];
-      const finalTaxSqueeze = (1.0 + corruption * 0.8) / (1 - clanProt * 0.4);
+      const E: number[] = [];
+      const R: number[] = [];
+      const D: number[] = [];
+      const logs: string[] = result.auditLog
+        .filter(e => e.message.includes('PHASE') || e.blocked || e.gate === 'scenario')
+        .slice(0, 8)
+        .map(e => `[${e.t.toFixed(1)}] ${e.message}`);
 
-      years.forEach((yr, idx) => {
-        const timeFactor = (idx + 1) / years.length;
-        const effectiveSilverPrice = 1.0 + shock * timeFactor * 1.8; // 银贵钱贱
-        const taxSqueeze = finalTaxSqueeze;
-        
-        const survival = Math.max(5, Math.round(100 - (effectiveSilverPrice * 22 * taxSqueeze)));
-        const deficit = Math.min(95, Math.round(15 + timeFactor * 65 + (100 - survival) * 0.3));
-        const revolt = Math.min(100, Math.round(Math.max(0, (45 - survival) * 2.8 + deficit * 0.4)));
-
-        peasantSurvival.push(survival);
-        stateTaxDeficit.push(deficit);
-        revoltRisk.push(revolt);
-
-        if (yr === 1628) {
-          logs.push(`[崇祯元年 1628] 陕北连旱，银价折算飙升140%，宗族包揽隐匿田产，税负彻底转移至赤贫自耕农。`);
-        } else if (yr === 1640) {
-          logs.push(`[崇祯十三年 1640] 漕粮起运阻断，胥吏截留加派三饷，自耕农破产转为游民，流民暴动风险突破临界点！`);
-        }
+      sampleYears.forEach(y => {
+        const s = byYear(y);
+        E.push(Number((s.E_CP * 40).toFixed(1)));
+        R.push(Number((s.R_CP * 100).toFixed(1)));
+        D.push(Number((s.D_LD * 100).toFixed(1)));
       });
 
+      logs.push('完整演化仪表板：/#/sim/ming-qing?scenario=baseline');
+
       return {
-        chartTitle: "明清基层财政雪崩：自耕农存活率与流民抗粮指数 (1620-1644)",
+        chartTitle: "明清财政动力学引擎采样：税负/流民/辽东战力 (1628-1650)",
         chartType: "line",
-        xAxis: { type: "category", data: years.map(y => `${y}年`) },
-        yAxis: [
-          { type: "value", name: "指数 / 比率 (%)", min: 0, max: 100 }
-        ],
+        xAxis: { type: "category", data: sampleYears.map(y => `${y}年`) },
+        yAxis: [{ type: "value", name: "指数", min: 0, max: 120 }],
         series: [
-          { name: "基层小农生存指数", type: "line", data: peasantSurvival, color: "#3b82f6", smooth: true },
-          { name: "国库辽饷亏空率", type: "line", data: stateTaxDeficit, color: "#f97316", smooth: true },
-          { name: "大规模抗粮兵变概率", type: "line", data: revoltRisk, color: "#ef4444", smooth: true }
+          { name: "E_CP 税负(×40)", type: "line", data: E, color: "#fbbf24", smooth: true },
+          { name: "R_CP 流民%", type: "line", data: R, color: "#ef4444", smooth: true },
+          { name: "D_LD 战力%", type: "line", data: D, color: "#a78bfa", smooth: true }
         ],
         summaryMetrics: [
-          { label: "1644年小农生存底线", value: `${peasantSurvival[peasantSurvival.length - 1]}%`, change: "濒临归零" },
-          { label: "基层逃税转移系数", value: finalTaxSqueeze.toFixed(2), change: "极度扭曲" },
-          { label: "相变结论", value: "余维数-1 流形破裂，必然崩盘" }
+          {
+            label: "相变年",
+            value: result.phaseShiftYear != null ? `${result.phaseShiftYear.toFixed(1)}` : '未触发',
+            change: '结构张力'
+          },
+          {
+            label: "坍塌年",
+            value: result.collapseYear != null ? `${result.collapseYear.toFixed(1)}` : '未坍塌',
+            change: 'D_LD→0'
+          },
+          { label: "深链", value: "/#/sim/ming-qing", change: "打开演化仪表板" }
         ],
         agentLogs: logs
       };
