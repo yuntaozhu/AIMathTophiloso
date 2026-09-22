@@ -908,7 +908,7 @@ app.post("/api/harness/run", (req, res) => {
     const run = runHarnessDemo({
       thesis,
       claimClass,
-      slideIndex: Number(slideIndex) || currentSlideIndex || 64
+      slideIndex: Number(slideIndex) || currentSlideIndex || 72
     });
 
     appendSeminarLog({

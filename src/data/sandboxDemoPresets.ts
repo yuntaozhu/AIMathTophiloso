@@ -72,14 +72,14 @@ export const DEMO_PRESETS_BY_TEMPLATE: Record<string, DemoPreset[]> = {
 
 /** 页码 → 沙盒模板 ID（P2-1） */
 export const SLIDE_TO_SANDBOX_TEMPLATE: Record<number, string> = {
-  21: 'pde-codim1-manifold',
-  22: 'pde-codim1-manifold',
-  31: 'stanford-agent-memory',
-  32: 'stanford-agent-memory',
-  52: 'rawls-veil',
-  53: 'rawls-veil',
-  62: 'ming-qing-fiscal',
-  63: 'ming-qing-fiscal'
+  29: 'pde-codim1-manifold',
+  30: 'pde-codim1-manifold',
+  39: 'stanford-agent-memory',
+  40: 'stanford-agent-memory',
+  60: 'rawls-veil',
+  61: 'rawls-veil',
+  70: 'ming-qing-fiscal',
+  71: 'ming-qing-fiscal'
 };
 
 export function resolveSandboxTemplateId(slideIndex: number): string | null {

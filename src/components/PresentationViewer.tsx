@@ -279,7 +279,8 @@ export const PresentationViewer: React.FC<PresentationViewerProps> = ({
               一键打开本页沙盒
             </button>
           )}
-          {currentIndex >= 64 && currentIndex <= 67 && onOpenHarnessDemo && (
+          {(currentIndex >= 72 && currentIndex <= 75 && onOpenHarnessDemo) ||
+          (paceHint.tool === 'harness_demo' && onOpenHarnessDemo) ? (
             <button
               type="button"
               onClick={onOpenHarnessDemo}
@@ -289,7 +290,7 @@ export const PresentationViewer: React.FC<PresentationViewerProps> = ({
               <Shield className="w-3 h-3" />
               Harness 示范
             </button>
-          )}
+          ) : null}
         </div>
 
         {/* Slide Main Content Area */}

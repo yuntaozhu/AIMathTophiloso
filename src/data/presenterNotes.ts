@@ -1,4 +1,5 @@
 import { SlideItem } from '../types';
+import { FRAMING_SLIDES } from './framingSlides';
 
 export interface PresenterStudyNote {
   slideIndex: number;
@@ -11,7 +12,7 @@ export interface PresenterStudyNote {
 }
 
 /**
- * 针对 68 页学术幻灯片的体系化主讲人研究手记知识库（Comprehensive Presenter Study Notes）。
+ * 针对开场论点 + 六大篇章学术幻灯片的体系化主讲人研究手记知识库。
  * 深度解析理论背景、跨域隐喻、逻辑演进脉络与主讲人现场答辩抓手。
  */
 export const PRESENTER_STUDY_NOTES: Record<number, PresenterStudyNote> = {
@@ -42,7 +43,7 @@ export const PRESENTER_STUDY_NOTES: Record<number, PresenterStudyNote> = {
     blackboardPrompt: "演示代码：展示一个 Lean 4 的定理类型声明 `theorem euler_blowup : ∃ t < ∞, ‖ω(t)‖_∞ = ∞`。"
   },
   3: {
-    slideIndex: 3,
+    slideIndex: 11,
     coreThesis: "研讨会议程架构遵循严谨的‘六阶层级跃迁’，从数理底层直通社科现实。",
     epistemicBackground: "认知结构的建立必须具备清晰的因果链条：数学基础（大基数与不完备性） $\\to$ 物理相空间拓扑（邓煜） $\\to$ 编程语言抽象（Ontology as Code） $\\to$ 多智能体博弈（BDI） $\\to$ 哲学思想实验 $\\to$ 制度沙盒落地产出。",
     pedagogicalKeypoints: [
@@ -55,7 +56,7 @@ export const PRESENTER_STUDY_NOTES: Record<number, PresenterStudyNote> = {
     blackboardPrompt: "列出六大篇章关键词，在白板上画出‘认识论阶梯’树状分支。"
   },
   4: {
-    slideIndex: 4,
+    slideIndex: 12,
     coreThesis: "纯数学的认识论跃迁：哈维·弗里德曼如何打破哥德尔不完备性的半个世纪‘心理隔离’。",
     epistemicBackground: "自1931年哥德尔发表不完备性定理以来，主流数学家普遍认为不完备性只是数理逻辑学家用元语言刻意构造的‘病态孤例’（如包含自指语句的算术命题），与经典微积分、代数几何无关。哈维·弗里德曼（Harvey Friedman）用具体数学摧毁了这种侥幸。",
     pedagogicalKeypoints: [
@@ -68,7 +69,7 @@ export const PRESENTER_STUDY_NOTES: Record<number, PresenterStudyNote> = {
     blackboardPrompt: "画出大基数层级梯形图：$\\text{RCA}_0 \\subset \\text{WKL}_0 \\subset \\text{ACA}_0 \\subset \\text{ATR}_0 \\subset \\Pi^1_1\\text{-CA}_0 \\subset \\text{Mahlo}$。"
   },
   9: {
-    slideIndex: 9,
+    slideIndex: 17,
     coreThesis: "严格逆向数学（SRM）宣告反基础主义终结：真理具有不可动摇的客观拓扑实体重量。",
     epistemicBackground: "后现代主义（利奥塔、罗蒂、德里达）倾向于将逻辑与数学视作‘西方中心主义的语言约定’。弗里德曼通过 SRM，在完全剥离预设系统（Zero Base Theory）的前提下证明命题等价，实证了逻辑强度的天然客观性。",
     pedagogicalKeypoints: [
@@ -81,7 +82,7 @@ export const PRESENTER_STUDY_NOTES: Record<number, PresenterStudyNote> = {
     blackboardPrompt: "写出等价性公式：$\\text{Proposition } P \\iff \\text{Axiom System } \\mathcal{A}$ in minimal base theory."
   },
   10: {
-    slideIndex: 10,
+    slideIndex: 18,
     coreThesis: "弗里德曼有理立方体模型（Rational Cube）：以最简朴的有限网格倒影出宏观无穷。",
     epistemicBackground: "在单位立方体 $[0,1]^k \\cap \\mathbb{Q}^k$ 上考察有理点集的仿射变换与下落对称性。初中生都可以听懂定义，但当要求其具有‘极大仿真（Maximal Simulation）’结构时，证明其存在性必须依赖大基数。",
     pedagogicalKeypoints: [
@@ -94,7 +95,7 @@ export const PRESENTER_STUDY_NOTES: Record<number, PresenterStudyNote> = {
     blackboardPrompt: "在白板上画出单位立方体，标注有理点集在保序仿射变换下的投影下落线。"
   },
   11: {
-    slideIndex: 11,
+    slideIndex: 19,
     coreThesis: "下落对称性与大基数的必然遥控：宏观无穷对有限微观的精确统治。",
     epistemicBackground: "证明极大仿真的存在等价于马洛基数（Mahlo Cardinals）。马洛基数是极其庞大的非构造性大基数，常规数学家一生都不会用到。但它却如同物理定律一般统治着有理立方体。",
     pedagogicalKeypoints: [
@@ -107,7 +108,7 @@ export const PRESENTER_STUDY_NOTES: Record<number, PresenterStudyNote> = {
     blackboardPrompt: "对比公式：$\\text{Local Symmetry Invariant} \\iff \\text{Existence of Mahlo Cardinal}$。"
   },
   15: {
-    slideIndex: 15,
+    slideIndex: 23,
     coreThesis: "第二章开启：计算复杂性与拓扑相变，从静态证明走向高维动力学生死搜索。",
     epistemicBackground: "数学与社科的传统研究多局限于‘低维线性近似’。然而真实历史危机与非线性偏微分方程一样，存在无穷维相空间与高余维数流形。",
     pedagogicalKeypoints: [
@@ -120,7 +121,7 @@ export const PRESENTER_STUDY_NOTES: Record<number, PresenterStudyNote> = {
     blackboardPrompt: "画出鞍点流形三维曲面：稳定吸引盆、不稳定流形与中心鞍点。"
   },
   21: {
-    slideIndex: 21,
+    slideIndex: 29,
     coreThesis: "邓煜奇异性理论：余维数-1 中心稳定流形（Codimension-1 Manifold）与爆破分水岭。",
     epistemicBackground: "在半线性非线性偏微分方程相空间中，孤子解 $Q$ 的线性化谱算子 $\\mathcal{L} = -\\Delta - f'(Q)$ 存在唯一的负本征值 $\\lambda_0 < 0$。正是这唯一的负本征模，导致相空间被一张厚度为零的超曲面（余维数 1）劈成两半：一边衰减耗散，一边有限时间爆破。",
     pedagogicalKeypoints: [
@@ -133,7 +134,7 @@ export const PRESENTER_STUDY_NOTES: Record<number, PresenterStudyNote> = {
     blackboardPrompt: "板书算子与相界：$\\mathcal{L} = -\\Delta - f'(Q), \\quad \\lambda_0 < 0, \\quad W^{cs}(Q) \\text{ separates dissipation from blowup}$。"
   },
   23: {
-    slideIndex: 23,
+    slideIndex: 31,
     coreThesis: "布尔甘区域（Bourgain Regime）与历史随机性的正测度相变。",
     epistemicBackground: "菲尔兹奖得主让·布尔甘（Jean Bourgain）开创了将随机初值注入色散偏微分方程的全新范式。证明了即使在几乎处处奇异的粗糙数据集中，奇异相依然占据严格的‘正勒贝格测度’。",
     pedagogicalKeypoints: [
@@ -146,7 +147,7 @@ export const PRESENTER_STUDY_NOTES: Record<number, PresenterStudyNote> = {
     blackboardPrompt: "写出测度公式：$\\mu(\\{ u_0 \\in \\mathcal{H} \\mid T_{\\text{blowup}}(u_0) < \\infty \\}) > 0$。"
   },
   28: {
-    slideIndex: 28,
+    slideIndex: 36,
     coreThesis: "第三章：编程作为可执行认识论界面（Ontology as Code）。",
     epistemicBackground: "社科概念长期受困于自然语言的歧义性与多义性。‘封建’、‘阶级’、‘资本’在不同学者笔下拥有上百种定义，导致学术研讨沦为同义反复。唯一解决方案是：将概念定义为面向对象的强类型接口与时序状态机。",
     pedagogicalKeypoints: [
@@ -159,7 +160,7 @@ export const PRESENTER_STUDY_NOTES: Record<number, PresenterStudyNote> = {
     blackboardPrompt: "现场写一个接口：`interface Agent { endowment: number; rent_seeking_propensity: number; update(): void; }`。"
   },
   31: {
-    slideIndex: 31,
+    slideIndex: 39,
     coreThesis: "斯坦福 Joon Park 生成式智能体微架构拆解：记忆流、三维打分与二阶反思树。",
     epistemicBackground: "Joon Sung Park 等人在2023年发表的 Smallville 小镇模拟，是多智能体社会仿真的里程碑。其核心不是大模型对话，而是外挂的认知记忆流架构。",
     pedagogicalKeypoints: [
@@ -172,7 +173,7 @@ export const PRESENTER_STUDY_NOTES: Record<number, PresenterStudyNote> = {
     blackboardPrompt: "板书检索公式并解析权重：$\\alpha = 1.0, \\beta = 1.0, \\gamma = 1.0$ 的调优敏感性。"
   },
   34: {
-    slideIndex: 34,
+    slideIndex: 42,
     coreThesis: "第四章：社会科学本体论重构，向‘RLHF中庸陷阱’发起全面反击！",
     epistemicBackground: "商用大语言模型（如 ChatGPT、Claude）经过大量人类反馈强化学习（RLHF），被训练成了礼貌、谦逊、甚至过度奉迎的‘老好人’。若直接用这种模型做历史与政治经济学仿真，会导致所有人自愿牺牲、人人互帮互助的荒谬‘理想国’结果。",
     pedagogicalKeypoints: [
@@ -185,7 +186,7 @@ export const PRESENTER_STUDY_NOTES: Record<number, PresenterStudyNote> = {
     blackboardPrompt: "对比两个 Prompt：温和老好人 Prompt vs 注入硬约束的马基雅维利 BDI 规则集。"
   },
   40: {
-    slideIndex: 40,
+    slideIndex: 48,
     coreThesis: "注入马基雅维利自利偏置与资源硬约束的 BDI 状态转移机制。",
     epistemicBackground: "信念（Belief）、欲望（Desire）、意图（Intention）构成了经典 BDI 架构。但在本引擎中，BDI 必须绑定物理资源存量（粮食、银两、土地）。",
     pedagogicalKeypoints: [
@@ -198,7 +199,7 @@ export const PRESENTER_STUDY_NOTES: Record<number, PresenterStudyNote> = {
     blackboardPrompt: "画出状态机转移图：`State: Cooperator` $\\xrightarrow{\\text{Scarcity Shock}}$ `State: Machiavellian Defector`。"
   },
   45: {
-    slideIndex: 45,
+    slideIndex: 53,
     coreThesis: "第五章：哲学思想实验的数字对撞机（Digital Hadron Collider）。",
     epistemicBackground: "两千年来，哲学思想实验（无知之幕、电车难题、缸中之脑、忒修斯之船）全靠文人学者在书斋中‘脑补’推演。由于无法调节连续物理参数，思想实验沦为各说各话的修辞狂欢。",
     pedagogicalKeypoints: [
@@ -211,7 +212,7 @@ export const PRESENTER_STUDY_NOTES: Record<number, PresenterStudyNote> = {
     blackboardPrompt: "绘制坐标系：横轴为匮乏冲击强度 $\\sigma \\in [0, 1]$，纵轴为罗尔斯正义原则遵从率 $P(\\text{compliance})$。"
   },
   48: {
-    slideIndex: 48,
+    slideIndex: 56,
     coreThesis: "罗尔斯‘无知之幕’与差异原则崩溃测试：代码仿真中的雪崩涌现。",
     epistemicBackground: "在代码沙盒中运行 RawlsianContractTest。当揭幕后的资源匮乏指数 $\\sigma > 0.45$ 时，高禀赋智能体与掠夺倾向智能体自发结盟，公然践踏差异原则，基尼系数发生阶跃相变。",
     pedagogicalKeypoints: [
@@ -224,7 +225,7 @@ export const PRESENTER_STUDY_NOTES: Record<number, PresenterStudyNote> = {
     blackboardPrompt: "标注崩溃临界点：$\\sigma_c \\approx 0.45, \\quad \\Delta \\text{Gini} > 0.35$。"
   },
   56: {
-    slideIndex: 56,
+    slideIndex: 64,
     coreThesis: "第六章开启：系统架构与人机闭环实操（Living Lab）。",
     epistemicBackground: "完成理论突破后，如何将这套可计算认识论体系固化为每天可运行的生产力工具？需要‘活体实验室（Living Lab）’技术栈支撑。",
     pedagogicalKeypoints: [
@@ -237,7 +238,7 @@ export const PRESENTER_STUDY_NOTES: Record<number, PresenterStudyNote> = {
     blackboardPrompt: "画出系统拓扑图：Reveal.js 前端 $\\leftrightarrow$ WebSocket 状态总线 $\\leftrightarrow$ KaibanJS 编排 $\\leftrightarrow$ 知识库 RAG & 沙盒。"
   },
   60: {
-    slideIndex: 60,
+    slideIndex: 68,
     coreThesis: "明清基层财政雪崩沙盘：火耗银、加派摊派与流民涌现的非线性相变动力学。",
     epistemicBackground: "以黄仁宇《十六世纪明代中国之财政与税收》及明清江南漕运档案为历史本体依据。明代原额主义财政体制僵化，遭遇小冰期农业减产与辽饷加派，最终引发基层财政向爆破态坍塌。",
     pedagogicalKeypoints: [
@@ -250,7 +251,7 @@ export const PRESENTER_STUDY_NOTES: Record<number, PresenterStudyNote> = {
     blackboardPrompt: "写出流民涌现方程：$\\frac{d R}{d t} = \\theta \\cdot \\max(0, \\text{TaxFlux} - \\text{SubsistenceStock}) - \\gamma R$。"
   },
   67: {
-    slideIndex: 67,
+    slideIndex: 75,
     coreThesis: "解释学双循环（Hermeneutic Dual-Loop）：哲学命题与代码编译器的终极闭环。",
     epistemicBackground: "从狄尔泰（Dilthey）、伽达默尔（Gadamer）的传统人文解释学循环（部分与整体的文本互释），升级为人机交互时代的大闭环：人类哲学提出抽象本体假说 $\\to$ 代码将其操作化 $\\to$ 沙盘运行爆破证伪 $\\to$ 反馈修正人类认识论。",
     pedagogicalKeypoints: [
@@ -263,7 +264,7 @@ export const PRESENTER_STUDY_NOTES: Record<number, PresenterStudyNote> = {
     blackboardPrompt: "画出大闭环图：$\\text{Human Epistemic Intuition} \\rightleftarrows \\text{Ontology as Code} \\rightleftarrows \\text{Simulation Engine / Lean 4}$。"
   },
   68: {
-    slideIndex: 68,
+    slideIndex: 76,
     coreThesis: "研讨会结语：在代码与真理的交汇处，重塑人类理解世界的尊严。",
     epistemicBackground: "结语致谢与开源号召。研讨会全体学术资产（68页PPT、沙盒模板、KaibanJS工作流、RAG向量文献）全量开源。",
     pedagogicalKeypoints: [
@@ -281,13 +282,33 @@ export const PRESENTER_STUDY_NOTES: Record<number, PresenterStudyNote> = {
  * 获取特定幻灯片的研究手记，若未显式编写，则基于幻灯片内容进行体系化推导
  */
 export function getPresenterStudyNote(slide: SlideItem): PresenterStudyNote {
+  // 开场论点页：按 framing 讲稿即时生成手记
+  if (slide.index >= 3 && slide.index <= 10) {
+    const framing = FRAMING_SLIDES.find(s => s.index === slide.index);
+    if (framing) {
+      return {
+        slideIndex: slide.index,
+        coreThesis: framing.subtitle || framing.title,
+        epistemicBackground: framing.notes || framing.details || '',
+        pedagogicalKeypoints: (framing.bullets || []).slice(0, 3).map(b => b.replace(/\*\*/g, '')),
+        crossDomainAnalogy: '把本页当作整场研讨的“问题意识锚点”，后面六章是操作化展开。',
+        falsificationOrTrap: '勿把开场论点讲成反人文：强调要找的是可失败的治理与启发方向。',
+        blackboardPrompt: framing.details
+          ? `板书对照：${framing.details.slice(0, 80)}…`
+          : `板书关键词：${(framing.keywords || []).join(' · ')}`
+      };
+    }
+  }
+
+  const byField = Object.values(PRESENTER_STUDY_NOTES).find(n => n.slideIndex === slide.index);
+  if (byField) return byField;
+
   if (PRESENTER_STUDY_NOTES[slide.index]) {
     return PRESENTER_STUDY_NOTES[slide.index];
   }
 
   // 体系化自适应推导手记
   const bullets = slide.bullets || [];
-  const coreThesis = slide.subtitle || (bullets[0] ? bullets[0].replace(/\*\*/g, '') : slide.title);
   const keywords = (slide.keywords || []).join('、') || '可计算认识论';
 
   return {

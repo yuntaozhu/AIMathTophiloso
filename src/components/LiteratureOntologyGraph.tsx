@@ -151,7 +151,7 @@ ${activeThesis.epistemicMappingToSlide}`;
       label: `P.${currentSlide.index}: ${currentSlide.title}`,
       fullTitle: currentSlide.title,
       category: 'topic',
-      paradigm: currentSlide.index <= 14 ? 'logic' : currentSlide.index <= 28 ? 'pde' : currentSlide.index <= 44 ? 'agent' : 'physics',
+      paradigm: currentSlide.index <= 22 ? 'logic' : currentSlide.index <= 36 ? 'pde' : currentSlide.index <= 52 ? 'agent' : 'physics',
       sectionOrPage: currentSlide.sectionTitle || `Slide ${currentSlide.index}`,
       description: currentSlide.details || currentSlide.subtitle || '当前研讨会主讲议题与形式化命题',
       radius: 34,
