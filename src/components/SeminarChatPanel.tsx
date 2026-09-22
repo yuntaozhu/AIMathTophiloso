@@ -23,6 +23,10 @@ import { ChatMessage, AgentRole, SlideItem, SlideEpistemicInsight, KaibanWorkflo
 import { CognitiveEngineSyncPanel } from './CognitiveEngineSyncPanel';
 import { LiteratureOntologyGraph } from './LiteratureOntologyGraph';
 import { RagLiteratureThesis } from '../data/ragLiteratureAnalyzer';
+import { ResponseSourceBadge } from './ResponseSourceBadge';
+
+/** 弹幕短反馈上限；超长自动降为正式发言 */
+export const BARRAGE_MAX_CHARS = 48;
 
 interface SeminarChatPanelProps {
   messages: ChatMessage[];
@@ -73,7 +77,8 @@ export const SeminarChatPanel: React.FC<SeminarChatPanelProps> = ({
   const [panelTab, setPanelTab] = useState<'cognitive_sync' | 'discussion'>('cognitive_sync');
   const [inputText, setInputText] = useState<string>('');
   const [selectedAgent, setSelectedAgent] = useState<AgentRole>('deep_epistemic');
-  const [isBarrageCheck, setIsBarrageCheck] = useState<boolean>(true);
+  /** 正式发言默认关闭弹幕，避免深讲刷屏（P0-6） */
+  const [isBarrageCheck, setIsBarrageCheck] = useState<boolean>(false);
   const [showOntologyGraph, setShowOntologyGraph] = useState<boolean>(false);
   const [selectedCitationForGraph, setSelectedCitationForGraph] = useState<Citation | null>(null);
   const [activeRagThesis, setActiveRagThesis] = useState<RagLiteratureThesis | null>(null);
@@ -103,7 +108,9 @@ export const SeminarChatPanel: React.FC<SeminarChatPanelProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!inputText.trim() || isLoading) return;
-    onSendMessage(inputText.trim(), selectedAgent, isBarrageCheck);
+    const text = inputText.trim();
+    const asBarrage = isBarrageCheck && text.length <= BARRAGE_MAX_CHARS;
+    onSendMessage(text, selectedAgent, asBarrage);
     setInputText('');
   };
 
@@ -315,8 +322,12 @@ export const SeminarChatPanel: React.FC<SeminarChatPanelProps> = ({
                   )}
                   <span className="font-medium text-neutral-300">{msg.sender}</span>
                   <span className="text-[10px] text-neutral-500">{msg.timestamp}</span>
+                  <ResponseSourceBadge source={msg.responseSource} />
                   {msg.isBarrage && (
                     <span className="text-[9px] bg-neutral-800 text-amber-300 px-1 rounded">弹幕</span>
+                  )}
+                  {!msg.isBarrage && msg.role === 'user' && (
+                    <span className="text-[9px] bg-neutral-800 text-sky-300 px-1 rounded">正式发言</span>
                   )}
                 </div>
 
@@ -448,11 +459,13 @@ export const SeminarChatPanel: React.FC<SeminarChatPanelProps> = ({
               className="rounded bg-neutral-800 border-neutral-700 text-amber-500 focus:ring-0 w-3 h-3"
             />
             <span className={isBarrageCheck ? 'text-amber-400' : 'text-neutral-500'}>
-              同步广播为 PPT 屏幕弹幕
+              发为弹幕（≤{BARRAGE_MAX_CHARS}字短反馈）
             </span>
           </label>
           <span className="text-[10px] text-neutral-500">
-            Shift + Enter 换行 / Enter 发送
+            {isBarrageCheck && inputText.trim().length > BARRAGE_MAX_CHARS
+              ? '超长将自动改为正式发言'
+              : '默认正式发言 · Enter 发送'}
           </span>
         </div>
 

@@ -14,7 +14,8 @@ import {
   ArrowLeft,
   Layers,
   Workflow,
-  CheckCircle2
+  CheckCircle2,
+  AlertTriangle
 } from 'lucide-react';
 import { SIMULATION_TEMPLATES, SimulationTemplate, SimulationRunResult } from '../data/simulationTemplates';
 import { executeCustomCodeSimulation } from '../utils/customCodeExecutor';
@@ -179,20 +180,20 @@ export const CodeSandbox: React.FC<CodeSandboxProps> = ({
             <h2 className="text-sm font-semibold text-neutral-100 flex items-center space-x-2">
               <span>可执行多智能体代码沙盒</span>
               {isCustomMode ? (
-                <span className="text-[10px] px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 font-medium flex items-center space-x-1">
-                  <Workflow className="w-3 h-3 text-indigo-400" />
-                  <span>已载入 KaibanJS 状态机</span>
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-200 border border-amber-500/40 font-medium flex items-center space-x-1">
+                  <Workflow className="w-3 h-3 text-amber-400" />
+                  <span>可视化预览 · 非真实执行</span>
                 </span>
               ) : (
-                <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 font-normal">
-                  BDI & Dynamic Simulacra
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/35 font-normal">
+                  可调参真仿真
                 </span>
               )}
             </h2>
             <p className="text-xs text-neutral-400">
               {isCustomMode 
-                ? `当前激活：${customModelTitle || 'KaibanJS 生成的多智能体形式化模型'}`
-                : '面向社科理论与认识论思想实验的参数化蒙特卡洛动力学仿真'}
+                ? `预览模式：${customModelTitle || 'Kaiban/自定义代码'} — 按关键词路由预制曲线，不执行源码`
+                : '模板仿真：参数会真实参与计算并重绘 ECharts'}
             </p>
           </div>
         </div>
@@ -230,7 +231,7 @@ export const CodeSandbox: React.FC<CodeSandboxProps> = ({
             className="flex items-center space-x-1.5 px-3.5 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-neutral-950 text-xs font-bold shadow transition-all"
           >
             <Play className={`w-3.5 h-3.5 ${isRunning ? 'animate-spin' : ''}`} />
-            <span>{isRunning ? '求解运行中...' : isCustomMode ? '运行 KaibanJS 状态机' : '运行沙盘仿真'}</span>
+            <span>{isRunning ? '求解运行中...' : isCustomMode ? '生成预览曲线' : '运行沙盘仿真'}</span>
           </button>
         </div>
       </div>
@@ -272,16 +273,20 @@ export const CodeSandbox: React.FC<CodeSandboxProps> = ({
             {activeTab === 'editor' ? (
               <div className="flex flex-col h-full space-y-2">
                 {isCustomMode && (
-                  <div className="p-2.5 rounded-lg bg-indigo-950/40 border border-indigo-500/40 flex items-center justify-between text-[11px] text-indigo-200">
-                    <div className="flex items-center space-x-2">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                      <span>已成功从 <strong>KaibanJS</strong> 载入本页状态机源码，代码支持实时编辑与执行！</span>
-                    </div>
+                  <div className="p-2.5 rounded-lg bg-amber-950/40 border border-amber-500/40 flex items-start text-[11px] text-amber-100 gap-2">
+                    <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                    <span>
+                      <strong>诚实标签：</strong>自定义/Kaiban 代码不会在浏览器中执行。
+                      下方图表是按标题与关键词匹配的<strong>可视化预览</strong>。
+                      需要真调参请切换到罗尔斯 / PDE / 明清 / 记忆流等模板。
+                    </span>
                   </div>
                 )}
                 <div className="flex items-center justify-between text-[11px] text-neutral-400">
                   <span>JavaScript / TypeScript 模型源码：</span>
-                  <span className="text-[10px] text-neutral-500 font-mono">Web Worker 隔离沙盒</span>
+                  <span className="text-[10px] text-neutral-500 font-mono">
+                    {isCustomMode ? '预览路由 · 非 eval' : '模板 run() 真计算'}
+                  </span>
                 </div>
                 <textarea
                   value={editableCode}
@@ -301,7 +306,7 @@ export const CodeSandbox: React.FC<CodeSandboxProps> = ({
                   </div>
                   <p className="text-neutral-400 leading-relaxed text-[11px]">
                     {isCustomMode 
-                      ? '由三阶智能体协同流水线（范式学者、形式化架构师、认识论裁判官）根据当前研讨课件自动编译生成的面向对象形式化状态机。' 
+                      ? '预览说明：曲线由关键词路由生成，用于现场叙事对照，不代表源码已在沙盒中执行。切换到内置模板可进行真实参数扰动。' 
                       : selectedTemplate.description}
                   </p>
                   <div className="mt-2 text-[10px] text-amber-400/80 font-mono">

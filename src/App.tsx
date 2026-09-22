@@ -41,6 +41,7 @@ export default function App() {
 
   // Minutes text
   const [minutesText, setMinutesText] = useState<string>('');
+  const [minutesSource, setMinutesSource] = useState<string | undefined>(undefined);
   const [isGeneratingMinutes, setIsGeneratingMinutes] = useState<boolean>(false);
 
   // Slide-Synchronized Cognitive Engine State
@@ -76,14 +77,26 @@ export default function App() {
 
   const [isLoadingAi, setIsLoadingAi] = useState<boolean>(false);
   const socketRef = useRef<Socket | null>(null);
+  /** 跟随状态用 ref，避免切换跟随时整段 Socket 重连（P0-1） */
+  const isFollowingPresenterRef = useRef<boolean>(isFollowingPresenter);
+
+  useEffect(() => {
+    isFollowingPresenterRef.current = isFollowingPresenter;
+  }, [isFollowingPresenter]);
 
   // Current Slide Object
   const currentSlide: SlideItem = SEMINAR_SLIDES.find(s => s.index === currentSlideIndex) || SEMINAR_SLIDES[0];
 
-  // Initialize Socket.io connection
+  // Initialize Socket.io once; Vercel Fluid 上优先 websocket（无 sticky polling）
   useEffect(() => {
+    const onVercel = typeof window !== 'undefined' && /vercel\.app$|\.vercel\.app$/.test(window.location.hostname);
     const socket = io({
-      transports: ['websocket', 'polling']
+      path: '/socket.io',
+      transports: onVercel ? ['websocket'] : ['websocket', 'polling'],
+      reconnection: true,
+      reconnectionAttempts: 12,
+      reconnectionDelay: 800,
+      reconnectionDelayMax: 8000
     });
     socketRef.current = socket;
 
@@ -98,7 +111,7 @@ export default function App() {
     socket.on('sync:state', (state: any) => {
       if (state.currentSlide) {
         setPresenterSlideIndex(state.currentSlide);
-        if (isFollowingPresenter) {
+        if (isFollowingPresenterRef.current) {
           setCurrentSlideIndex(state.currentSlide);
         }
       }
@@ -111,17 +124,13 @@ export default function App() {
       setConnectedCount(data.count || 1);
     });
 
-    socket.on('presenter:changed', (data: any) => {
-      // Notification of presenter update
-    });
-
     socket.on('role:confirmed', (data: { isPresenter: boolean }) => {
       setIsPresenter(data.isPresenter);
     });
 
     socket.on('slide:synced', (data: { slideIndex: number; byUser: string }) => {
       setPresenterSlideIndex(data.slideIndex);
-      if (isFollowingPresenter) {
+      if (isFollowingPresenterRef.current) {
         setCurrentSlideIndex(data.slideIndex);
       }
     });
@@ -142,9 +151,11 @@ export default function App() {
     });
 
     return () => {
+      socket.removeAllListeners();
       socket.disconnect();
+      socketRef.current = null;
     };
-  }, [isFollowingPresenter]);
+  }, []);
 
   // Fetch synchronized slide epistemic insight whenever currentSlideIndex changes
   const fetchSlideInsight = useCallback(async (index: number) => {
@@ -153,7 +164,10 @@ export default function App() {
       const res = await fetch(`/api/gemini/slide-insight/${index}`);
       const data = await res.json();
       if (data.status === 'success') {
-        setSlideInsight(data.insight);
+        setSlideInsight({
+          ...data.insight,
+          responseSource: data.source || data.insight?.responseSource
+        });
         setSlideCitations(data.citations || []);
       }
     } catch (err) {
@@ -393,7 +407,8 @@ export class KaibanStateMachineRunner {
             content: data.response,
             timestamp: new Date().toLocaleTimeString(),
             slideIndex: currentSlideIndex,
-            citations: data.citations
+            citations: data.citations,
+            responseSource: data.source || (data.fromFallback ? 'offline_fallback' : 'live_ai')
           };
           if (socketRef.current) {
             socketRef.current.emit('chat:send', aiMsg);
@@ -422,7 +437,8 @@ export class KaibanStateMachineRunner {
           content: `**【议程分析报告】**\n- **议程偏移指数**：${data.driftScore}%\n- **议题对齐研判**：${data.reason}\n- **引导性学术追问**：${data.guidingQuestion}\n- **弹幕摘要**：${data.barrageSummary}`,
           timestamp: new Date().toLocaleTimeString(),
           slideIndex: currentSlideIndex,
-          antiDriftAlert: data
+          antiDriftAlert: data,
+          responseSource: data.source || (data.fromFallback ? 'offline_fallback' : 'live_ai')
         };
         if (socketRef.current) {
           socketRef.current.emit('chat:send', aiMsg);
@@ -444,10 +460,11 @@ export class KaibanStateMachineRunner {
           id: `sandbox-agent-${Date.now()}`,
           sender: '沙盘编译智能体',
           role: 'sandbox_compiler',
-          content: `### 仿真沙盘编译完成：《${data.title}》\n${data.description}\n\n**理论解释**：${data.explanation}\n\n*点击下方按钮可直接载入右侧可执行沙盒，实时查看多智能体动力学收敛曲线。*`,
+          content: `### 仿真沙盘编译完成：《${data.title}》\n${data.description}\n\n**理论解释**：${data.explanation}\n\n*点击下方按钮可载入沙盒。若为自定义/Kaiban 代码，图表为可视化预览而非真实执行。*`,
           timestamp: new Date().toLocaleTimeString(),
           slideIndex: currentSlideIndex,
-          sandboxCode: data.code
+          sandboxCode: data.code,
+          responseSource: data.source || (data.fromFallback ? 'offline_fallback' : 'live_ai')
         };
         if (socketRef.current) {
           socketRef.current.emit('chat:send', aiMsg);
@@ -497,6 +514,7 @@ export class KaibanStateMachineRunner {
       });
       const data = await res.json();
       setMinutesText(data.markdownSummary);
+      setMinutesSource(data.source);
     } catch (err) {
       console.error(err);
     } finally {
@@ -641,6 +659,7 @@ export class KaibanStateMachineRunner {
         isOpen={isMinutesModalOpen}
         onClose={() => setIsMinutesModalOpen(false)}
         minutesText={minutesText}
+        minutesSource={minutesSource as any}
         isGenerating={isGeneratingMinutes}
         onRegenerate={handleRegenerateMinutes}
       />

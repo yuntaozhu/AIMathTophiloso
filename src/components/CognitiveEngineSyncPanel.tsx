@@ -22,6 +22,7 @@ import {
 import { SlideItem, SlideEpistemicInsight, KaibanWorkflowResult, Citation } from '../types';
 import { getPresenterStudyNote } from '../data/presenterNotes';
 import { PresenterStudyNotesModal } from './PresenterStudyNotesModal';
+import { ResponseSourceBadge } from './ResponseSourceBadge';
 
 interface CognitiveEngineSyncPanelProps {
   currentSlide: SlideItem;
@@ -65,6 +66,7 @@ export const CognitiveEngineSyncPanel: React.FC<CognitiveEngineSyncPanelProps> =
             <span className="font-mono text-amber-400 font-bold text-[11px]">
               P.{currentSlide.index} 课件实时认知挂钩
             </span>
+            <ResponseSourceBadge source={insight?.responseSource} />
           </div>
           <div className="flex items-center space-x-2">
             <button

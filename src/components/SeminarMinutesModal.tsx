@@ -9,11 +9,14 @@ import {
   Sparkles, 
   RefreshCw 
 } from 'lucide-react';
+import { ResponseSource } from '../types';
+import { ResponseSourceBadge } from './ResponseSourceBadge';
 
 interface SeminarMinutesModalProps {
   isOpen: boolean;
   onClose: () => void;
   minutesText: string;
+  minutesSource?: ResponseSource;
   isGenerating: boolean;
   onRegenerate: () => void;
 }
@@ -22,6 +25,7 @@ export const SeminarMinutesModal: React.FC<SeminarMinutesModalProps> = ({
   isOpen,
   onClose,
   minutesText,
+  minutesSource,
   isGenerating,
   onRegenerate
 }) => {
@@ -57,12 +61,10 @@ export const SeminarMinutesModal: React.FC<SeminarMinutesModalProps> = ({
             <div>
               <h2 className="text-base font-semibold text-neutral-100 flex items-center space-x-2">
                 <span>学术研讨会深度会议纪要</span>
-                <span className="text-[10px] px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-mono">
-                  seminar_logs 结构化综合
-                </span>
+                <ResponseSourceBadge source={minutesSource} />
               </h2>
               <p className="text-xs text-neutral-400">
-                由 AI 架构师基于全程 35 页 PPT 与现场提问互动自动梳理的理论共识报告
+                基于本场 seminar_logs 综合；离线讲稿请人工补三句现场结论
               </p>
             </div>
           </div>

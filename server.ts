@@ -8,6 +8,7 @@ import { CORE_DOCUMENTS, searchKnowledgeBase } from "./src/data/knowledgeBase";
 import { SEMINAR_SLIDES } from "./src/data/slides";
 import { getPresenterStudyNote } from "./src/data/presenterNotes";
 import { findPhilologicalCollation, PHILOLOGICAL_CORPUS } from "./src/data/philologyCorpus";
+import { generateViaAiGateway } from "./src/services/aiGateway";
 
 dotenv.config();
 
@@ -122,24 +123,36 @@ io.on("connection", (socket) => {
     io.emit("highlight:synced", data);
   });
 
-  // Chat message & Barrage (弹幕)
+  // Chat message & Barrage (弹幕) — 完整转发证据链字段（P0-2）
   socket.on("chat:send", (msg: {
+    id?: string;
     sender: string;
     content: string;
     role?: string;
     isBarrage?: boolean;
     slideIndex?: number;
     highlightedText?: string;
+    citations?: any[];
+    sandboxCode?: string;
+    simulationConfig?: any;
+    antiDriftAlert?: any;
+    responseSource?: string;
+    timestamp?: string;
   }) => {
     const newMsg = {
-      id: `msg-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+      id: msg.id || `msg-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
       sender: msg.sender || userName,
       content: msg.content,
       role: msg.role || 'user',
       isBarrage: !!msg.isBarrage,
       slideIndex: msg.slideIndex ?? currentSlideIndex,
       highlightedText: msg.highlightedText || null,
-      timestamp: new Date().toLocaleTimeString()
+      timestamp: msg.timestamp || new Date().toLocaleTimeString(),
+      citations: msg.citations,
+      sandboxCode: msg.sandboxCode,
+      simulationConfig: msg.simulationConfig,
+      antiDriftAlert: msg.antiDriftAlert,
+      responseSource: msg.responseSource
     };
 
     io.emit("chat:received", newMsg);
@@ -288,7 +301,7 @@ app.all("/api/philology/search", async (req, res) => {
       dynamicPhilologyCache.set(cacheKey, localMatch);
       return res.json({
         status: "success",
-        source: "authoritative_corpus",
+        source: "curated_corpus",
         collation: localMatch
       });
     }
@@ -358,7 +371,7 @@ app.all("/api/philology/search", async (req, res) => {
           dynamicPhilologyCache.set(cacheKey, parsed);
           return res.json({
             status: "success",
-            source: "gemini_scholarly_search",
+            source: "live_ai",
             collation: parsed
           });
         }
@@ -367,11 +380,12 @@ app.all("/api/philology/search", async (req, res) => {
       }
     }
 
-    // Default fallback to Kant CPR as default archetype
+    // Default fallback to Kant CPR as default archetype — 明确标为未校验兜底
     const fallback = PHILOLOGICAL_CORPUS['doc-kant-cpr'];
     return res.json({
       status: "success",
-      source: "curated_archetype_fallback",
+      source: "unverified_fallback",
+      warning: "未找到匹配底本，已返回康德 CPR 作为形态学示例，请勿当作本议题原文。",
       collation: fallback
     });
   } catch (err: any) {
@@ -429,7 +443,7 @@ ${discussionContext || "暂无用户发言"}
         if (doubaoRes.ok) {
           const dData = await doubaoRes.json();
           const parsed = JSON.parse(dData.choices[0].message.content);
-          return res.json(parsed);
+          return res.json({ ...parsed, source: "live_ai", provider: "doubao" });
         }
       } catch (dErr) {
         // Fallback to Gemini smoothly if Volcengine model endpoint returns 404 or needs deployment endpoint
@@ -448,7 +462,7 @@ ${discussionContext || "暂无用户发言"}
           }
         });
         const parsed = JSON.parse(response.text?.trim() || "{}");
-        return res.json(parsed);
+        return res.json({ ...parsed, source: "live_ai", provider: "gemini" });
       } catch (geminiErr: any) {
         // Fallback gracefully on temporary upstream 503/429/high-demand
       }
@@ -460,7 +474,9 @@ ${discussionContext || "暂无用户发言"}
       driftScore: 18,
       reason: "讨论聚焦于当前PPT阐述的‘系统1灵感与系统2形式化Kernel’双轮协同机制。",
       guidingQuestion: `在当前第${currentSlide.index}页中，如何将社科反思性映射至状态机闭环中？`,
-      barrageSummary: "聚焦形式化内核与社科反思性"
+      barrageSummary: "聚焦形式化内核与社科反思性",
+      source: "offline_fallback",
+      fromFallback: true
     });
   } catch (err: any) {
     res.status(500).json({ error: err.message });
@@ -511,8 +527,20 @@ ${ragContext}
 ${query}`;
 
     let aiAnswer = "";
+    let responseSource: "live_ai" | "offline_fallback" = "offline_fallback";
+
+    // Prefer Vercel AI Gateway when configured (observability + failover on Vercel)
+    const viaGateway = await generateViaAiGateway({
+      system: systemPrompt,
+      user: userPrompt
+    });
+    if (viaGateway) {
+      aiAnswer = viaGateway;
+      responseSource = "live_ai";
+    }
+
     const ai = getAI();
-    if (ai) {
+    if (!aiAnswer && ai) {
       try {
         const response = await ai.models.generateContent({
           model: "gemini-3.8-flash",
@@ -522,12 +550,14 @@ ${query}`;
           ]
         });
         aiAnswer = response.text || "";
+        if (aiAnswer) responseSource = "live_ai";
       } catch (geminiErr: any) {
         // Fallback to scholarly deterministic analysis on transient upstream load
       }
     }
 
     if (!aiAnswer) {
+      responseSource = "offline_fallback";
       // Deterministic highly scholarly fallback response
       aiAnswer = `### 认识论解析与跨域映射
 
@@ -580,7 +610,9 @@ interface EpistemicAgent {
       status: "success",
       response: aiAnswer,
       citations,
-      logId: logEntry.id
+      logId: logEntry.id,
+      source: responseSource,
+      fromFallback: responseSource !== "live_ai"
     });
   } catch (err: any) {
     res.status(500).json({ error: err.message });
@@ -627,7 +659,7 @@ app.post("/api/gemini/sandbox", async (req, res) => {
         });
         const parsed = JSON.parse(response.text?.trim() || "{}");
         if (parsed.code && parsed.title) {
-          return res.json(parsed);
+          return res.json({ ...parsed, source: "live_ai", fromFallback: false });
         }
       } catch (geminiErr: any) {
         // Fallback gracefully on temporary upstream 503/429
@@ -654,7 +686,9 @@ class MultiAgentSimulation {
     }));
   }
 }`,
-        explanation: "代码将规范伦理中的抽象原则解构为可微状态演化，揭示了相界破裂的具体临界点。"
+        explanation: "代码将规范伦理中的抽象原则解构为可微状态演化，揭示了相界破裂的具体临界点。",
+        source: "offline_fallback",
+        fromFallback: true
       });
   } catch (err: any) {
     res.status(500).json({ error: err.message });
@@ -744,7 +778,8 @@ ${ragResults.map(r => `《${r.doc.source_title}》: ${r.doc.chunk_text.slice(0, 
             sectionTitle: currentSlide.sectionTitle,
             keywords: currentSlide.keywords,
             citations,
-            insight: parsed
+            source: "live_ai",
+            insight: { ...parsed, responseSource: "live_ai" }
           });
         }
       } catch (genErr: any) {
@@ -764,6 +799,7 @@ ${ragResults.map(r => `《${r.doc.source_title}》: ${r.doc.chunk_text.slice(0, 
       sectionTitle: currentSlide.sectionTitle,
       keywords: currentSlide.keywords,
       citations,
+      source: "offline_fallback",
       insight: {
         summary: note.coreThesis || `第 ${currentSlide.index} 页直击“${currentSlide.title}”，要求突破经院注疏同义反复，在形式化证明器与面向对象状态机之间确立双向映射。`,
         mathematicalMapping: note.crossDomainAnalogy || `在无穷维相空间中，系统演化受控于线性化算子谱结构 $\\mathcal{L} = -\\Delta - f'(Q)$。当存在负本征模时，中心稳定流形具有严格余维数 1（Codimension 1），构成制度瓦解的超曲面相界。`,
@@ -775,7 +811,8 @@ interface SlideEpistemicModel {
   evalTransition(flux: number): 'equilibrium' | 'phase_transition_collapse';
 }`,
         computableQuestion: note.falsificationOrTrap || `若将第 ${currentSlide.index} 页中的命题作为基本假设注入多智能体仿真沙盘，在遭遇资源紧缩扰动时系统何时涌现违约相变？`,
-        paradigmTag: primaryKw
+        paradigmTag: primaryKw,
+        responseSource: "offline_fallback"
       }
     });
   } catch (err: any) {
@@ -810,6 +847,7 @@ ${logSummary || "（研讨会贯穿了六大部分：纯数学形式化证明闭
 6. 结论与学者责任的终极重塑（警惕本体论暴政）`;
 
     let summaryText = "";
+    let summarySource: "live_ai" | "offline_fallback" = "offline_fallback";
     if (ai) {
       try {
         const response = await ai.models.generateContent({
@@ -817,12 +855,14 @@ ${logSummary || "（研讨会贯穿了六大部分：纯数学形式化证明闭
           contents: prompt
         });
         summaryText = response.text || "";
+        if (summaryText) summarySource = "live_ai";
       } catch (genErr: any) {
         // Graceful fallback to deterministic report
       }
     }
 
     if (!summaryText) {
+      summarySource = "offline_fallback";
       summaryText = `# 《可计算认识论》学术研讨会深度纪要与理论共识报告
 **研讨会日期**：2026年9月 · 深度前沿交叉研究组
 **核心议题**：从数学范式跃迁到人文社科的 AI 代码落地引擎
@@ -856,7 +896,9 @@ ${logSummary || "（研讨会贯穿了六大部分：纯数学形式化证明闭
       status: "success",
       title: "可计算认识论：学术研讨会深度会议纪要",
       generatedAt: new Date().toLocaleString(),
-      markdownSummary: summaryText
+      markdownSummary: summaryText,
+      source: summarySource,
+      fromFallback: summarySource !== "live_ai"
     });
   } catch (err: any) {
     res.status(500).json({ error: err.message });
@@ -880,9 +922,21 @@ async function start() {
     });
   }
 
-  server.listen(PORT, "0.0.0.0", () => {
-    console.log(`Executable Epistemology Engine server running on http://0.0.0.0:${PORT}`);
+  const host = process.env.HOST || "0.0.0.0";
+  server.listen(PORT, host, () => {
+    console.log(`Executable Epistemology Engine server running on http://${host}:${PORT}`);
   });
 }
 
-start();
+const isVercel = Boolean(process.env.VERCEL);
+
+if (!isVercel) {
+  start();
+} else if (process.env.NODE_ENV === "production") {
+  // Vercel Fluid：静态前端由 CDN 提供；此处只挂 API + Socket
+  const distPath = path.join(process.cwd(), "dist");
+  app.use(express.static(distPath));
+}
+
+// Vercel Functions（含 WebSocket / Socket.IO）导出 HTTP server
+export default server;

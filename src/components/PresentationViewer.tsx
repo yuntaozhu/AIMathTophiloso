@@ -18,6 +18,16 @@ import { SlideItem, ChatMessage } from '../types';
 import { SEMINAR_SLIDES } from '../data/slides';
 import { PresenterStudyNotesModal } from './PresenterStudyNotesModal';
 import { getPresenterStudyNote } from '../data/presenterNotes';
+import { getPresenterPaceHint, toolLabel } from '../data/presenterPaceHints';
+
+const PACE_STYLE: Record<string, string> = {
+  '开场': 'bg-sky-500/15 text-sky-300 border-sky-500/40',
+  '深讲': 'bg-amber-500/15 text-amber-300 border-amber-500/40',
+  '快翻': 'bg-neutral-700/40 text-neutral-400 border-neutral-600/50',
+  '共议': 'bg-emerald-500/15 text-emerald-300 border-emerald-500/40',
+  '沙盒': 'bg-indigo-500/15 text-indigo-300 border-indigo-500/40',
+  '收束': 'bg-rose-500/15 text-rose-300 border-rose-500/40'
+};
 
 interface PresentationViewerProps {
   currentSlide: SlideItem;
@@ -59,6 +69,8 @@ export const PresentationViewer: React.FC<PresentationViewerProps> = ({
   const slideContentRef = useRef<HTMLDivElement>(null);
 
   const currentStudyNote = getPresenterStudyNote(currentSlide);
+  const paceHint = getPresenterPaceHint(currentIndex);
+  const paceTool = toolLabel(paceHint.tool);
 
   // KaTeX formula renderer helper
   const renderFormula = (latexStr: string) => {
@@ -214,6 +226,13 @@ export const PresentationViewer: React.FC<PresentationViewerProps> = ({
                 {currentSlide.sectionTitle}
               </span>
             )}
+            <span
+              className={`px-2 py-0.5 rounded border font-semibold tracking-wide ${PACE_STYLE[paceHint.pace] || PACE_STYLE['快翻']}`}
+              title={paceHint.tip}
+            >
+              控台·{paceHint.pace}
+              {paceTool ? ` · ${paceTool}` : ''}
+            </span>
             {/* Quick Open Study Notes Button in Top Header */}
             <button
               onClick={() => setShowFullNotesModal(true)}
@@ -232,6 +251,15 @@ export const PresentationViewer: React.FC<PresentationViewerProps> = ({
               </span>
             ))}
           </div>
+        </div>
+
+        {/* 主讲节奏提示条（P0-5） */}
+        <div className="mt-2 flex items-start gap-2 text-[11px] text-neutral-400 bg-neutral-900/50 border border-neutral-800/80 rounded-lg px-2.5 py-1.5">
+          <Lightbulb className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
+          <p className="leading-relaxed">
+            <span className="text-neutral-300 font-medium">{paceHint.pace}：</span>
+            {paceHint.tip}
+          </p>
         </div>
 
         {/* Slide Main Content Area */}

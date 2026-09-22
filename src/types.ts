@@ -1,5 +1,13 @@
 export type AgentRole = 'user' | 'agenda_guardian' | 'deep_epistemic' | 'sandbox_compiler';
 
+/** AI / 检索结果来源：研讨场必须对参会者可见，避免把兜底当成现场论证 */
+export type ResponseSource =
+  | 'live_ai'
+  | 'offline_fallback'
+  | 'curated_corpus'
+  | 'cache'
+  | 'unverified_fallback';
+
 export interface SlideItem {
   index: number;
   sectionNumber?: number;
@@ -38,10 +46,13 @@ export interface ChatMessage {
   citations?: Citation[];
   sandboxCode?: string;
   simulationConfig?: SimulationConfig;
+  responseSource?: ResponseSource;
   antiDriftAlert?: {
     isDrifting: boolean;
     reason: string;
     guidingQuestion: string;
+    driftScore?: number;
+    barrageSummary?: string;
   };
 }
 
@@ -60,6 +71,7 @@ export interface SlideEpistemicInsight {
   ontologyCode: string;
   computableQuestion: string;
   paradigmTag: string;
+  responseSource?: ResponseSource;
 }
 
 export interface KaibanWorkflowStep {
