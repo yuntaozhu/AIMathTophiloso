@@ -326,11 +326,418 @@ Two-Step Decoupled Reversal：先 ClosePosition 切回 FLAT 并记录冷却，�
       category: "PDF/复数未来与未来研究_后AI研究所_压缩版.pdf"
     }
   },
-      authors: "Pavlo Tkachenko, Stijn Spanhove, Shiu et al. (Nature 2024)",
-      keywords: ["MaleCNS", "全脑连接组", "LIF", "DNp01巨纤维", "生物拓扑"],
-      domain: "分布式多智能体与博弈"
+
+  // —— PPT 对应论文（Firecrawl/Search 下载入 PDF/）——
+  {
+    id: "doc-generative-agents-pdf",
+    source_title: "Generative Agents: Interactive Simulacra of Human Behavior",
+    chunk_text: `【出处：PDF/Generative_Agents_Interactive_Simulacra_of_Human_Behavior.pdf · Park et al., 2023】Generative agents are computational software agents that simulate believable human behavior. Demonstrated by populating a Sims-like sandbox with twenty-five agents that plan their days, share news, form relationships, and coordinate group activities.
+Architecture: memory stream of experiences; retrieval by recency, importance, and relevance; periodic reflection synthesizing higher-level inferences; top-down planning from day goals to minute actions. Users can observe and intervene.
+对本场：Smallville 是多智能体沙盒的经典底本——记忆/反思/规划三件套，而非单轮问答机。`,
+    embedding: [],
+    metadata: {
+      page: "Abstract / Fig.1",
+      section: "Architecture of generative agents",
+      year: 2023,
+      authors: "Joon Sung Park, Joseph C. O’Brien, Carrie J. Cai, Meredith Ringel Morris, Percy Liang, Michael S. Bernstein",
+      keywords: ["Generative Agents", "Smallville", "memory stream", "reflection", "planning"],
+      category: "PDF/Generative_Agents_Interactive_Simulacra_of_Human_Behavior.pdf"
     }
   },
+  {
+    id: "doc-leandojo-01",
+    source_title: "LeanDojo: Theorem Proving with Retrieval-Augmented Language Models",
+    chunk_text: `【出处：PDF/LeanDojo_….pdf · Yang et al.】LeanDojo is an open-source Lean playground (toolkits, data, models, benchmarks) enabling programmatic interaction with the proof environment and fine-grained premise annotations. ReProver is an LLM prover augmented with retrieval over Mathlib premises; trained in about one GPU-week.
+Benchmark: 98,734 theorems/proofs from Lean’s math library with a challenging split requiring generalization to novel premises. First set of open-source LLM-based theorem provers without proprietary datasets (MIT).
+对本场：Lean 生态的开放教研底座；与 Lean Copilot / APOLLO 同属「LLM×Lean」证据链。`,
+    embedding: [],
+    metadata: {
+      page: "Abstract",
+      section: "LeanDojo + ReProver",
+      year: 2023,
+      authors: "Kaiyu Yang, Aidan M. Swope, Alex Gu, et al. (Caltech/NVIDIA)",
+      keywords: ["LeanDojo", "ReProver", "Lean 4", "premise selection", "ATP"],
+      category: "PDF/LeanDojo_Theorem_Proving_with_Retrieval_Augmented_Language_Models.pdf"
+    }
+  },
+  {
+    id: "doc-alphageometry2-01",
+    source_title: "Gold-medalist Performance in Solving Olympiad Geometry with AlphaGeometry2",
+    chunk_text: `【出处：PDF/Solving_Olympiad_Geometry…AlphaGeometry.pdf · Chervonyi, Trinh et al., Google DeepMind】AlphaGeometry2 extends AlphaGeometry (Trinh et al., 2024): broader domain language (object motion, linear equations of angles/ratios/distances, non-constructive problems); IMO 2000–2024 geometry coverage 66%→88%; overall solving rate 54%→84% over 25 years of geometry problems. Uses Gemini-architecture LM, knowledge-sharing between search trees, stronger symbolic engine. Part of the IMO 2024 silver-medal combined system with AlphaProof.
+对本场开场反差页：数学侧可验证突破的几何支线。`,
+    embedding: [],
+    metadata: {
+      page: "Abstract / Intro",
+      section: "AlphaGeometry2",
+      year: 2025,
+      authors: "Yuri Chervonyi, Trieu H. Trinh, et al. (Google DeepMind)",
+      keywords: ["AlphaGeometry2", "IMO", "geometry", "symbolic engine", "DeepMind"],
+      category: "PDF/Solving_Olympiad_Geometry_without_Human_Demonstrations_AlphaGeometry.pdf"
+    }
+  },
+  {
+    id: "doc-alphaproof-imo-01",
+    source_title: "AI achieves silver-medal standard solving IMO problems (AlphaProof + AlphaGeometry 2)",
+    chunk_text: `【出处：PDF/DeepMind_AI_achieves_silver_medal_standard_IMO_AlphaProof.md · deepmind.google · 2024-07-25】AlphaProof (RL formal math reasoning) and AlphaGeometry 2 together solved 4/6 IMO 2024 problems at silver-medal level. Problems manually formalized; AlphaProof solved two algebra + one number theory (including the hardest problem); AlphaGeometry 2 solved geometry; combinatorics unsolved. Solutions scored by Gowers and Myers under IMO rules.
+对本场：深蓝时刻叙事的并列里程碑——形式化验证闭环使「银牌级」可公开复核。`,
+    embedding: [],
+    metadata: {
+      page: "blog",
+      section: "IMO 2024 silver-medal announcement",
+      year: 2024,
+      authors: "AlphaProof and AlphaGeometry teams (Google DeepMind)",
+      keywords: ["AlphaProof", "AlphaGeometry 2", "IMO", "formal math", "银牌"],
+      category: "PDF/DeepMind_AI_achieves_silver_medal_standard_IMO_AlphaProof.md"
+    }
+  },
+  {
+    id: "doc-deepseek-prover-01",
+    source_title: "DeepSeek-Prover-V1.5: Harnessing Proof Assistant Feedback for RL and MCTS",
+    chunk_text: `【出处：PDF/DeepSeek_Prover_v1_5_….pdf】Open-source Lean 4 theorem prover: SFT on enhanced formal data, then RL from proof assistant feedback (RLPAF). Introduces RMaxTS (Monte-Carlo tree search with intrinsic-reward exploration) beyond single-pass whole-proof generation. SOTA on miniF2F-test 63.5% and ProofNet 25.3% (reported).
+对本场：证明助手反馈进入训练环 = Harness 信号回灌模型，与 APOLLO 编译器修复形成对照。`,
+    embedding: [],
+    metadata: {
+      page: "Abstract",
+      section: "RLPAF + RMaxTS",
+      year: 2024,
+      authors: "Huajian Xin, Z.Z. Ren, Junxiao Song, et al. (DeepSeek-AI)",
+      keywords: ["DeepSeek-Prover", "Lean 4", "RLPAF", "MCTS", "miniF2F"],
+      category: "PDF/DeepSeek_Prover_v1_5_Harnessing_Proof_Assistant_Feedback.pdf"
+    }
+  },
+  {
+    id: "doc-goedel-prover-01",
+    source_title: "Goedel-Prover: A Frontier Model for Open-Source Automated Theorem Proving",
+    chunk_text: `【出处：PDF/Goedel_Prover_….pdf · Lin, Tang, Yang et al.】Addresses scarcity of formal data: LLMs autoformalize Numina problems into Lean 4 (Goedel-Pset-v1, 1.64M statements); iterative prover bootstrapping yields >800K solved proofs. SFT of DeepSeek-Prover-V1.5-Base achieves 57.6% Pass@32 on miniF2F (surpassing prior DeepSeek-Prover-V1.5); further RL >60%. Open-sources codes, models, datasets and 29.7K Lean Workbook proofs.
+对本场：开源 ATP 数据飞轮；APOLLO 论文亦以其为基线。`,
+    embedding: [],
+    metadata: {
+      page: "Abstract",
+      section: "autoformalization + prover bootstrapping",
+      year: 2025,
+      authors: "Yong Lin, Shange Tang, Bohan Lyu, Kaiyu Yang, et al.",
+      keywords: ["Goedel-Prover", "Lean 4", "autoformalization", "miniF2F", "open-source"],
+      category: "PDF/Goedel_Prover_A_Frontier_Model_for_Open_Source_Automated_Theorem_Proving.pdf"
+    }
+  },
+  {
+    id: "doc-cordoba-cascade-01",
+    source_title: "Blow-up for the incompressible 3D-Euler equations with uniform C^{1,½−ε} ∩ L² force",
+    chunk_text: `【出处：PDF/Cordoba_Martinez_Zoroa_infinite_cascade_blowup.pdf · arXiv:2309.08495 · Córdoba & Martínez-Zoroa, 2023】Construct non-axisymmetric blow-up for forced 3D incompressible Euler on R³ in C^{3,½}∩L² on [0,T), with force uniform in C^{1,½−ε}∩L². As t→T, ∫|∇u|ds → ∞ while solution stays smooth except at the origin. No self-similar coordinates; treats solutions beyond C^{1,⅓+} axial threshold without swirl.
+对本场：布克马斯特声明中「纲领源流」的学术底座——粗糙/低正则外力爆破路线，后被推进至光滑外力。`,
+    embedding: [],
+    metadata: {
+      page: "Abstract / Intro",
+      section: "forced 3D Euler blow-up",
+      year: 2023,
+      authors: "Diego Córdoba, Luis Martínez-Zoroa",
+      keywords: ["3D Euler", "blow-up", "forcing", "Córdoba", "无限级联"],
+      category: "PDF/Cordoba_Martinez_Zoroa_infinite_cascade_blowup.pdf"
+    }
+  },
+  {
+    id: "doc-chae-bkm-01",
+    source_title: "Remarks on the blow-up criterion of the 3D Euler equations (Chae; citing Beale–Kato–Majda)",
+    chunk_text: `【出处：PDF/Chae_Remarks_on_blowup_criterion_3D_Euler_citing_BKM.pdf】Shows finite-time blow-up of classical 3D Euler solutions is controlled by the Besov ˙B⁰_{∞,1} norm of two vorticity components; for axisymmetric with swirl, by the angular vorticity component. Proof uses the Beale–Kato–Majda criterion and vortex-stretching structure.
+对本场：BKM 爆破准则的可讲义化延伸——光滑外力爆破叙事中的经典判据支点。`,
+    embedding: [],
+    metadata: {
+      page: "Abstract",
+      section: "Besov-controlled blow-up criterion",
+      year: 2004,
+      authors: "Dongho Chae",
+      keywords: ["Beale-Kato-Majda", "3D Euler", "vorticity", "blow-up criterion"],
+      category: "PDF/Chae_Remarks_on_blowup_criterion_3D_Euler_citing_BKM.pdf"
+    }
+  },
+  {
+    id: "doc-shiu-fly-01",
+    source_title: "A Drosophila computational brain model reveals sensorimotor processing (Nature 2024)",
+    chunk_text: `【出处：PDF/Shiu_et_al_A_Drosophila_computational_brain_model_Nature_2024.pdf · Nature 2024】Whole-brain computational model of Drosophila grounded in connectome data, revealing sensorimotor processing pathways. Underpins later MaleCNS / digital-fly embodied demos cited in cyberfly report.
+对本场：数字苍蝇沙盒的生物学真源——连接组拓扑而非 RL 训练权重。`,
+    embedding: [],
+    metadata: {
+      page: "Nature article",
+      section: "computational brain model",
+      year: 2024,
+      authors: "Philip K. Shiu et al.",
+      keywords: ["Drosophila", "connectome", "sensorimotor", "Nature", "MaleCNS"],
+      category: "PDF/Shiu_et_al_A_Drosophila_computational_brain_model_Nature_2024.pdf"
+    }
+  },
+  {
+    id: "doc-friedman-pdf-01",
+    source_title: "Harvey Friedman: Boolean Relation Theory / Concrete Mathematical Incompleteness (manuscripts)",
+    chunk_text: `【出处：PDF/Friedman_Concrete_Mathematical_Incompleteness.pdf 与 Friedman_Boolean_Relation_Theory_EntireBook.pdf · OSU 可下载手稿】弗里德曼具体数学不完备性纲领：看似初等的有限组合/布尔关系命题，其证明强度可触及大基数；逆向数学语境下，日常离散命题亦可迫使超越 RCA₀/ZFC 片段的公理。
+对本场第二章：有理立方体/大基数遥控叙事的原始文献底本。`,
+    embedding: [],
+    metadata: {
+      page: "downloadable manuscripts / EntireBook",
+      section: "Boolean Relation Theory & concrete incompleteness",
+      year: 2011,
+      authors: "Harvey M. Friedman",
+      keywords: ["concrete incompleteness", "Boolean Relation Theory", "large cardinals", "Friedman"],
+      category: "PDF/Friedman_Boolean_Relation_Theory_EntireBook.pdf"
+    }
+  },
+  {
+    id: "doc-boeckeler-harness-01",
+    source_title: "Harness engineering for coding agent users (Böckeler / martinfowler.com)",
+    chunk_text: `【出处：PDF/Boeckeler_Harness_engineering_for_coding_agent_users.md · 2026-04-02】Harness = everything in an AI agent except the model (Agent = Model + Harness). For coding agents: builder harness vs user outer harness. Categories: maintainability, architecture fitness, behaviour harnesses; feedforward/feedback; computational vs inferential regulation; keep quality left.
+对本场收束公式页的工程原典——能力看模型，差距看那一圈。`,
+    embedding: [],
+    metadata: {
+      page: "full article",
+      section: "Harness categories & steering loop",
+      year: 2026,
+      authors: "Birgitta Böckeler (Thoughtworks)",
+      keywords: ["Harness", "Agent = Model + Harness", "coding agent", "feedforward", "feedback"],
+      category: "PDF/Boeckeler_Harness_engineering_for_coding_agent_users.md"
+    }
+  },
+
+  // —— arXiv 补齐（对齐 84 页 PPT 主题）——
+  {
+    id: "doc-react-01",
+    source_title: "ReAct: Synergizing Reasoning and Acting in Language Models",
+    chunk_text: `【出处：PDF/ReAct_….pdf · arXiv:2210.03629 · ICLR 2023】Language models interleaved with reasoning traces and task-specific actions: thoughts guide actions; actions ground thoughts in external environments (APIs, knowledge bases, tools). Improves hallucination reduction and interpretability vs chain-of-thought alone.
+对本场 P.17：Agent 回路的经典范式——推理与行动交织，是 Harness 工具层的前身。`,
+    embedding: [],
+    metadata: {
+      page: "Abstract",
+      section: "ReAct prompting",
+      year: 2023,
+      authors: "Shunyu Yao et al.",
+      keywords: ["ReAct", "tool use", "reasoning", "acting", "LLM agent"],
+      category: "PDF/ReAct_Synergizing_Reasoning_and_Acting_in_Language_Models.pdf"
+    }
+  },
+  {
+    id: "doc-reflexion-01",
+    source_title: "Reflexion: Language Agents with Verbal Reinforcement Learning",
+    chunk_text: `【出处：PDF/Reflexion_….pdf · arXiv:2303.11366】LLM agents learn from trial-and-error via verbal feedback stored in episodic memory—without weight updates. Reflect on failures, convert into textual lessons, improve subsequent trials in games/compilers/APIs.
+对本场：可失败闭环的“语言强化学习”——对应 Harness 中的反馈与记忆层。`,
+    embedding: [],
+    metadata: {
+      page: "Abstract",
+      section: "Verbal RL / episodic memory",
+      year: 2023,
+      authors: "Noah Shinn, Federico Cassano, Shunyu Yao, Karthik Narasimhan et al.",
+      keywords: ["Reflexion", "verbal RL", "language agents", "memory", "Harness"],
+      category: "PDF/Reflexion_Language_Agents_with_Verbal_Reinforcement_Learning.pdf"
+    }
+  },
+  {
+    id: "doc-sweagent-01",
+    source_title: "SWE-agent: Agent-Computer Interfaces Enable Automated Software Engineering",
+    chunk_text: `【出处：PDF/SWE_agent_….pdf · arXiv:2405.15793】LM agents need specially-built Agent-Computer Interfaces (ACI)—not raw shells—to edit files, navigate repos, run tests. SWE-agent ACI yields SOTA on SWE-bench (pass@1 12.5%) and HumanEvalFix (87.7%).
+对本场：Harness 不是口号，而是接口设计；同一模型换 ACI，软件工程成功率显著变化。`,
+    embedding: [],
+    metadata: {
+      page: "Abstract",
+      section: "Agent-Computer Interface",
+      year: 2024,
+      authors: "John Yang, Carlos E. Jimenez, Shunyu Yao, Karthik Narasimhan, Ofir Press et al. (Princeton)",
+      keywords: ["SWE-agent", "ACI", "Harness", "software engineering", "SWE-bench"],
+      category: "PDF/SWE_agent_Agent_Computer_Interfaces_Enable_Software_Engineering.pdf"
+    }
+  },
+  {
+    id: "doc-minif2f-01",
+    source_title: "miniF2F: A Cross-System Benchmark for Formal Olympiad-Level Mathematics",
+    chunk_text: `【出处：PDF/miniF2F_….pdf · arXiv:2109.00110 · ICLR 2022】Unified benchmark of 488 formal Olympiad-level statements targeting Metamath, Lean, Isabelle, HOL Light (partial). Sources: AIME/AMC/IMO and coursework. Baselines with GPT-f.
+对本场 P.3：APOLLO / DeepSeek-Prover / Goedel 等成绩的共用标尺。`,
+    embedding: [],
+    metadata: {
+      page: "Abstract",
+      section: "Cross-system formal olympiad benchmark",
+      year: 2022,
+      authors: "Kunhao Zheng, Jesse Michael Han, Stanislas Polu",
+      keywords: ["miniF2F", "Lean", "formal math", "olympiad", "ATP"],
+      category: "PDF/miniF2F_formal_math_olympiad_benchmark.pdf"
+    }
+  },
+  {
+    id: "doc-mathlib-01",
+    source_title: "The Lean Mathematical Library (mathlib)",
+    chunk_text: `【出处：PDF/The_Lean_mathematical_library_mathlib.pdf · arXiv:1910.09336】Describes mathlib: community-maintained Lean library covering large swaths of undergraduate mathematics, design principles, and formalization workflow—the substrate for LeanDojo, Lean Copilot, and large formal proofs.
+对本场：Lean“0/1 真值机”背后的可复用引理宇宙。`,
+    embedding: [],
+    metadata: {
+      page: "Abstract / intro",
+      section: "mathlib design",
+      year: 2020,
+      authors: "The mathlib Community",
+      keywords: ["mathlib", "Lean", "formalization", "library"],
+      category: "PDF/The_Lean_mathematical_library_mathlib.pdf"
+    }
+  },
+  {
+    id: "doc-hypertree-01",
+    source_title: "HyperTree Proof Search for Neural Theorem Proving",
+    chunk_text: `【出处：PDF/HyperTree_Proof_Search_….pdf · arXiv:2205.11491】Transformer ATP trained online with HyperTree Proof Search (HTPS) inspired by AlphaZero. On Metamath held-out: 65.4%→82.6% with online training; improves Lean miniF2F-curriculum 31%→42%.
+对本场：神经证明搜索 + 形式环境反馈的闭环，通向 AlphaProof 类系统。`,
+    embedding: [],
+    metadata: {
+      page: "Abstract",
+      section: "HTPS",
+      year: 2022,
+      authors: "Guillaume Lample, Marie-Anne Lachaux, Timothée Lacroix et al. (Meta)",
+      keywords: ["HyperTree", "proof search", "AlphaZero", "Lean", "Metamath"],
+      category: "PDF/HyperTree_Proof_Search_for_Neural_Theorem_Proving.pdf"
+    }
+  },
+  {
+    id: "doc-llemma-01",
+    source_title: "LLEMMA: An Open Language Model for Mathematics",
+    chunk_text: `【出处：PDF/Llemma_….pdf · arXiv:2310.10631 · ICLR 2024】Continue-pretrain Code Llama on Proof-Pile-2 (papers, math web, math code). Outperforms open base models on MATH; capable of tool use and formal theorem proving without further finetuning. Open 7B/34B + data + code.
+对本场 P.4：开放数学基座模型支线。`,
+    embedding: [],
+    metadata: {
+      page: "Abstract",
+      section: "Proof-Pile-2 continue pretraining",
+      year: 2024,
+      authors: "Zhangir Azerbayev, Hailey Schoelkopf, Sean Welleck et al.",
+      keywords: ["LLEMMA", "MATH", "Proof-Pile-2", "formal proving", "open LM"],
+      category: "PDF/Llemma_Open_Language_Model_for_Mathematics.pdf"
+    }
+  },
+  {
+    id: "doc-deepseekmath-01",
+    source_title: "DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models",
+    chunk_text: `【出处：PDF/DeepSeekMath_….pdf · arXiv:2402.03300】DeepSeekMath 7B: continue-pretrain on 120B math tokens; 51.7% on competition MATH without tools/voting; GRPO (Group Relative Policy Optimization) improves reasoning under PPO-like memory constraints.
+对本场：开源竞赛级数学推理底座，衔接近似 AlphaProof 前史。`,
+    embedding: [],
+    metadata: {
+      page: "Abstract",
+      section: "GRPO + math pretraining",
+      year: 2024,
+      authors: "Zhihong Shao, Peiyi Wang, Daya Guo et al. (DeepSeek-AI)",
+      keywords: ["DeepSeekMath", "MATH", "GRPO", "mathematical reasoning"],
+      category: "PDF/DeepSeekMath_Pushing_Limits_Mathematical_Reasoning.pdf"
+    }
+  },
+  {
+    id: "doc-process-supervision-01",
+    source_title: "Let's Verify Step by Step (Process Supervision)",
+    chunk_text: `【出处：PDF/Lets_Verify_Step_by_Step_….pdf · arXiv:2305.20050 · OpenAI】Process-supervised reward models outperform outcome supervision on MATH; step-level feedback densifies training signal for multi-step reasoning—aligns with Lean-style stepwise verification intuition.
+对本场：自然语言侧的“逐步核验”与形式侧 0/1 类型检查形成对照。`,
+    embedding: [],
+    metadata: {
+      page: "Abstract",
+      section: "Process vs outcome supervision",
+      year: 2023,
+      authors: "Hunter Lightman, Vineet Kosaraju, Karl Cobbe et al. (OpenAI)",
+      keywords: ["process supervision", "MATH", "reward model", "step-by-step"],
+      category: "PDF/Lets_Verify_Step_by_Step_Process_Supervision.pdf"
+    }
+  },
+  {
+    id: "doc-atp-survey-01",
+    source_title: "A Survey on Deep Learning for Theorem Proving",
+    chunk_text: `【出处：PDF/A_Survey_of_Deep_Learning_for_Theorem_Proving.pdf · arXiv:2404.09939 · COLM 2024】Survey of DL for theorem proving: autoformalization, premise selection, proofstep generation, proof search; datasets/synthetic data; metrics and SOTA; open challenges.
+对本场 Lean/ATP 专章的地图文献。`,
+    embedding: [],
+    metadata: {
+      page: "Abstract",
+      section: "Survey taxonomy",
+      year: 2024,
+      authors: "Zhaoyu Li, Kaiyu Yang, Xujie Si et al.",
+      keywords: ["theorem proving", "survey", "autoformalization", "Lean", "ATP"],
+      category: "PDF/A_Survey_of_Deep_Learning_for_Theorem_Proving.pdf"
+    }
+  },
+  {
+    id: "doc-minictx-01",
+    source_title: "miniCTX: Neural Theorem Proving with (Long-)Contexts",
+    chunk_text: `【出处：PDF/miniCTX_….pdf · ICLR 2025 / arXiv:2408.03191】Neural theorem proving evaluated with longer realistic contexts beyond isolated theorems—closer to how mathematicians work in Mathlib-scale projects.
+对本场：形式证明不是单题刷榜，而是上下文工程 + 核验。`,
+    embedding: [],
+    metadata: {
+      page: "Abstract",
+      section: "Long-context NTP",
+      year: 2025,
+      authors: "Jiewen Hu, Thomas Zhu, Sean Welleck et al.",
+      keywords: ["miniCTX", "neural theorem proving", "context", "Lean"],
+      category: "PDF/miniCTX_Neural_Theorem_Proving_with_Contexts.pdf"
+    }
+  },
+  {
+    id: "doc-olympiadbench-01",
+    source_title: "OlympiadBench: A Challenging Benchmark for Promoting AGI with Olympiad-Level Problems",
+    chunk_text: `【出处：PDF/OlympiadBench_….pdf · arXiv:2402.14008】Olympiad-level bilingual multimodal scientific problems for stress-testing LLMs/LMMs beyond saturated general benchmarks.
+对本场 P.4：奥赛难度作为数学 AI 能力标尺（与 IMO 银牌叙事互补）。`,
+    embedding: [],
+    metadata: {
+      page: "Abstract",
+      section: "Olympiad-level bilingual multimodal bench",
+      year: 2024,
+      authors: "Chaoqun He, Xu Han, Zhiyuan Liu, Maosong Sun et al. (Tsinghua)",
+      keywords: ["OlympiadBench", "AGI benchmark", "olympiad", "multimodal"],
+      category: "PDF/OlympiadBench_Challenging_Bilingual_Olympiad_Benchmark.pdf"
+    }
+  },
+  {
+    id: "doc-social-simulacra-01",
+    source_title: "Social Simulacra: Creating Populated Prototypes for Social Computing Systems",
+    chunk_text: `【出处：PDF/Social_Simulacra_Park_et_al.pdf · arXiv:2208.04024】LLM-populated prototypes of social computing systems to explore community behavior before building—forerunner to Generative Agents / Smallville.
+对本场 P.50：社会试运行与 What-If 推演的直接文献。`,
+    embedding: [],
+    metadata: {
+      page: "Abstract",
+      section: "Populated social prototypes",
+      year: 2022,
+      authors: "Joon Sung Park, Lindsay Popowski, Percy Liang, Michael S. Bernstein et al.",
+      keywords: ["Social Simulacra", "prototyping", "LLM society", "What-If"],
+      category: "PDF/Social_Simulacra_Park_et_al.pdf"
+    }
+  },
+  {
+    id: "doc-machiavelli-01",
+    source_title: "MACHIAVELLI: Measuring Trade-Offs Between Rewards and Ethical Behavior",
+    chunk_text: `【出处：PDF/MACHIAVELLI_….pdf · arXiv:2304.03279】Benchmark of 134 Choose-Your-Own-Adventure games (>500k scenarios) measuring power-seeking, disutility, ethical violations vs reward maximization—tension between reward and ethics in LM agents.
+对本场 P.56–57：反击 RLHF 温情偏置、注入马基雅维利底色的评测底本。`,
+    embedding: [],
+    metadata: {
+      page: "Abstract",
+      section: "Ethical trade-offs in agents",
+      year: 2023,
+      authors: "Alexander Pan, Dan Hendrycks et al.",
+      keywords: ["MACHIAVELLI", "power-seeking", "ethics", "RLHF", "agent evaluation"],
+      category: "PDF/MACHIAVELLI_benchmark_agents_arxiv.pdf"
+    }
+  },
+  {
+    id: "doc-causal-adj-01",
+    source_title: "Efficient adjustment sets in causal graphical models with hidden variables",
+    chunk_text: `【出处：PDF/Causal_Inference_….pdf · arXiv:2004.10521】Theory of efficient adjustment sets in causal graphical models under hidden variables—technical substrate for structural causal modeling (SCM) used when formalizing historical causation in the seminar.
+对本场 P.51：从数学证明到历史因果闭环的图模型语言。`,
+    embedding: [],
+    metadata: {
+      page: "Abstract",
+      section: "Causal graphical adjustment",
+      year: 2020,
+      authors: "Ezequiel Smucler, Facundo Sapienza, Andrea Rotnitzky",
+      keywords: ["causal inference", "SCM", "adjustment sets", "hidden variables"],
+      category: "PDF/Causal_Inference_Efficient_Adjustment_Sets_Graphical_Models.pdf"
+    }
+  },
+  {
+    id: "doc-godel-ontological-01",
+    source_title: "Formalization, Mechanization and Automation of Gödel’s Proof of God’s Existence",
+    chunk_text: `【出处：PDF/Formalization_Godels_Ontological_Proof_….pdf · arXiv:1308.4526】Benzmüller & Paleo communicate computer-assisted formalization of Gödel’s ontological argument (Scott’s axioms)—higher-order logic mechanization of modal metaphysical reasoning.
+对本场 P.70：哥德尔模态本体论论证的可计算化先例。`,
+    embedding: [],
+    metadata: {
+      page: "Abstract / update note",
+      section: "Gödel ontological proof mechanization",
+      year: 2013,
+      authors: "Christoph Benzmüller, Bruno Woltzenlogel Paleo",
+      keywords: ["Gödel", "ontological argument", "modal logic", "formalization"],
+      category: "PDF/Formalization_Godels_Ontological_Proof_Benzmueller_Paleo.pdf"
+    }
+  },
+
   // 9. 阿兰·图灵：停机问题与形式判定难题 (1936)
   {
     id: "doc-turing-1936",

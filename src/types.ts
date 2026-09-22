@@ -27,6 +27,8 @@ export interface SlideItem {
   codeSnippet?: string;
   notes?: string;
   keywords?: string[];
+  /** 知识库 DocumentChunk.id，供图谱/控台挂载本页原典 */
+  literatureIds?: string[];
 }
 
 export interface Citation {

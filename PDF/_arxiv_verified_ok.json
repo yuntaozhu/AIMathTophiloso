@@ -1,0 +1,189 @@
+[
+  {
+    "arxiv_id": "2210.03629",
+    "filename": "ReAct_Synergizing_Reasoning_and_Acting_in_Language_Models.pdf",
+    "ok": true,
+    "via": "keep",
+    "theme": "P.17 Agent loop",
+    "kb_id": "doc-react-01",
+    "title": "Published as a conference paper at ICLR 2023",
+    "snippet": "Published as a conference paper at ICLR 2023\nREAC T: S YNERGIZING REASONING AND ACTING IN\nLANGUAGE MODELS\nShunyu Yao∗*,1, Jeffrey Zhao2, Dian Yu2, Nan Du2, Izhak Shafran2, Karthik Narasimhan1, Yuan Cao2\n1Department of Computer Science, Princeton University\n2Google Research, Brain team\n1{shunyuy,karthikn}@princeton.edu\n2{jeffreyzhao,dianyu,dunan,izhak,yuancao}@google.com\nABSTRACT\nWhile large language models (LLMs) have demonstrated impressive performance\nacross tasks in language understanding and interactive decision making, their\nabilities for reasoning (e.g. chain-of-thought prompting) and acting (e.g. action\nplan generation) have primarily been studied as separate topics. In this paper, we\nexplore the use of LLMs to generate both reasoning traces and task-speciﬁc actions\nin an interleave"
+  },
+  {
+    "arxiv_id": "2303.11366",
+    "filename": "Reflexion_Language_Agents_with_Verbal_Reinforcement_Learning.pdf",
+    "ok": true,
+    "via": "keep",
+    "theme": "P.17 Agent harness",
+    "kb_id": "doc-reflexion-01",
+    "title": "Reflexion: Language Agents with",
+    "snippet": "Reflexion: Language Agents with\nVerbal Reinforcement Learning\nNoah Shinn\nNortheastern University\nnoahshinn024@gmail.com\nFederico Cassano\nNortheastern University\ncassano.f@northeastern.edu\nEdward Berman\nNortheastern University\nberman.ed@northeastern.edu\nAshwin Gopinath\nMassachusetts Institute of Technology\nagopi@mit.edu\nKarthik Narasimhan\nPrinceton University\nkarthikn@princeton.edu\nShunyu Yao\nPrinceton University\nshunyuy@princeton.edu\nAbstract\nLarge language models (LLMs) have been increasingly used to interact with exter-\nnal environments (e.g., games, compilers, APIs) as goal-driven agents. However,\nit remains challenging for these language agents to quickly and efficiently learn\nfrom trial-and-error as traditional reinforcement learning methods require exten-\nsive training samples and ex"
+  },
+  {
+    "arxiv_id": "2405.15793",
+    "filename": "SWE_agent_Agent_Computer_Interfaces_Enable_Software_Engineering.pdf",
+    "ok": true,
+    "via": "keep",
+    "theme": "P.17 Harness/tools",
+    "kb_id": "doc-sweagent-01",
+    "title": "SWE-agent: Agent-Computer Interfaces Enable",
+    "snippet": "SWE-agent: Agent-Computer Interfaces Enable\nAutomated Software Engineering\nJohn Yang∗ Carlos E. Jimenez∗ Alexander Wettig Kilian Lieret\nShunyu Yao Karthik Narasimhan Ofir Press\nPrinceton Language and Intelligence, Princeton University\nAbstract\nLanguage model (LM) agents are increasingly being used to automate complicated\ntasks in digital environments. Just as humans benefit from powerful software\napplications, such as integrated development environments, for complex tasks like\nsoftware engineering, we posit that LM agents represent a new category of end\nusers with their own needs and abilities, and would benefit from specially-built\ninterfaces to the software they use. We investigate how interface design affects the\nperformance of language model agents. As a result of this exploration, we "
+  },
+  {
+    "arxiv_id": "2305.20050",
+    "ok": false,
+    "error": "title mismatch",
+    "head": "Let’s Verify Step by Step\nHunter Lightman ∗ Vineet Kosaraju ∗ Y ura Burda∗ Harri Edwards\nBowen Baker T eddy Lee Jan Leike John Schulman Ilya Sutskever\nKarl Cobbe ∗\nOpenAI\nAbstract\nIn recent years, lar",
+    "kb_id": "doc-llemma-01"
+  },
+  {
+    "arxiv_id": "2402.03300",
+    "filename": "DeepSeekMath_Pushing_Limits_Mathematical_Reasoning.pdf",
+    "ok": true,
+    "via": "keep",
+    "theme": "P.4 AI math",
+    "kb_id": "doc-deepseekmath-01",
+    "title": "DeepSeekMath: Pushing the Limits of Mathematical",
+    "snippet": "DeepSeekMath: Pushing the Limits of Mathematical\nReasoning in Open Language Models\nZhihong Shao1,2∗†, Peiyi Wang1,3∗†, Qihao Zhu1,3∗†, Runxin Xu1, Junxiao Song1\nXiao Bi1, Haowei Zhang1, Mingchuan Zhang1, Y.K. Li1, Y. Wu1, Daya Guo1∗\n1DeepSeek-AI, 2Tsinghua University,3Peking University\n{zhihongshao,wangpeiyi,zhuqh,guoday}@deepseek.com\nhttps://github.com/deepseek-ai/DeepSeek-Math\nAbstract\nMathematical reasoning poses a significant challenge for language models due to its complex\nand structured nature. In this paper, we introduce DeepSeekMath 7B, which continues pre-\ntraining DeepSeek-Coder-Base-v1.5 7B with 120B math-related tokens sourced from Common\nCrawl, together with natural language and code data. DeepSeekMath 7B has achieved an\nimpressive score of 51.7% on the competition-level MATH "
+  },
+  {
+    "arxiv_id": "2109.00110",
+    "filename": "miniF2F_formal_math_olympiad_benchmark.pdf",
+    "ok": true,
+    "via": "keep",
+    "theme": "P.3 ATP bench",
+    "kb_id": "doc-minif2f-01",
+    "title": "Published as a conference paper at ICLR 2022",
+    "snippet": "Published as a conference paper at ICLR 2022\nMINI F2F: A CROSS -SYSTEM BENCHMARK FOR\nFORMAL OLYMPIAD -LEVEL MATHEMATICS\nKunhao Zheng\n´Ecole Polytechnique\nkunhao.zheng@polytechnique.edu\nJesse Michael Han\nOpenAI\nUniversity of Pittsburgh\njessemichaelhan@openai.com\nStanislas Polu\nOpenAI\nspolu@openai.com\nABSTRACT\nWe present miniF2F, a dataset of formal Olympiad-level mathematics problems\nstatements intended to provide a uniﬁed cross-system benchmark for neural the-\norem proving. The miniF2F benchmark currently targets Metamath, Lean, Is-\nabelle (partially) and HOL Light (partially) and consists of 488 problem state-\nments drawn from the AIME, AMC, and the International Mathematical Olympiad\n(IMO), as well as material from high-school and undergraduate mathematics\ncourses. We report baseline res"
+  },
+  {
+    "arxiv_id": "1910.09336",
+    "filename": "The_Lean_mathematical_library_mathlib.pdf",
+    "ok": true,
+    "via": "keep",
+    "theme": "P.3 Mathlib",
+    "kb_id": "doc-mathlib-01",
+    "title": "The Lean Mathematical Library",
+    "snippet": "The Lean Mathematical Library\nThe mathlib Community∗\nAbstract\nThis paper describes mathlib, a community-driven effort\nto build a unified library of mathematics formalized in the\nLean proof assistant. Among proof assistant libraries, it is\ndistinguished by its dependently typed foundations, focus\non classical mathematics, extensive hierarchy of structures,\nuse of large- and small-scale automation, and distributed or-\nganization. We explain the architecture and design decisions\nof the library and the social organization that has led to its\ndevelopment.\nCCS Concepts • Mathematics of computing → Mathe-\nmatical software; • Security and privacy → Logic and veri-\nfication;\nKeywords Lean, mathlib, formal library, formal proof\nACM Reference Format:\nThe mathlib Community. 2020. The Lean Mathematical"
+  },
+  {
+    "arxiv_id": "2208.04024",
+    "filename": "Social_Simulacra_Park_et_al.pdf",
+    "ok": true,
+    "via": "keep",
+    "theme": "P.50",
+    "kb_id": "doc-social-simulacra-01",
+    "title": "Social Simulacra: Creating Populated Prototypes",
+    "snippet": "Social Simulacra: Creating Populated Prototypes\nfor Social Computing Systems\nJoon Sung Park\nStanford University\nStanford, USA\njoonspk@stanford.edu\nLindsay Popowski\nStanford University\nStanford, USA\npopowski@stanford.edu\nCarrie J. Cai\nGoogle Research\nMountain View, CA, USA\ncjcai@google.com\nMeredith Ringel Morris\nGoogle Research\nSeattle, WA, USA\nmerrie@google.com\nPercy Liang\nStanford University\nStanford, USA\npliang@cs.stanford.edu\nMichael S. Bernstein\nStanford University\nStanford, USA\nmsb@cs.stanford.edu\nABSTRACT\nSocial computing prototypes probe the social behaviors that may\narise in an envisioned system design. This prototyping practice\nis currently limited to recruiting small groups of people. Unfortu-\nnately, many challenges do not arise until a system is populated\nat a larger scale. Can"
+  },
+  {
+    "arxiv_id": "2304.03279",
+    "filename": "MACHIAVELLI_benchmark_agents_arxiv.pdf",
+    "ok": true,
+    "via": "keep",
+    "theme": "P.56-57",
+    "kb_id": "doc-machiavelli-01",
+    "title": "Do the Rewards Justify the Means? Measuring Trade-Offs Between",
+    "snippet": "Do the Rewards Justify the Means? Measuring Trade-Offs Between\nRewards and Ethical Behavior in the MACHIAVELLI Benchmark\nAlexander Pan * 1 Jun Shern Chan * 2 Andy Zou * 3 Nathaniel Li 1 Steven Basart 2 Thomas Woodside 4\nJonathan Ng 2 Hanlin Zhang 3 Scott Emmons 1 Dan Hendrycks 2\nAbstract\nArtificial agents have traditionally been trained to\nmaximize reward, which may incentivize power-\nseeking and deception, analogous to how next-\ntoken prediction in language models (LMs) may\nincentivize toxicity. So do agents naturally learn\nto be Machiavellian? And how do we measure\nthese behaviors in general-purpose models such\nas GPT-4? Towards answering these questions,\nwe introduce MACHIAVELLI , a benchmark of\n134 Choose-Your-Own-Adventure games contain-\ning over half a million rich, diverse scenarios"
+  },
+  {
+    "arxiv_id": "2004.10521",
+    "filename": "Causal_Inference_Efficient_Adjustment_Sets_Graphical_Models.pdf",
+    "ok": true,
+    "via": "download",
+    "bytes": 415206,
+    "theme": "P.51 SCM",
+    "kb_id": "doc-causal-adj-01",
+    "title": "arXiv:2004.10521v3  [math.ST]  26 May 2020",
+    "snippet": "arXiv:2004.10521v3  [math.ST]  26 May 2020\nEﬃcient adjustment sets in causal graphical models with hid den\nvariables\nEzequiel Smucler ∗1, Facundo Sapienza †2, and Andrea Rotnitzky ‡3\n1Department of Mathematics and Statistics, Universidad Torcuato Di Tella\n3Department of Statistics, University of California, Berkeley\n3Department of Economics, Universidad Torcuato Di Tella, CONICET and Department of\nBiostatistics, Harvard T.H. Chan School of Public Health\nMay 27, 2020\nAbstract\nWe study the selection of covariate adjustment sets for esti mating the value of point exposure dynamic\npolicies, also known as dynamic treatment regimes, assumin g a non-parametric causal graphical model with\nhidden variables, in which at least one adjustment set is ful ly observable. We show that recently developed\nc"
+  },
+  {
+    "arxiv_id": "2205.11491",
+    "filename": "HyperTree_Proof_Search_for_Neural_Theorem_Proving.pdf",
+    "ok": true,
+    "via": "download",
+    "bytes": 1321438,
+    "theme": "P.3 proof search",
+    "kb_id": "doc-hypertree-01",
+    "title": "HyperTree Proof Search for Neural Theorem Proving",
+    "snippet": "HyperTree Proof Search for Neural Theorem Proving\nGuillaume Lample∗† Marie-Anne Lachaux∗† Thibaut Lavril∗† Xavier Martinet∗†\nAmaury Hayat§ Gabriel Ebner‡ Aurélien Rodriguez† Timothée Lacroix∗†\nAbstract\nWe propose an online training procedure for a transformer-based automated the-\norem prover. Our approach leverages a new search algorithm, HyperTree Proof\nSearch (HTPS), inspired by the recent success of AlphaZero. Our model learns\nfrom previous proof searches through online training, allowing it to generalize\nto domains far from the training distribution. We report detailed ablations of our\npipeline’s main components by studying performance on three environments of in-\ncreasing complexity. In particular, we show that with HTPS alone, a model trained\non annotated proofs manages to prove 65.4"
+  },
+  {
+    "arxiv_id": "1308.4526",
+    "filename": "Formalization_Godels_Ontological_Proof_Benzmueller_Paleo.pdf",
+    "ok": true,
+    "via": "download",
+    "bytes": 107183,
+    "theme": "P.70",
+    "kb_id": "doc-godel-ontological-01",
+    "title": "arXiv:1308.4526v5  [cs.LO]  3 Sep 2017",
+    "snippet": "arXiv:1308.4526v5  [cs.LO]  3 Sep 2017\nFormalization, Mechanization and Automation of\nG¨ odel’s Proof of God’s Existence⋆\nChristoph Benzm¨ uller1 and Bruno Woltzenlogel Paleo 2\n1 Dahlem Center for Intelligent Systems, Freie Universit¨ at Berlin, Germany\nc.benzmueller@gmail.com\n2 Theory and Logic Group, Vienna University of Technology, Au stria\nbruno@logic.at\nUpdate (31/08/2017): The abstract below, uploaded to arXiv on 21/08/2013, was the ﬁrs t\ncommunication of the computer-assisted formalization of G¨ odel’s ontological proof. Since then, the\nfollowing longer papers have been published: [11,10,19,13,12,8,7,16,15,14 ,17,9,18,20,3,38,29,21,28].\nAttempts to prove the existence (or non-existence) of God by me ans of abstract ontological\narguments are an old tradition in philosophy and theolog"
+  },
+  {
+    "arxiv_id": "1610.00378",
+    "ok": false,
+    "error": "title mismatch",
+    "head": "\t 1\t\nImproving\tAccuracy\tand\tScalability\tof\tthe\tPC\tAlgorithm\tby\tMaximizing\tP-value1\t\n\t\nJoseph\tRamsey\t\nTechnical\tReport\t\nCenter\tfor\tCausal\tDiscovery\t\nOctober\t2,\t2016\t\n\t\nAbstract\t\n\t\nA\tnumber\tof\tattempts\t",
+    "kb_id": "doc-pbit-01"
+  },
+  {
+    "arxiv_id": "2402.14008",
+    "filename": "OlympiadBench_Challenging_Bilingual_Olympiad_Benchmark.pdf",
+    "ok": true,
+    "via": "download",
+    "bytes": 1083457,
+    "theme": "P.4",
+    "kb_id": "doc-olympiadbench-01",
+    "title": "OlympiadBench: A Challenging Benchmark for Promoting AGI with",
+    "snippet": "OlympiadBench: A Challenging Benchmark for Promoting AGI with\nOlympiad-Level Bilingual Multimodal Scientific Problems\nChaoqun He1, Renjie Luo2, Yuzhuo Bai1, Shengding Hu1, Zhen Leng Thai1\nJunhao Shen1, Jinyi Hu1, Xu Han1∗, Yujie Huang1, Yuxiang Zhang3\nJie Liu3, Lei Qi3, Zhiyuan Liu1*, Maosong Sun1\n1Dept. of Comp. Sci. & Tech., Institute for AI, Tsinghua University, Beijing, China\n2Institute of Artificial Intelligence, Beihang University, China\n3Wisdom Way AI Lab, China\n{hcq21,byz22}@mails.tsinghua.edu.cn, renjie.luo@outlook.com, {hanxu2022,liuzy}@tsinghua.edu.cn\nAbstract\nRecent advancements have seen Large Lan-\nguage Models (LLMs) and Large Multimodal\nModels (LMMs) surpassing general human ca-\npabilities in various tasks, approaching the pro-\nficiency level of human experts across multiple"
+  },
+  {
+    "arxiv_id": "2309.17453",
+    "ok": false,
+    "error": "title mismatch",
+    "head": "Published as a conference paper at ICLR 2024\nEFFICIENT STREAMING LANGUAGE MODELS\nWITH ATTENTION SINKS\nGuangxuan Xiao1∗ Yuandong Tian2 Beidi Chen3 Song Han1,4 Mike Lewis2\n1 Massachusetts Institute of T",
+    "kb_id": "doc-tora-01"
+  },
+  {
+    "arxiv_id": "2408.03191",
+    "filename": "miniCTX_Neural_Theorem_Proving_with_Contexts.pdf",
+    "ok": true,
+    "via": "keep",
+    "theme": "P.3 NTP context",
+    "kb_id": "doc-minictx-01",
+    "title": "Published as a conference paper at ICLR 2025",
+    "snippet": "Published as a conference paper at ICLR 2025\nminiCTX: NEURAL THEOREM PROVING WITH (LONG -)\nCONTEXTS\nJiewen Hu Thomas Zhu Sean Welleck\nCarnegie Mellon University\nABSTRACT\nReal-world formal theorem proving often depends on a wealth of context, including\ndefinitions, lemmas, comments, file structure, and other information. We introduce\nminiCTX, which tests a model’s ability to prove formal mathematical theorems\nthat depend on new context that is not seen during training. miniCTX contains\ntheorems sourced from real Lean projects and textbooks, each associated with a\ncontext that can span tens of thousands of tokens. Models are tasked with proving a\ntheorem given access to code from the theorem’s repository, which contains context\nthat is needed for the proof. As a baseline for miniCTX, we test"
+  },
+  {
+    "arxiv_id": "2404.09939",
+    "filename": "A_Survey_of_Deep_Learning_for_Theorem_Proving.pdf",
+    "ok": true,
+    "via": "download",
+    "bytes": 607544,
+    "theme": "P.3 ATP survey",
+    "kb_id": "doc-atp-survey-01",
+    "title": "Published as a conference paper at COLM 2024",
+    "snippet": "Published as a conference paper at COLM 2024\nA Survey on Deep Learning for Theorem Proving\nZhaoyu Li1, Jialiang Sun1, Logan Murphy1, Qidong Su1, Zenan Li2, Xian Zhang3\nKaiyu Yang4∗, Xujie Si1,5\n1University of Toronto, 2Nanjing University, 3Microsoft Research Asia, 4Meta FAIR,\n5CIFAR AI Chair\n{zhaoyu, six}@cs.toronto.edu\nAbstract\nTheorem proving is a fundamental aspect of mathematics, spanning from\ninformal reasoning in natural language to rigorous derivations in formal\nsystems. In recent years, the advancement of deep learning, especially\nthe emergence of large language models, has sparked a notable surge of\nresearch exploring these techniques to enhance the process of theorem\nproving. This paper presents a comprehensive survey of deep learning for\ntheorem proving by offering (i) a thoroug"
+  },
+  {
+    "arxiv_id": "2312.08935",
+    "ok": false,
+    "error": "title mismatch",
+    "head": "MATH-S HEPHERD : V ERIFY AND REINFORCE LLM S\nSTEP -BY-STEP WITHOUT HUMAN ANNOTATIONS\nPeiyi Wang1† Lei Li3 Zhihong Shao4 R.X. Xu2 Damai Dai1 Yifei Li5\nDeli Chen2 Y. Wu2 Zhifang Sui1\n1National Key Labor",
+    "kb_id": "doc-mathlm-survey-01"
+  },
+  {
+    "arxiv_id": "1408.0852",
+    "ok": false,
+    "error": "title mismatch",
+    "head": "arXiv:1408.0852v1  [hep-th]  5 Aug 2014\nCALT-TH-2014-149\nGAUGE THEORIES ON THE COULOMB BRANCH\nJohn H. Schwarz 1\nWalter Burke Institute for Theoretical Physics\nCalifornia Institute of Technology\nPasade",
+    "kb_id": "doc-rm-combinatorial-01"
+  },
+  {
+    "arxiv_id": "2206.08826",
+    "ok": false,
+    "error": "title mismatch",
+    "head": "Multimodal Attention-based Deep Learning for Alzheimer’s\nDisease Diagnosis\nMichal Golovanevsky1, Carsten Eickhoff1,2,*, and Ritambhara Singh1,3,*\n1Department of Computer Science, Brown University\n2Cen",
+    "kb_id": "doc-autoformal-01"
+  }
+]

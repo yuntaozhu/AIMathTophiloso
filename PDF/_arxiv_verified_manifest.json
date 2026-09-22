@@ -1,0 +1,250 @@
+[
+  {
+    "arxiv_id": "2109.00110",
+    "filename": "miniF2F_formal_math_olympiad_benchmark.pdf",
+    "theme": "P.3 Lean ATP benchmark",
+    "ok": true,
+    "via": "already"
+  },
+  {
+    "arxiv_id": "1910.09336",
+    "filename": "The_Lean_mathematical_library_mathlib.pdf",
+    "theme": "P.3 Mathlib",
+    "ok": true,
+    "via": "already"
+  },
+  {
+    "arxiv_id": "2208.04024",
+    "filename": "Social_Simulacra_Park_et_al.pdf",
+    "theme": "P.50 Social Simulacra",
+    "ok": true,
+    "via": "already"
+  },
+  {
+    "arxiv_id": "2304.03279",
+    "filename": "MACHIAVELLI_benchmark_agents_arxiv.pdf",
+    "theme": "P.56-57 Machiavelli bias",
+    "ok": true,
+    "via": "already"
+  },
+  {
+    "arxiv_id": "2210.03629",
+    "filename": "ReAct_Synergizing_Reasoning_and_Acting_in_Language_Models.pdf",
+    "theme": "P.17 Agent loop",
+    "ok": true,
+    "via": "download",
+    "bytes": 633805,
+    "title": "arXiv Query: search_query=&amp;id_list=2210.03629&amp;start=0&amp;max_results=1",
+    "summary": "While large language models (LLMs) have demonstrated impressive capabilities across tasks in language understanding and interactive decision making, their abilities for reasoning (e.g. chain-of-thought prompting) and acting (e.g. action plan generation) have primarily been studied as separate topics. In this paper, we explore the use of LLMs to generate both reasoning traces and task-specific actions in an interleaved manner, allowing for greater synergy between the two: reasoning traces help the model induce, track, and update action plans as well as handle exceptions, while actions allow it to interface with external sources, such as knowledge bases or environments, to gather additional information. We apply our approach, named ReAct, to a diverse set of language and decision making tasks and demonstrate its effectiveness over state-of-the-art baselines, as well as improved human interpretability and trustworthiness over methods without reasoning or acting components. Concretely, on question answering (HotpotQA) and fact verification (Fever), ReAct overcomes issues of hallucination",
+    "authors": [
+      "Shunyu Yao",
+      "Jeffrey Zhao",
+      "Dian Yu",
+      "Nan Du",
+      "Izhak Shafran",
+      "Karthik Narasimhan",
+      "Yuan Cao"
+    ],
+    "year": 2022
+  },
+  {
+    "arxiv_id": "2303.11366",
+    "filename": "Reflexion_Language_Agents_with_Verbal_Reinforcement_Learning.pdf",
+    "theme": "P.17 Agent harness loop",
+    "ok": true,
+    "via": "download",
+    "bytes": 591097,
+    "title": "arXiv Query: search_query=&amp;id_list=2303.11366&amp;start=0&amp;max_results=1",
+    "summary": "Large language models (LLMs) have been increasingly used to interact with external environments (e.g., games, compilers, APIs) as goal-driven agents. However, it remains challenging for these language agents to quickly and efficiently learn from trial-and-error as traditional reinforcement learning methods require extensive training samples and expensive model fine-tuning. We propose Reflexion, a novel framework to reinforce language agents not by updating weights, but instead through linguistic feedback. Concretely, Reflexion agents verbally reflect on task feedback signals, then maintain their own reflective text in an episodic memory buffer to induce better decision-making in subsequent trials. Reflexion is flexible enough to incorporate various types (scalar values or free-form language) and sources (external or internally simulated) of feedback signals, and obtains significant improvements over a baseline agent across diverse tasks (sequential decision-making, coding, language reasoning). For example, Reflexion achieves a 91% pass@1 accuracy on the HumanEval coding benchmark, su",
+    "authors": [
+      "Noah Shinn",
+      "Federico Cassano",
+      "Edward Berman",
+      "Ashwin Gopinath",
+      "Karthik Narasimhan",
+      "Shunyu Yao"
+    ],
+    "year": 2023
+  },
+  {
+    "arxiv_id": "2405.15793",
+    "filename": "SWE_agent_Agent_Computer_Interfaces_Enable_Software_Engineering.pdf",
+    "theme": "P.17 Harness / tools",
+    "ok": false,
+    "error": "HTTP Error 406: Not Acceptable"
+  },
+  {
+    "arxiv_id": "2004.10521",
+    "filename": "Causal_Inference_Machine_Learning_Survey.pdf",
+    "theme": "P.51 SCM / causal",
+    "ok": false,
+    "error": "HTTP Error 406: Not Acceptable"
+  },
+  {
+    "arxiv_id": "1809.10597",
+    "filename": "p_bits_for_probabilistic_spin_logic_Camsari.pdf",
+    "theme": "P.40 p-bit thermo",
+    "ok": false,
+    "error": "HTTP Error 406: Not Acceptable"
+  },
+  {
+    "arxiv_id": "1307.7090",
+    "filename": "On_the_finite_time_blowup_of_3D_Euler_related.pdf",
+    "theme": "P.39 Euler blowup",
+    "ok": false,
+    "error": "HTTP Error 406: Not Acceptable"
+  },
+  {
+    "arxiv_id": "1106.3113",
+    "filename": "Reverse_Mathematics_What_why_how_survey.pdf",
+    "theme": "P.23 Reverse Math",
+    "ok": false,
+    "error": "HTTP Error 406: Not Acceptable"
+  },
+  {
+    "arxiv_id": "1402.6050",
+    "filename": "Formalization_Godel_Ontological_Proof_Benzmueller.pdf",
+    "theme": "P.70 Godel modal",
+    "ok": false,
+    "error": "HTTP Error 406: Not Acceptable"
+  },
+  {
+    "arxiv_id": "cs/0602028",
+    "filename": "Gonthier_Formal_Proof_Four_Colour_Theorem.pdf",
+    "theme": "P.32 Four color",
+    "ok": false,
+    "error": "HTTP Error 406: Not Acceptable"
+  },
+  {
+    "arxiv_id": "2305.20050",
+    "filename": "Llemma_Open_Language_Model_for_Mathematics.pdf",
+    "theme": "P.4 AI math",
+    "ok": true,
+    "via": "download",
+    "bytes": 4384742,
+    "title": "arXiv Query: search_query=&amp;id_list=2305.20050&amp;start=0&amp;max_results=1",
+    "summary": "In recent years, large language models have greatly improved in their ability to perform complex multi-step reasoning. However, even state-of-the-art models still regularly produce logical mistakes. To train more reliable models, we can turn either to outcome supervision, which provides feedback for a final result, or process supervision, which provides feedback for each intermediate reasoning step. Given the importance of training reliable models, and given the high cost of human feedback, it is important to carefully compare the both methods. Recent work has already begun this comparison, but many questions still remain. We conduct our own investigation, finding that process supervision significantly outperforms outcome supervision for training models to solve problems from the challenging MATH dataset. Our process-supervised model solves 78% of problems from a representative subset of the MATH test set. Additionally, we show that active learning significantly improves the efficacy of process supervision. To support related research, we also release PRM800K, the complete dataset of",
+    "authors": [
+      "Hunter Lightman",
+      "Vineet Kosaraju",
+      "Yura Burda",
+      "Harri Edwards",
+      "Bowen Baker",
+      "Teddy Lee",
+      "Jan Leike",
+      "John Schulman",
+      "Ilya Sutskever",
+      "Karl Cobbe"
+    ],
+    "year": 2023
+  },
+  {
+    "arxiv_id": "2402.03300",
+    "filename": "DeepSeekMath_Pushing_Limits_Mathematical_Reasoning.pdf",
+    "theme": "P.4 AI math",
+    "ok": true,
+    "via": "download",
+    "bytes": 1844642,
+    "title": "arXiv Query: search_query=&amp;id_list=2402.03300&amp;start=0&amp;max_results=1",
+    "summary": "Mathematical reasoning poses a significant challenge for language models due to its complex and structured nature. In this paper, we introduce DeepSeekMath 7B, which continues pre-training DeepSeek-Coder-Base-v1.5 7B with 120B math-related tokens sourced from Common Crawl, together with natural language and code data. DeepSeekMath 7B has achieved an impressive score of 51.7% on the competition-level MATH benchmark without relying on external toolkits and voting techniques, approaching the performance level of Gemini-Ultra and GPT-4. Self-consistency over 64 samples from DeepSeekMath 7B achieves 60.9% on MATH. The mathematical reasoning capability of DeepSeekMath is attributed to two key factors: First, we harness the significant potential of publicly available web data through a meticulously engineered data selection pipeline. Second, we introduce Group Relative Policy Optimization (GRPO), a variant of Proximal Policy Optimization (PPO), that enhances mathematical reasoning abilities while concurrently optimizing the memory usage of PPO.",
+    "authors": [
+      "Zhihong Shao",
+      "Peiyi Wang",
+      "Qihao Zhu",
+      "Runxin Xu",
+      "Junxiao Song",
+      "Xiao Bi",
+      "Haowei Zhang",
+      "Mingchuan Zhang",
+      "Y. K. Li",
+      "Y. Wu"
+    ],
+    "year": 2024
+  },
+  {
+    "arxiv_id": "2308.11432",
+    "filename": "2308.11432_arXiv_Query_search_query_amp_id_list_2308_11432_amp_start_0_amp_max_re.pdf",
+    "theme": "P.4 check title",
+    "ok": true,
+    "via": "download",
+    "bytes": 5788348,
+    "title": "arXiv Query: search_query=&amp;id_list=2308.11432&amp;start=0&amp;max_results=1",
+    "summary": "Autonomous agents have long been a prominent research focus in both academic and industry communities. Previous research in this field often focuses on training agents with limited knowledge within isolated environments, which diverges significantly from human learning processes, and thus makes the agents hard to achieve human-like decisions. Recently, through the acquisition of vast amounts of web knowledge, large language models (LLMs) have demonstrated remarkable potential in achieving human-level intelligence. This has sparked an upsurge in studies investigating LLM-based autonomous agents. In this paper, we present a comprehensive survey of these studies, delivering a systematic review of the field of LLM-based autonomous agents from a holistic perspective. More specifically, we first discuss the construction of LLM-based autonomous agents, for which we propose a unified framework that encompasses a majority of the previous work. Then, we present a comprehensive overview of the diverse applications of LLM-based autonomous agents in the fields of social science, natural science, ",
+    "authors": [
+      "Lei Wang",
+      "Chen Ma",
+      "Xueyang Feng",
+      "Zeyu Zhang",
+      "Hao Yang",
+      "Jingsen Zhang",
+      "Zhiyuan Chen",
+      "Jiakai Tang",
+      "Xu Chen",
+      "Yankai Lin"
+    ],
+    "year": 2023
+  },
+  {
+    "arxiv_id": "2310.10631",
+    "filename": "ToRA_Tool_integrated_Reasoning_Agent_Math.pdf",
+    "theme": "P.17 tools+math",
+    "ok": false,
+    "error": "HTTP Error 406: Not Acceptable"
+  },
+  {
+    "arxiv_id": "2406.06357",
+    "filename": "OlympiadBench_Challenging_Bilingual_Olympiad.pdf",
+    "theme": "P.4 olympiad AI",
+    "ok": false,
+    "error": "HTTP Error 406: Not Acceptable"
+  },
+  {
+    "arxiv_id": "2205.02325",
+    "filename": "Singularity_formation_Euler_equations_related.pdf",
+    "theme": "P.39 fluid",
+    "ok": false,
+    "error": "HTTP Error 406: Not Acceptable"
+  },
+  {
+    "arxiv_id": "1908.07565",
+    "filename": "Survey_Computational_Approaches_Literary_DH.pdf",
+    "theme": "P.52 digital humanities",
+    "ok": false,
+    "error": "HTTP Error 406: Not Acceptable"
+  },
+  {
+    "arxiv_id": "2306.13131",
+    "filename": "Are_LLMs_Good_at_Math_reasoning_survey.pdf",
+    "theme": "P.4 check",
+    "ok": false,
+    "error": "HTTP Error 406: Not Acceptable"
+  },
+  {
+    "arxiv_id": "2408.03350",
+    "filename": "A_Survey_on_Deep_Learning_for_Theorem_Proving.pdf",
+    "theme": "P.3 ATP survey",
+    "ok": false,
+    "error": "HTTP Error 406: Not Acceptable"
+  },
+  {
+    "arxiv_id": "2206.04079",
+    "filename": "HyperTree_Proof_Search_or_related.pdf",
+    "theme": "P.3 proof search",
+    "ok": false,
+    "error": "HTTP Error 406: Not Acceptable"
+  },
+  {
+    "arxiv_id": "2305.18882",
+    "filename": "LeanDojo_related_check.pdf",
+    "theme": "P.3 check",
+    "ok": false,
+    "error": "HTTP Error 406: Not Acceptable"
+  },
+  {
+    "arxiv_id": "2501.07163",
+    "filename": "AI_Mathematical_Olympiad_or_related.pdf",
+    "theme": "P.4 check",
+    "ok": false,
+    "error": "HTTP Error 406: Not Acceptable"
+  }
+]

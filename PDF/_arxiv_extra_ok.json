@@ -1,0 +1,26 @@
+[
+  {
+    "id": "2310.10631",
+    "ok": true,
+    "filename": "Llemma_Open_Language_Model_for_Mathematics.pdf",
+    "title": "Published as a conference paper at ICLR 2024",
+    "snippet": "Published as a conference paper at ICLR 2024\nLLEMMA : AN OPEN LANGUAGE MODEL FOR\nMATHEMATICS\nZhangir Azerbayev 1,2 Hailey Schoelkopf 2 Keiran Paster 3,4\nMarco Dos Santos 5 Stephen McAleer 6 Albert Q. Jiang 5 Jia Deng 1\nStella Biderman 2 Sean Welleck 6,7\n1 Princeton University 2 EleutherAI 3 University of Toronto 4 Vector Institute\n5 University of Cambridge 6 Carnegie Mellon University 7 University of Washington\nABSTRACT\nWe present LLEMMA , a large language model for mathematics. We continue\npretraining Code Llama on Proof-Pile-2, a mixture of scientific papers, web data\ncontaining mathematics, and mathematical code, yieldingLLEMMA . On the MATH\nbenchmark LLEMMA outperforms all known open bas"
+  },
+  {
+    "id": "2305.20050",
+    "ok": true,
+    "filename": "Lets_Verify_Step_by_Step_Process_Supervision.pdf",
+    "title": "Let’s Verify Step by Step",
+    "snippet": "Let’s Verify Step by Step\nHunter Lightman ∗ Vineet Kosaraju ∗ Y ura Burda∗ Harri Edwards\nBowen Baker T eddy Lee Jan Leike John Schulman Ilya Sutskever\nKarl Cobbe ∗\nOpenAI\nAbstract\nIn recent years, large language models have greatly improved in their\nability to perform complex multi-step reasoning. However, even state-\nof-the-art models still regularly produce logical mistakes. To train more\nreliable models, we can turn either to outcome supervision, which provides\nfeedback for a final result, or process supervision, which provides feedback\nfor each intermediate reasoning step. Given the importance of training\nreliable models, and given the high cost of human feedback, it is impor-\ntant to ca"
+  },
+  {
+    "id": "1704.04235",
+    "ok": false,
+    "head": "Close Yet Discriminative Domain Adaptation\nLingkun Luo1∗, Xiaofang Wang 2 ∗, Shiqiang Hu 1, Chao Wang 1, Yuxing Tang2, Liming Chen 2\n1 School of Aeronautics and Astronautics, Shanghai Jiao Tong Univer"
+  },
+  {
+    "id": "1602.05752",
+    "ok": false,
+    "head": "KEK-TH-1885, OCU-PHYS-438, AP-GR-130\nHydro-elastic Complementarity\nin Black Branes at large D\nRoberto Emparana,b, Keisuke Izumib, Raimon Lunab,\nRyotaku Suzukic, Kentaro Tanabed\naICREA, Passeig Llu´ ıs"
+  }
+]

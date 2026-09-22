@@ -1,0 +1,190 @@
+[
+  {
+    "id": "alphaproof-nature",
+    "filename": "AlphaProof_formal_mathematical_reasoning_Nature_arxiv.pdf",
+    "ok": false,
+    "error": "HTTP Error 406: Not Acceptable"
+  },
+  {
+    "id": "minif2f",
+    "filename": "miniF2F_formal_math_olympiad_benchmark.pdf",
+    "ok": true,
+    "via": "arxiv",
+    "bytes": 267937,
+    "hint": "miniF2F benchmark",
+    "slides": "P.3",
+    "arxiv_id": "2109.00110",
+    "title": "miniF2F benchmark",
+    "authors": [],
+    "year": null,
+    "summary": "Published as a conference paper at ICLR 2022\nMINI F2F: A CROSS -SYSTEM BENCHMARK FOR\nFORMAL OLYMPIAD -LEVEL MATHEMATICS\nKunhao Zheng\n´Ecole Polytechnique\nkunhao.zheng@polytechnique.edu\nJesse Michael Han\nOpenAI\nUniversity of Pittsburgh\njessemichaelhan@openai.com\nStanislas Polu\nOpenAI\nspolu@openai.com\nABSTRACT\nWe present miniF2F, a dataset of formal Olympiad-level mathematics problems\nstatements intended to provide a uniﬁed cross-system benchmark for neural the-\norem proving. The miniF2F benchmark currently targets Metamath, Lean, Is-\nabelle (partially) and HOL Light (partially) and consists of 488 problem state-\nments drawn from the AIME, AMC, and the International Mathematical Olympiad\n(IMO), as well as material from high-school and undergraduate mathematics\ncourses. We report baseline results using GPT- f (Polu & Sutskever, 2020), a\nneural theorem prover based on GPT-3 (Brown et al., 2020) and provide an anal-\nysis of its performance. We intend for miniF2F to be a community-driven effort\nand hope that our benchmark will help spur advances in neural theorem proving.\n1 I NTRODUCTION\nS",
+    "abs_url": "https://arxiv.org/abs/2109.00110",
+    "pages": 11
+  },
+  {
+    "id": "mathlib",
+    "filename": "The_Lean_mathematical_library_mathlib.pdf",
+    "ok": true,
+    "via": "arxiv",
+    "bytes": 913731,
+    "hint": "mathlib Lean library",
+    "slides": "P.3",
+    "arxiv_id": "1910.09336",
+    "title": "mathlib Lean library",
+    "authors": [],
+    "year": null,
+    "summary": "The Lean Mathematical Library\nThe mathlib Community∗\nAbstract\nThis paper describes mathlib, a community-driven effort\nto build a unified library of mathematics formalized in the\nLean proof assistant. Among proof assistant libraries, it is\ndistinguished by its dependently typed foundations, focus\non classical mathematics, extensive hierarchy of structures,\nuse of large- and small-scale automation, and distributed or-\nganization. We explain the architecture and design decisions\nof the library and the social organization that has led to its\ndevelopment.\nCCS Concepts • Mathematics of computing → Mathe-\nmatical software; • Security and privacy → Logic and veri-\nfication;\nKeywords Lean, mathlib, formal library, formal proof\nACM Reference Format:\nThe mathlib Community. 2020. The Lean Mathematical Library.\nIn Proceedings of the 9th ACM SIGPLAN International Conference\non Certified Programs and Proofs (CPP ’20), January 20–21, 2020,\nNew Orleans, LA, USA. ACM, New York, NY, USA, 15 pages.https:\n//doi.org/10.1145/3372885.3373824\n1 Introduction\nSince the first mechanized proof-checking systems w",
+    "abs_url": "https://arxiv.org/abs/1910.09336",
+    "pages": 15
+  },
+  {
+    "id": "lean4",
+    "filename": "The_Lean_4_Theorem_Prover_and_Programming_Language.pdf",
+    "ok": true,
+    "via": "arxiv",
+    "bytes": 27936718,
+    "hint": "Lean 4 theorem prover",
+    "slides": "P.3",
+    "arxiv_id": "2203.09076",
+    "title": "Lean 4 theorem prover",
+    "authors": [],
+    "year": null,
+    "summary": "Submitted to the Proceedings of the US Community Study\non the Future of Particle Physics (Snowmass 2021)\nSLAC-PUB-17660\nJuly 7, 2022\nC3 Demonstration Research and Development Plan\nEditors:\nEmilio A. Nanni 7, Martin Breidenbach 7, Caterina Vernieri 7, Sergey\nBelomestnykh3,8, Pushpalatha Bhat 3 and Sergei Nagaitsev 3,11\nAuthors:\nMei Bai 7, Tim Barklow 7, William J. Berg 1, John Byrd 1, Ankur Dhar 7, Ram C.\nDhuley3, Chris Doss 10, Joseph Duris 7, Auralee Edelen 7, Claudio Emma 7, Josef\nFrisch7, Annika Gabriel 7, Spencer Gessner 7, Carsten Hast 7, Chunguang Jing 1,\nArkadiy Klebaner 3, Anatoly K. Krasnykh 7, John Lewellen 7, Matthias Liepe 2,\nMichael Litos 10, Xueying Lu 1, Jared Maxson 2, David Montanari 3, Pietro\nMusumeci9, Alireza Nassiri 1, Cho-Kuen Ng 7, Mohamed A. K. Othman 7, Marco\nOriunno7, Dennis Palmer 7, J. Ritchie Patterson 2, Michael E. Peskin 7, Thomas J.\nPeterson7, John Power 1, Ji Qiang 4, James Rosenzweig 9, Vladimir Shiltsev, Evgenya\nSimakov5, Emma Snively 7, Bruno Spataro 6, Sami Tantawi 7, Brandon Weatherford 7,\nGlen White 7, and Kent P. Wootton 1\n1Argonne National Lab",
+    "abs_url": "https://arxiv.org/abs/2203.09076",
+    "pages": 52
+  },
+  {
+    "id": "alphageometry1",
+    "filename": "AlphaGeometry_Trinh_et_al_original.pdf",
+    "ok": false,
+    "error": "HTTP Error 406: Not Acceptable"
+  },
+  {
+    "id": "funsearch",
+    "filename": "FunSearch_Mathematical_Discoveries_from_Program_Search.pdf",
+    "ok": false,
+    "error": "HTTP Error 406: Not Acceptable"
+  },
+  {
+    "id": "reverse-math-survey",
+    "filename": "Reverse_Mathematics_Simpson_style_survey_arxiv.pdf",
+    "ok": false,
+    "error": "HTTP Error 406: Not Acceptable"
+  },
+  {
+    "id": "srm-friedman",
+    "filename": "Strict_Reverse_Mathematics_Friedman_arxiv.pdf",
+    "ok": false,
+    "error": "HTTP Error 406: Not Acceptable"
+  },
+  {
+    "id": "bkm-related",
+    "filename": "Beale_Kato_Majda_criterion_survey_or_related_arxiv.pdf",
+    "ok": false,
+    "error": "HTTP Error 406: Not Acceptable"
+  },
+  {
+    "id": "bourgain-gibbs",
+    "filename": "Bourgain_Gibbs_measure_NLS_related_arxiv.pdf",
+    "ok": false,
+    "error": "HTTP Error 406: Not Acceptable"
+  },
+  {
+    "id": "euler-smooth-force",
+    "filename": "Euler_blowup_smooth_forcing_related_arxiv.pdf",
+    "ok": false,
+    "error": "HTTP Error 406: Not Acceptable"
+  },
+  {
+    "id": "social-simulacra",
+    "filename": "Social_Simulacra_Park_et_al.pdf",
+    "ok": true,
+    "via": "arxiv",
+    "bytes": 3127801,
+    "hint": "Social Simulacra",
+    "slides": "P.50",
+    "arxiv_id": "2208.04024",
+    "title": "Social Simulacra",
+    "authors": [],
+    "year": null,
+    "summary": "Social Simulacra: Creating Populated Prototypes\nfor Social Computing Systems\nJoon Sung Park\nStanford University\nStanford, USA\njoonspk@stanford.edu\nLindsay Popowski\nStanford University\nStanford, USA\npopowski@stanford.edu\nCarrie J. Cai\nGoogle Research\nMountain View, CA, USA\ncjcai@google.com\nMeredith Ringel Morris\nGoogle Research\nSeattle, WA, USA\nmerrie@google.com\nPercy Liang\nStanford University\nStanford, USA\npliang@cs.stanford.edu\nMichael S. Bernstein\nStanford University\nStanford, USA\nmsb@cs.stanford.edu\nABSTRACT\nSocial computing prototypes probe the social behaviors that may\narise in an envisioned system design. This prototyping practice\nis currently limited to recruiting small groups of people. Unfortu-\nnately, many challenges do not arise until a system is populated\nat a larger scale. Can a designer understand how a social system\nmight behave when populated, and make adjustments to the de-\nsign before the system falls prey to such challenges? We intro-\nduce social simulacra , a prototyping technique that generates a\nbreadth of realistic social interactions that may emerge when a so-",
+    "abs_url": "https://arxiv.org/abs/2208.04024",
+    "pages": 18
+  },
+  {
+    "id": "scm-pearl-survey",
+    "filename": "Causal_Inference_SCM_survey_arxiv.pdf",
+    "ok": false,
+    "error": "HTTP Error 406: Not Acceptable"
+  },
+  {
+    "id": "pbit-thermo",
+    "filename": "Thermodynamic_computing_pbit_arxiv.pdf",
+    "ok": false,
+    "error": "HTTP Error 406: Not Acceptable"
+  },
+  {
+    "id": "agent-harness",
+    "filename": "LLM_Agent_Harness_or_tool_use_arxiv.pdf",
+    "ok": false,
+    "error": "HTTP Error 406: Not Acceptable"
+  },
+  {
+    "id": "swe-agent",
+    "filename": "SWE_agent_or_OpenHands_agent_scaffold_arxiv.pdf",
+    "ok": false,
+    "error": "HTTP Error 406: Not Acceptable"
+  },
+  {
+    "id": "curry-howard",
+    "filename": "Curry_Howard_correspondence_survey_arxiv.pdf",
+    "ok": false,
+    "error": "HTTP Error 406: Not Acceptable"
+  },
+  {
+    "id": "godel-ontological-lean",
+    "filename": "Godel_ontological_argument_formalization_Lean_arxiv.pdf",
+    "ok": false,
+    "error": "HTTP Error 406: Not Acceptable"
+  },
+  {
+    "id": "machiavelli",
+    "filename": "MACHIAVELLI_benchmark_agents_arxiv.pdf",
+    "ok": true,
+    "via": "arxiv",
+    "bytes": 2821086,
+    "hint": "MACHIAVELLI benchmark",
+    "slides": "P.57",
+    "arxiv_id": "2304.03279",
+    "title": "MACHIAVELLI benchmark",
+    "authors": [],
+    "year": null,
+    "summary": "Do the Rewards Justify the Means? Measuring Trade-Offs Between\nRewards and Ethical Behavior in the MACHIAVELLI Benchmark\nAlexander Pan * 1 Jun Shern Chan * 2 Andy Zou * 3 Nathaniel Li 1 Steven Basart 2 Thomas Woodside 4\nJonathan Ng 2 Hanlin Zhang 3 Scott Emmons 1 Dan Hendrycks 2\nAbstract\nArtificial agents have traditionally been trained to\nmaximize reward, which may incentivize power-\nseeking and deception, analogous to how next-\ntoken prediction in language models (LMs) may\nincentivize toxicity. So do agents naturally learn\nto be Machiavellian? And how do we measure\nthese behaviors in general-purpose models such\nas GPT-4? Towards answering these questions,\nwe introduce MACHIAVELLI , a benchmark of\n134 Choose-Your-Own-Adventure games contain-\ning over half a million rich, diverse scenarios that\ncenter on social decision-making. Scenario label-\ning is automated with LMs, which are more per-\nformant than human annotators. We mathematize\ndozens of harmful behaviors and use our annota-\ntions to evaluate agents’ tendencies to be power-\nseeking, cause disutility, and commit ethical vio-\nla",
+    "abs_url": "https://arxiv.org/abs/2304.03279",
+    "pages": 31
+  },
+  {
+    "id": "distant-reading",
+    "filename": "Computational_distant_reading_digital_humanities_arxiv.pdf",
+    "ok": false,
+    "error": "HTTP Error 406: Not Acceptable"
+  },
+  {
+    "id": "four-color",
+    "filename": "Four_color_theorem_formalization_or_algorithm_arxiv.pdf",
+    "ok": false,
+    "error": "HTTP Error 406: Not Acceptable"
+  },
+  {
+    "id": "ai-math-discovery",
+    "filename": "AI_mathematical_discovery_structure_arxiv.pdf",
+    "ok": false,
+    "error": "HTTP Error 406: Not Acceptable"
+  },
+  {
+    "id": "alphageometry-dd",
+    "filename": "AlphaGeometry_deepmind_companion_arxiv.pdf",
+    "ok": false,
+    "error": "HTTP Error 406: Not Acceptable"
+  }
+]

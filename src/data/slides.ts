@@ -16,13 +16,21 @@ const CORE_SLIDES: SlideItem[] = [
     title: "时代背景：2026年数学界的“深蓝时刻”",
     subtitle: "形式化定理证明器与大模型集群攻克百年流体奇点",
     bullets: [
-      "**历史破局点（本场关键节点）**：特里斯坦·布克马斯特与阿尔珀厄借助交互式证明器 **Lean 4**，验证光滑外力驱动下三维欧拉方程的有限时间爆破——与 **AlphaProof / AlphaGeometry**、纽结结构发现同属数学侧里程碑。",
-      "**直觉与严密的统一**：大模型的“发散直觉（System 1）”与形式化内核的“零误差审查（System 2）”构成自博弈飞轮——这是数学能突破、文社哲仍艰难的关键分叉点。",
-      "**认识论溢出效应**：纯数学的形式化闭环迫使哲学与人文社科直面：若没有类 Lean 的治理层，AI 文稿再流畅也难称范式突破。",
-      "**下一页**：用非数学听众也能听懂的方式，说清楚 **Lean 究竟是什么、如何裁决证明**。"
+      "**历史破局点**：特里斯坦·布克马斯特与阿尔珀厄借助 **Lean 4**，验证光滑外力下三维欧拉等方程的有限时间爆破——手稿与 Lean 代码同步公开（知识库：`statement_zh` / **doc-buckmaster-01**）。",
+      "**纲领源流**：光滑外力突破建立在 **Córdoba–Martínez-Zoroa** 外力爆破路线之上（arXiv:2309.08495，**doc-cordoba-cascade-01**）；BKM 类爆破准则是经典判据支点（**doc-chae-bkm-01**）。",
+      "**直觉⊗严密**：LLM（System 1）提案 + Lean 核验（System 2）。声明强调：原始模型证明可“不堪卒读”，**形式化完成**才进入深蓝时刻。",
+      "**并列里程碑**：**AlphaProof / AlphaGeometry 2** 的 IMO 银牌（**doc-alphaproof-imo-01**）同属可核验突破族——下一页讲清 Lean 机制。"
     ],
-    notes: "本页立“破局点”即可；Lean 机制留给下一页 2–3 分钟。可出示知识库 Lean/流体文献底本。",
-    keywords: ["深蓝时刻", "Lean 4", "System 1/2", "三维欧拉方程", "认识论溢出"]
+    notes: "立破局点。打开知识库检索「布克马斯特」「Córdoba」「深蓝」。Lean 细节留给 P.3。",
+    keywords: ["深蓝时刻", "Lean 4", "布克马斯特", "Córdoba", "AlphaProof", "System 1/2"],
+    literatureIds: [
+      "doc-buckmaster-01",
+      "doc-lean-euler-bridge-01",
+      "doc-cordoba-cascade-01",
+      "doc-chae-bkm-01",
+      "doc-alphaproof-imo-01",
+      "doc-quanta-01"
+    ]
   },
   {
     index: 3,
@@ -71,12 +79,13 @@ const CORE_SLIDES: SlideItem[] = [
     sectionTitle: "第一章",
     title: "哈维·弗里德曼与“具体数学不完备性”",
     bullets: [
-      "**半个世纪的孤独远征**：哈维·弗里德曼（Harvey Friedman）致力于寻找最日常、最直观的“具体数学命题”。",
-      "**具体数学不完备性（Concrete Incompleteness）**：在纯粹的组合学、欧氏空间几何与有理数点集中，发现了完全超出经典集合论公理系统 $\\mathsf{ZFC}$ 证明能力的事实。",
-      "**认识论的致命一击**：有限局部的严密几何规律，竟然不可避免地必须依赖超越人类观测极限的“高阶大基数（Large Cardinals）”作为支撑。"
+      "**半个世纪的孤独远征**：哈维·弗里德曼（Harvey Friedman）寻找最日常、最直观的“具体数学命题”。",
+      "**具体数学不完备性**：组合学 / 欧氏几何 / 有理点集中出现超出 $\\mathsf{ZFC}$ 证明力的事实——知识库挂载 OSU 可下载手稿与 **Boolean Relation Theory** 全书（**doc-friedman-pdf-01** / **doc-friedman-01**）。",
+      "**认识论冲击**：有限局部的严密规律，竟须依赖高阶**大基数**作为支撑——后文有理立方体页展开。"
     ],
-    notes: "弗里德曼证明，即使你只想在三维有理数立方体里画点做图，要想证明某种完全对称性的存在，你都必须借助超越ZFC公理系统的大基数假设。",
-    keywords: ["哈维·弗里德曼", "具体数学不完备性", "ZFC", "大基数"]
+    notes: "打开知识库检索「Friedman」「具体数学不完备性」。强调：日常命题亦可触及大基数强度。",
+    keywords: ["哈维·弗里德曼", "具体数学不完备性", "Boolean Relation Theory", "ZFC", "大基数"],
+    literatureIds: ["doc-friedman-01", "doc-friedman-pdf-01"]
   },
   {
     index: 7,
@@ -313,13 +322,15 @@ interface EpistemicProposition<State, Action> {
     sectionTitle: "第二章",
     title: "突破流体奇点：特里斯坦·布克马斯特与光滑外力爆破",
     bullets: [
-      "**千禧年大奖难题的阴影**：三维 Navier-Stokes 与 Euler 方程是否存在光滑初值的有限时间爆破，长期被视为流体力学的圣杯。",
-      "**布克马斯特与科尔多瓦的战果**：构造了在光滑紧支集外力驱动下，不可压缩流体涡度（Vorticity）在有限时间内发生自相似代数级爆破的精确解。",
-      "**计算机辅助的决定性角色**：数万个非线性自相似收敛项全部在 Lean 4 定理证明器中完成严格的区间算术（Interval Arithmetic）机器验证。"
+      "**千禧年难题阴影**：三维 Euler / Navier-Stokes 光滑爆破长期为圣杯。",
+      "**布克马斯特战果**：光滑外力下 IPM / Boussinesq / 3D Euler 有限时间爆破，Lean 4 形式化公开（**doc-buckmaster-01**）。",
+      "**源流**：**Córdoba–Martínez-Zoroa** 构造外力爆破机制（**doc-cordoba-cascade-01**）；经典侧以 **BKM 爆破准则** 为判据语言（**doc-chae-bkm-01**）。",
+      "**机器验证角色**：超长估计链条依赖交互式证明器——与开场 P.2–P.3 同一证据链。"
     ],
     formula: "\\|\\omega(\\cdot, t)\\|_{L^\\infty} \\sim \\frac{1}{(T^* - t)^\\alpha}, \\quad \\alpha > 1",
-    notes: "布克马斯特等人借助机器证明，攻克了三维流体涡度爆破的经典难题，成为2026年形式化证明的巅峰代表作。",
-    keywords: ["特里斯坦·布克马斯特", "科尔多瓦", "三维欧拉方程", "有限时间爆破", "区间算术"]
+    notes: "知识库三联：声明、Córdoba 论文、Chae/BKM。呼应开场深蓝时刻。",
+    keywords: ["布克马斯特", "Córdoba", "三维欧拉", "Lean 4", "BKM", "有限时间爆破"],
+    literatureIds: ["doc-buckmaster-01", "doc-cordoba-cascade-01", "doc-chae-bkm-01", "doc-lean-euler-bridge-01"]
   },
   {
     index: 24,
@@ -431,12 +442,13 @@ class SocialField {
     sectionTitle: "第三章",
     title: "斯坦福生成式智能体拆解：Joon Park 架构范式",
     bullets: [
-      "**超越条件反射式的问答机**：2023年斯坦福 Joon Sung Park 等人提出的 Generative Agents，赋予了大模型智能体长周期自主生存的能力。",
-      "**Smallville 小镇的涌现奇迹**：25 个智能体在沙盒中自发组织了情人节派对、传递八卦与结盟，展现了类似人类社会的自发涌现（Emergence）。",
-      "**三大核心微架构支柱**：\n1. **记忆流（Memory Stream）**：完整记录生命体验的事件日志数据库；\n2. **反思树（Reflection Tree）**：从琐碎事实中提炼抽象信念的二阶认知树；\n3. **规划引擎（Planning Engine）**：递归自顶向下分解的行为时间表。"
+      "**超越问答机**：斯坦福 **Joon Sung Park** 等《Generative Agents》（arXiv:2304.03442，**doc-generative-agents-pdf**）赋予智能体长周期自主生存能力。",
+      "**Smallville 涌现**：约 25 个智能体自发组织派对、八卦与结盟——记忆流 / 反思树 / 规划引擎三大支柱（同文详述）。",
+      "**前史**：**Social Simulacra**（arXiv:2208.04024）已用 LM 填充社会计算原型做建成前试运行——下一专页展开 What-If。"
     ],
-    notes: "Joon Park架构是多智能体社会仿真的分水岭，但它原本的设定中存在严重漏洞，我们在第四章将对其进行严肃学术重构。",
-    keywords: ["Joon Park", "Generative Agents", "Smallville", "记忆流", "自发涌现"]
+    notes: "打开知识库 Generative Agents PDF。强调第四课将严肃重构其马基雅维利缺口。",
+    keywords: ["Generative Agents", "Smallville", "Park", "记忆流", "Social Simulacra"],
+    literatureIds: ["doc-generative-agents-pdf", "doc-joonpark-01", "doc-social-simulacra-01"]
   },
   {
     index: 32,
@@ -471,12 +483,13 @@ class SocialField {
     sectionTitle: "第三章",
     title: "Social Simulacra：社会试运行与多宇宙推演",
     bullets: [
-      "**生成（Generate）**：依据社会学或历史学初始参数，程序化自动合成数百名具有异质背景、性格偏见与阶层地位的智能体群落。",
-      "**反事实推演（What-If Testing）**：在特定历史时刻人为干预系统变量（如突然切断白银供给或注入煽动性谣言），观察系统轨迹的分叉。",
-      "**多宇宙分支（Multiverse Simulation）**：对同一初始状态施加不同的微观蒙特卡洛随机漫步，并行推演上千个平行宇宙，测算系统走向崩溃或平衡的概率测度。"
+      "**文献定义**：**Social Simulacra**（Park et al., arXiv:2208.04024，**doc-social-simulacra-01**）——为尚未建成的社会计算系统生成“住人”的原型，提前观察社区动力学。",
+      "**反事实推演（What-If）**：在历史/制度参数上干预（断供、谣言），观测轨迹分叉；对照 **复数未来** 语法——拒绝单一终点（**doc-futures-01**）。",
+      "**多宇宙分支**：同初值多随机漫步，估算崩溃/平衡的概率测度——连接第二章测度语言。"
     ],
-    notes: "Social Simulacra让历史学第一次拥有了像粒子物理对撞机一样的反事实平行宇宙检验能力。",
-    keywords: ["Social Simulacra", "反事实推演", "多宇宙", "What-If", "蒙特卡洛"]
+    notes: "知识库检索 Social Simulacra。强调：原型试运行 ≠ 历史复原真理。",
+    keywords: ["Social Simulacra", "反事实", "复数未来", "What-If", "多宇宙"],
+    literatureIds: ["doc-social-simulacra-01", "doc-generative-agents-pdf", "doc-futures-01"]
   },
   {
     index: 35,
@@ -484,12 +497,13 @@ class SocialField {
     sectionTitle: "第三章",
     title: "形式化审查进入社科：从数学证明到历史因果闭环",
     bullets: [
-      "**数学证明的启示**：数学通过 Lean 编译器杜绝了假命题的蒙混过关；社会科学同样亟需属于自己的“形式化逻辑审查器”。",
-      "**因果图的形式闭合**：利用有向无环图（DAG）与结构因果模型（SCM），严密检查历史学家的归因链条是否存在隐藏混淆变量或倒果为因。",
-      "**压力死锁测试**：在代码仿真环境中以万倍时钟加速运转，自动检测某套制度安排（如王安石变法、明代赋税代纳制）是否内生逻辑死锁。"
+      "**数学启示**：Lean 杜绝假命题蒙混；社科需要自己的审查器。",
+      "**因果图语言**：用 DAG / **结构因果模型（SCM）** 检查归因是否混淆或倒果为因——技术文献见有效调整集理论（**doc-causal-adj-01**，arXiv:2004.10521）。",
+      "**压力死锁测试**：仿真中加速运转，检测制度安排是否内生逻辑死锁（衔接明清沙盘）。"
     ],
-    notes: "文科学者的因果论证往往看似言之成理，实则隐藏无数倒果为因。形式化SCM审查将让这些逻辑漏洞无可遁形。",
-    keywords: ["形式化审查", "因果图", "结构因果模型", "SCM", "逻辑闭环"]
+    notes: "点名知识库因果调整集论文：不是“再写一段因果叙事”，而是图模型可检验的闭合。",
+    keywords: ["SCM", "因果图", "调整集", "形式化审查", "Lean"],
+    literatureIds: ["doc-causal-adj-01", "doc-apollo-01"]
   },
   {
     index: 36,
