@@ -18,7 +18,7 @@ export interface RagLiteratureThesis {
   sectionOrPage: string;
   keywords: string[];
   coreThesis: string;
-  ontologicalParadigm: '数理逻辑与模型论' | '无限维偏微分方程与相变' | '分布式多智能体与博弈' | '热力学与物理计算' | '一般认识论' | '科学哲学与方法论';
+  ontologicalParadigm: '数理逻辑与模型论' | '数理逻辑与形式化方法' | '无限维偏微分方程与相变' | '分布式多智能体与博弈' | '热力学与物理计算' | '一般认识论' | '科学哲学与方法论' | '可计算认识论';
   etymologicalAnchor?: {
     term: string;
     original: string; // e.g. "Ousia", "Substantia", "Dasein"
@@ -126,8 +126,8 @@ export const RAG_THESIS_REGISTRY: Record<string, Partial<RagLiteratureThesis>> =
     authors: '特里斯坦·布克马斯特, 莱文特·阿尔珀厄',
     year: 2026,
     sectionOrPage: '三大突破性成果与学术纲领源流 (P.1-3)',
-    targetSlideIndex: 39,
-    targetSlideTitle: '突破流体奇点：特里斯坦·布克马斯特与光滑外力爆破',
+    targetSlideIndex: 2,
+    targetSlideTitle: '时代背景：2026年数学界的“深蓝时刻”',
     keywords: ['3D Euler', 'Navier-Stokes', '光滑外力爆破', 'Lean 4', '无限级联'],
     ontologicalParadigm: '无限维偏微分方程与相变',
     etymologicalAnchor: {
@@ -151,7 +151,7 @@ export const RAG_THESIS_REGISTRY: Record<string, Partial<RagLiteratureThesis>> =
       conclusion: 'C ⊢ 欧拉方程光滑解不可跨越有限时间爆破点，连续性假设在极值奇点处瓦解。',
       falsificationCriteria: '在 Lean 4 内核中发现该级联构造的能量守恒不满足一阶连续性方程，或找到柯西问题全局光滑延拓的相反证明。'
     },
-    epistemicMappingToSlide: '与讲稿中“从光滑演进到突变奇点”的形式化模型直接同构：渐进的外力推动并不保证系统反应的光滑延续，当内部能量级联达到临界阈值，制度与经济系统将自发出现不可逆断裂。',
+    epistemicMappingToSlide: '锚定开场 P.2 破局点；与 P.3 Lean 专讲、P.38+ 流体章节形成证据链。开场演示请优先挂载本条及 doc-lean-* 条目。',
     socraticQuestions: [
       '**如果数学奇点的产生必须依赖于一个在物理世界中无法实现的“无限层叠自相似级联”，那么这个数学定理所宣示的“爆破”，是对实在世界的揭示，还是纯粹形式公理游戏内部的产物？**',
       '**当形式化交互证明器（Lean 4）接管了人类无法独立验算的超长推演时，真理的“可理解性”（Intelligibility）是否已与人类主体的意识彻底剥离？**'
@@ -168,6 +168,83 @@ export const RAG_THESIS_REGISTRY: Record<string, Partial<RagLiteratureThesis>> =
     ontologicalParadigm: '数理逻辑与模型论',
     coreThesis: '形式化系统与大模型结合不仅打破了千禧年流体力学平滑性神话，更标志着科学发现从传统经验归纳彻底迈向形式化闭环可计算时代。',
     epistemicMappingToSlide: '直接对应 Slide P.2 关于“2026年数学界深蓝时刻”的时代学术背景。'
+  },
+  'doc-apollo-01': {
+    sourceTitle: 'APOLLO: Automated LLM and Lean Collaboration for Advanced Formal Reasoning',
+    authors: 'Azim Ospanov, Farzan Farnia, Roozbeh Yousefzadeh',
+    year: 2025,
+    sectionOrPage: 'Abstract / §1–2（PDF/APOLLO…Advanced Formal Reasoning.pdf）',
+    targetSlideIndex: 3,
+    targetSlideTitle: 'Lean 是什么：交互式证明器与 0/1 真值机',
+    keywords: ['APOLLO', 'Lean 4', 'proof repair', 'compiler feedback', 'miniF2F', 'Harness'],
+    ontologicalParadigm: '数理逻辑与形式化方法',
+    etymologicalAnchor: {
+      term: '编译器引导修复',
+      original: 'compiler-guided proof repair',
+      genealogy: '相对“整证抛掷直至偶然通过”，将 Lean 编译器错误信息回灌给智能体，隔离失败子引理后低预算重试。'
+    },
+    coreThesis: '形式验证器可瞬时判定证明对错，但 LLM 难一次写出完全正确的形式证明；APOLLO 用 Lean 编译器反馈驱动模块化修复智能体，在低采样预算下显著提升 ATP 正确率。',
+    formalizedArgument: {
+      explicitPremises: [
+        'P1: Lean 内核判定为二元：类型检查通过则为真，否则为假。',
+        'P2: 常规整证生成浪费编译器已给出的语法错误、战术错误与开放目标信息。'
+      ],
+      tacitAssumptions: [
+        'A_tacit: 子证明可隔离修复并重组而不引入新的隐蔽语义漂移。'
+      ],
+      inferenceChain: [
+        '由 P1，Harness 的门禁是硬的；',
+        '由 P2，把编译器反馈接入修复环，可比“海量重采样”更高效地逼近可核验证明。'
+      ],
+      conclusion: 'C ⊢ Agent = Model + Lean-compiler Harness 是可度量的工程范式，而非修辞。',
+      falsificationCriteria: '若在同等采样预算下，关闭编译器反馈的整证抛掷稳定优于 APOLLO，则该范式主张被削弱。'
+    },
+    epistemicMappingToSlide: '直接支撑 P.3：Lean 不是聊天模型，而是可失败的 0/1 真值机；并预告后文 Harness。',
+    socraticQuestions: [
+      '**若文社哲永远没有类 Lean 的编译器反馈通道，APOLLO 式修复环能否移植？缺了什么？**'
+    ]
+  },
+  'doc-lean-copilot-01': {
+    sourceTitle: 'Lean Copilot: Large Language Models as Copilots for Theorem Proving in Lean',
+    authors: 'Peiyang Song, Kaiyu Yang, Anima Anandkumar',
+    year: 2025,
+    sectionOrPage: 'Abstract / §1（PDF/Lean Copilot….pdf）',
+    targetSlideIndex: 3,
+    targetSlideTitle: 'Lean 是什么：交互式证明器与 0/1 真值机',
+    keywords: ['Lean Copilot', 'Mathlib', 'tactic', 'neuro-symbolic', '人机协作'],
+    ontologicalParadigm: '数理逻辑与形式化方法',
+    coreThesis: '全自主神经证明器在新颖定理上易失败；应将 LLM 作为 Lean 内原生副驾驶——人类把握策略直觉，模型承担战术建议、证明搜索与前提检索。',
+    epistemicMappingToSlide: '支撑 P.3“交互式”口播：结对编程式填洞；亦为 Agent=Model+Harness 的人机分工原型。'
+  },
+  'doc-lean-euler-bridge-01': {
+    sourceTitle: '布克马斯特声明摘录：Lean 形式化与人机协同的深蓝时刻',
+    authors: '特里斯坦·布克马斯特（PDF/statement_zh.pdf）',
+    year: 2026,
+    sectionOrPage: '§3–5',
+    targetSlideIndex: 2,
+    targetSlideTitle: '时代背景：2026年数学界的“深蓝时刻”',
+    keywords: ['Lean 4', '3D Euler', 'System 1', 'System 2', '形式验证', 'Harness', '深蓝时刻'],
+    ontologicalParadigm: '可计算认识论',
+    coreThesis: '原始 LLM 证明可“不堪卒读”，但 Lean 形式化完成后才进入可公开复核的范式时刻；定理结论本身不如人机协同闭环重要。',
+    epistemicMappingToSlide: '锚定 P.2 破局叙事，并为 P.3 Lean 机制提供声明原文桥接。',
+    socraticQuestions: [
+      '**若抽掉 Lean 核验层，仅保留多智能体搜索，该“突破”还能否称为范式级？**'
+    ]
+  },
+  'doc-structure-discovery-01': {
+    sourceTitle: '从证明搜索到结构发现：AI 数学的另一种能力（Liouville–Goldbach）',
+    authors: '研讨策展整理（PDF 原文）',
+    year: 2026,
+    sectionOrPage: '01–03/05（PDF/从证明搜索到结构发现….pdf）',
+    targetSlideIndex: 10,
+    targetSlideTitle: '认知转折：从“见证搜索”到“结构发现”',
+    keywords: ['结构发现', 'Liouville-Goldbach', 'Type-3', 'parity obstruction', 'Lean'],
+    ontologicalParadigm: '可计算认识论',
+    coreThesis: '相对 witness 搜索与引理路线搜索，结构发现的稀缺处在于从反例假设逼出隐藏刚性并导出矛盾的中间链条。',
+    epistemicMappingToSlide: '直接支撑结构发现专章（P.10 起）的三种能力谱系。',
+    socraticQuestions: [
+      '**文社哲中是否存在可类比的“中间引理链条发现”，还是只能停留在第二类引理拼装？**'
+    ]
   },
   'doc-friedman-01': {
     sourceTitle: '哈维·弗里德曼：具体数学不完备性与逆向数学（Reverse Mathematics）',

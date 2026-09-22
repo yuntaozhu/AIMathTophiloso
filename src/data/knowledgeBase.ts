@@ -49,23 +49,26 @@ export const CORE_DOCUMENTS: DocumentChunk[] = [
   // 2. 特里斯坦·布克马斯特与阿尔珀厄 / 科尔多瓦：流体力学奇异性与千禧年难题
   {
     id: "doc-buckmaster-01",
-    source_title: "特里斯坦·布克马斯特：关于千禧年数学难题突破与公开声明",
-    chunk_text: `2026年9月，纽约大学库朗研究所教授特里斯坦·布克马斯特（Tristan Buckmaster）与 Anthropic 数学家莱文特·阿尔珀厄（Levent Alpöge）公开宣布：在光滑外力驱动（smooth forcing）下，不可压缩多孔介质方程（IPM）、布辛涅斯克方程（Boussinesq）以及三维不可压缩欧拉方程（3D Euler）存在有限时间爆破（Singularities / Finite-Time Blowup），其全部推导在 Lean 4 交互式证明器中完成了严格形式化验证。
-该学术纲领源自西班牙数学家迭戈·科尔多瓦（Diego Córdoba）与路易斯·马丁内斯-佐罗亚（Luis Martínez-Zoroa）独辟蹊径开创的无限级联（Infinite Cascade）机制。`,
+    source_title: "特里斯坦·布克马斯特：关于千禧年数学难题突破与公开声明（statement_zh.pdf）",
+    chunk_text: `【出处：PDF/statement_zh.pdf · 2026-09-08】纽约大学库朗研究所正教授特里斯坦·布克马斯特与 Anthropic 数学家莱文特·阿尔珀厄正式公开：在光滑外力驱动（smooth forcing）下，不可压缩多孔介质方程（IPM）、布辛涅斯克方程（Boussinesq）以及三维不可压缩欧拉方程（3D Incompressible Euler）存在有限时间爆破；论文手稿与 Lean 4 代码同步公开。
+纲领源流：整体构想归功于迭戈·科尔多瓦与路易斯·马丁内斯-佐罗亚——他们在粗糙外力下先证明爆破；布克马斯特–阿尔珀厄借助大模型将其推进至光滑外力并攻克三维欧拉。次耗散纳维-斯托克斯爆破“确信已掌握”，但 Lean 形式化尚未完成故未发布。
+时间线关键句：2026-08-15 取得布辛涅斯克与欧拉爆破证明；8-22 在 Lean 交互式定理证明器中完成全部逻辑链条的严格形式化验证——作者称之为数学界的“深蓝对决卡斯帕罗夫时刻”（A Deep Blue-Kasparov moment）。`,
     embedding: [],
     metadata: {
-      page: "1-3",
-      section: "三大突破性成果与学术纲领源流",
+      page: "§1–5 / p.1-3",
+      section: "三大突破性成果 · 纲领源流 · 深蓝时刻",
       year: 2026,
       authors: "特里斯坦·布克马斯特, 莱文特·阿尔珀厄",
-      keywords: ["Navier-Stokes", "3D Euler", "光滑外力爆破", "Lean 4", "无限级联"]
+      keywords: ["Navier-Stokes", "3D Euler", "光滑外力爆破", "Lean 4", "深蓝时刻", "statement_zh"],
+      domain: "流体 PDE / 形式化验证",
+      category: "PDF/statement_zh.pdf"
     }
   },
   {
     id: "doc-quanta-01",
     source_title: "Quanta Magazine：AI 攻克数学界百万元千禧年大奖难题之一",
     chunk_text: `克雷数学研究所设立的千禧年难题中，查尔斯·费弗曼（Charles Fefferman）明确给出了选项(C)与(D)：证明在光滑外力驱动下三维纳维-斯托克斯方程存在有限时间爆破。
-科尔多瓦与马丁内斯-佐罗亚构造了一个由无穷多层非奇异解叠合而成的自相似无限级联，在局域点将动能与涡量无限聚焦，最终诱发奇点。人机协同通过 10,000 个自主智能体并行探索与 Lean 形式化核验，完成了数学界的“深蓝对决卡斯帕罗夫时刻”。`,
+科尔多瓦与马丁内斯-佐罗亚构造了一个由无穷多层非奇异解叠合而成的自相似无限级联，在局域点将动能与涡量无限聚焦，最终诱发奇点。人机协同通过并行探索与 Lean 形式化核验，完成了数学界的“深蓝对决卡斯帕罗夫时刻”。`,
     embedding: [],
     metadata: {
       page: "2-4",
@@ -73,6 +76,113 @@ export const CORE_DOCUMENTS: DocumentChunk[] = [
       year: 2026,
       authors: "康斯坦丁·卡卡埃斯 (Konstantin Kakaes)",
       keywords: ["千禧年大奖", "费弗曼命题", "涡量聚焦", "深蓝时刻"]
+    }
+  },
+
+  // —— 本地 PDF/ 目录原文入库（Lean 协作与结构发现）——
+  {
+    id: "doc-apollo-01",
+    source_title: "APOLLO: Automated LLM and Lean Collaboration for Advanced Formal Reasoning",
+    chunk_text: `【出处：PDF/APOLLO Automated LLM and Lean Collaboration for Advanced Formal Reasoning.pdf · NeurIPS 2025 · arXiv:2505.05758】Formal verification systems such as Lean can check whether a formal proof is correct almost instantaneously, but generating a completely correct formal proof with LLMs remains formidable. The common approach prompts the LLM thousands of times until one proof passes—compiler feedback (syntax errors, incorrect tactics, open goals) is largely unused.
+APOLLO (Automated PrOof repair via LLM and Lean cOllaboration) is a modular, model-agnostic agentic framework: the LLM generates proofs; agents analyze them, fix syntax, identify mistakes via Lean, isolate failing sub-lemmas, call automated solvers, and re-invoke the LLM on remaining goals with a low top-K budget; repaired sub-proofs are recombined and reverified.
+On miniF2F, APOLLO reaches 84.9% SOTA among sub-8B models (Aug 2025) with sampling budget <100; raises Goedel-Prover-SFT to 65.6% while cutting sample complexity from 25,600 to a few hundred. Key claim: targeted, compiler-guided repair of LLM outputs yields dramatic gains—Lean’s trusted kernel verdict remains binary True/False.`,
+    embedding: [],
+    metadata: {
+      page: "Abstract / §1–2",
+      section: "Apollo pipeline vs whole-proof generation",
+      year: 2025,
+      authors: "Azim Ospanov, Farzan Farnia, Roozbeh Yousefzadeh",
+      keywords: ["APOLLO", "Lean 4", "proof repair", "compiler feedback", "miniF2F", "ATP", "Harness"],
+      domain: "数理逻辑与形式化方法",
+      category: "PDF/APOLLO Automated LLM and Lean Collaboration for Advanced Formal Reasoning.pdf"
+    }
+  },
+  {
+    id: "doc-lean-copilot-01",
+    source_title: "Lean Copilot: Large Language Models as Copilots for Theorem Proving in Lean",
+    chunk_text: `【出处：PDF/Lean Copilot Large Language Models as Copilots.pdf · NeuS 2025 · arXiv:2404.12534】Neural theorem proving combines LLMs with proof assistants such as Lean, where formal proofs can be rigorously verified, leaving no room for hallucination. Existing autonomous provers wrap Lean as a gym and interact only on a backend server—often failing on truly novel theorems outside the training domain.
+Lean Copilot treats LLMs as copilots: run LLM inference natively in Lean so humans guide overall strategy while models ease routine labor (tactic suggestion SUGGEST_TACTICS, proof search SEARCH_PROOFS, premise selection SELECT_PREMISES). On the Mathematics in Lean textbook, Lean Copilot needs 2.08 manually-entered proof steps on average vs AESOP’s 3.86; automates 74.2% of steps (AESOP 40.1%).
+对本场：这正是“Model 提案 + Lean/人机 Harness 门禁”的工程原型——协作而非黑盒整证抛掷。`,
+    embedding: [],
+    metadata: {
+      page: "Abstract / §1",
+      section: "Copilot tools in Lean workflow",
+      year: 2025,
+      authors: "Peiyang Song, Kaiyu Yang, Anima Anandkumar",
+      keywords: ["Lean Copilot", "Lean 4", "Mathlib", "tactic", "neuro-symbolic", "人机协作", "Harness"],
+      domain: "数理逻辑与形式化方法",
+      category: "PDF/Lean Copilot Large Language Models as Copilots.pdf"
+    }
+  },
+  {
+    id: "doc-lean-euler-bridge-01",
+    source_title: "布克马斯特声明摘录：Lean 形式化与人机协同的深蓝时刻",
+    chunk_text: `【出处：PDF/statement_zh.pdf §3–5】作者坦陈：大模型原始证明一度“最为骇人听闻、不堪卒读”，但约一周后成功在 Lean 交互式定理证明器中完成全部逻辑链条的严格形式化验证；随后日以继夜把机器推演重构成人类可读文本。
+范式判断：“具体的数学定理结论本身并非最关键的核心。真正具有震古烁今意义的，是人类数学家与大语言模型协同，如今竟然能够在区区一个月的时间里，彻底攻克下如此庞大深邃的一揽子深水区难题……这是数学界的深蓝对决卡斯帕罗夫时刻。”
+机制映射：System 1（LLM/搜索提案）可错且可“劣质”；System 2（Lean 核验）决定可否公开复核。文社哲若缺同等可失败编译器，仅有流畅文稿不足以称范式突破。`,
+    embedding: [],
+    metadata: {
+      page: "§3–5",
+      section: "个人协作模式 · 深蓝时刻",
+      year: 2026,
+      authors: "特里斯坦·布克马斯特（声明）",
+      keywords: ["Lean 4", "3D Euler", "深蓝时刻", "System 1", "System 2", "形式验证", "Harness"],
+      domain: "可计算认识论 / 形式化方法",
+      category: "PDF/statement_zh.pdf"
+    }
+  },
+  {
+    id: "doc-structure-discovery-01",
+    source_title: "从证明搜索到结构发现：AI 数学的另一种能力（Liouville–Goldbach）",
+    chunk_text: `【出处：PDF/从证明搜索到结构发现_AI数学的另一种能力.pdf】学术价值不只在“又解决一个开放问题”，而在能力类型：过去许多 AI 数学成果走“搜索空间 → 找到 witness”；此处若证明路线属实，则更接近：假设反例存在 → 局部约束强迫全局代数结构 → 证明该结构不可能 → 矛盾。
+三种粗分能力：（1）calculator/searcher——海量候选中找特例；（2）lemma/formal proof search——在引理库上搜索推导路线（Lean/Isabelle 上不少 AI 结果属此类）；（3）structure discovery——从反例假设逼出隐藏不变量与刚性。Lean 早就证明大量 by_contra；稀缺的是发现“非 P 迫使 λ(n) 符号系统具有某种全局结构”的中间链条。
+对本场 Type-3 结构发现页：中间引理链条如何被发现，比反证法框架本身重要。`,
+    embedding: [],
+    metadata: {
+      page: "01–03 / 05",
+      section: "问题分量 · 证明形态 · 三种能力",
+      year: 2026,
+      authors: "研讨策展整理（据所提供回答；涉及生成过程的陈述未作独立核验）",
+      keywords: ["结构发现", "Liouville-Goldbach", "parity obstruction", "Type-3", "Lean", "反证法"],
+      domain: "可计算认识论",
+      category: "PDF/从证明搜索到结构发现_AI数学的另一种能力.pdf"
+    }
+  },
+
+  // —— AI Coding / Harness 工程纲领（开场收束公式底本）——
+  {
+    id: "doc-aicoding-01",
+    source_title: "控制权往哪里移：AI Coding 的工程演变（Ethan Jiang）",
+    chunk_text: `【出处：PDF/AI-Coding.pdf · Ethan Jiang】从 Coding 切入，但问题是一切 AI 交付的质量：做错了能不能查（可追溯）、长期不越跑越偏（可治理）、谁说了算（权责清晰）。
+五类范式按控制权外移依次出现：（1）Prompt Engineering——管它说什么；（2）Context Engineering——管它能看到什么；（3）Harness Engineering——把模型圈进受控环境（权限/沙箱/验证门禁/执行记录）；（4）Loop Engineering——多轮互相影响（触发·验证·停止·记忆）；（5）Graph Engineering——多 agent 编排为图。
+分界：前两类只管生成，后三类才管“这一步能不能发生”。管生成 ≠ 管执行。`,
+    embedding: [],
+    metadata: {
+      page: "Overview / Five Paradigms",
+      section: "五类范式与生成/执行分界",
+      year: 2026,
+      authors: "Ethan Jiang",
+      keywords: ["Harness", "Prompt", "Context", "Loop", "Graph", "交付质量", "Agent"],
+      domain: "科学哲学与方法论",
+      category: "PDF/AI-Coding.pdf"
+    }
+  },
+  {
+    id: "doc-aicoding-02",
+    source_title: "Agent = Model + Harness：那一圈决定交付差距",
+    chunk_text: `【出处：PDF/AI-Coding.pdf】终点公式：Agent = Model + Harness。Birgitta Böckeler（martinfowler.com, 2026-04）：harness = 智能体中除模型以外的一切。
+Harness 在模型外做九件事：执行循环、工具集、执行环境、上下文管理、状态与记忆、反馈与验证、安全控制、编排、扩展接口——模型是大脑，这九件事是身体。
+证据：同一模型换 harness，ARC-AGI-3 上 GPT-5.6 Sol 从 13.3%→38.3%、输出 token 约 1/6（Codex harness 开源）；Claw-SWE-Bench 上同模型 minimal 19.1% vs 完整 adapter 73.4%。能力看模型，差距看那一圈。
+对本场：文社哲移植的不是更好的 Prompt，而是可失败的 Harness（史料沙箱×门禁×审计）。`,
+    embedding: [],
+    metadata: {
+      page: "Harness Matters",
+      section: "公式 · 九件事 · 分层效应证据",
+      year: 2026,
+      authors: "Ethan Jiang（引 Böckeler / OpenAI Codex harness）",
+      keywords: ["Agent = Model + Harness", "验证门禁", "沙箱", "可追溯", "ARC-AGI"],
+      domain: "科学哲学与方法论",
+      category: "PDF/AI-Coding.pdf"
     }
   },
 
@@ -148,17 +258,19 @@ Score = α · Recency (指数衰减) + β · Importance (LLM赋权1-10) + γ · 
   // 7. 杨凌等：Discovery Foundation Models (DFM)
   {
     id: "doc-dfm-01",
-    source_title: "杨凌等：Discovery Foundation Models: Toward Open-Ended Discovery Intelligence",
-    chunk_text: `杨凌（Ling Yang）等人在2026年提出发现基座模型（DFM）。传统AI局限于在人类预设结构 Q=(P, R, G, T, V) 内优化，而 DFM 具备七大耦合发现能力：
-C_find (问题发现), C_form (问题形式化), C_repr (科学表征重构), C_hyp (对抗性假说生成), C_int (辨识性主动干预设计), C_rev (证据驱动的状态修正与归因), C_cont (跨任务发现技能迁移)。
-系统范例 Zetema 维护显式可回滚的研究状态 S_t = (P_t, R_t, H_t, E_t, X_t, B_t, M_t)，通过世界模型与验证门控避免虚妄迭代，并在 GALILEO 系统中实现了干湿实验闭环。`,
+    source_title: "Discovery Foundation Models: Toward Open-Ended Discovery Intelligence",
+    chunk_text: `【出处：PDF/Discovery Foundation Models Toward Open-Ended Discovery Intelligence.pdf · arXiv:2609.15973 · Ling Yang, Zhenfei Yin, Yingcheng Wu · 2026-09】Foundation models 已从学习既有知识，推进到经由行动/工具/结果反馈学习；下一前沿是 Discovery Intelligence——参与新问题、表征、解释与知识被创造的过程本身。
+DFM 在可修订研究状态上运转，耦合七大能力：problem discovery / formulation / representation construction / hypothesis formation / intervention / evidence-grounded revision / continual discovery improvement。实例化系统 Zetema：显式研究状态动力学、验证与实验门控、外部 grounding、跨任务 Discovery Skill 演化；GALILEO 将 Dry-Lab 推理与 Wet-Lab 实验闭环用于真实治疗发现。
+对本场：相对“解题 Agent”，DFM 要求可失败验证门与可回滚研究状态——与 Harness / Type-3 同构。`,
     embedding: [],
     metadata: {
-      page: "1-9, 14-22",
-      section: "DFM 七大能力定义与 Zetema 显式研究状态",
+      page: "Abstract / Fig.1 / §3–5",
+      section: "Discovery Intelligence · Zetema · GALILEO",
       year: 2026,
       authors: "Ling Yang, Zhenfei Yin, Yingcheng Wu (PhAI Labs)",
-      keywords: ["DFM", "Zetema", "GALILEO", "七大发现能力", "研究状态演进"]
+      keywords: ["DFM", "Zetema", "GALILEO", "Discovery Intelligence", "验证门控", "研究状态"],
+      domain: "科学哲学与方法论",
+      category: "PDF/Discovery Foundation Models Toward Open-Ended Discovery Intelligence.pdf"
     }
   },
 
@@ -166,14 +278,54 @@ C_find (问题发现), C_form (问题形式化), C_repr (科学表征重构), C_
   {
     id: "doc-cyberfly-01",
     source_title: "数字苍蝇的虚实之境：全脑连接组仿真与空间具身闭环",
-    chunk_text: `基于 MaleCNS v1.0 雄性果蝇完整中枢神经系统（166,700 个神经元，2,560 万个突触）的漏电积分发放（LIF）脉冲网络。
-核心生物机制：避障与逃逸由极端特化的巨纤维神经元（Giant Fiber System, DNp01）主导，在视觉黑影膨胀（LPLC1）时爆发几百赫兹高频点火，产生非线性弹射起飞；DNa02 控制偏航转向，DNg12 控制理毛。
-工程反思：真实生物具有由自然演化写入接线图的非对称拓扑，无需反向传播训练即可展现复杂反射（Zero-Shot）。然而现实仿真需警惕“工程补丁与中庸偏置”，在社科建模中必须引入资源硬约束与马基雅维利式博弈。`,
+    chunk_text: `【出处：PDF/cyberfly_research_report.pdf · 2026-09】基于 MaleCNS v1.0 雄性果蝇完整中枢神经系统（约 166,700 神经元）在 Mac 上仿真，经 Snap Spectacles 投射全息果蝇；动作源自连接组动力学对真实房间的反应，而非硬编码规避脚本。诚实声明：大脑在旁路笔记本上算；另有少量工程辅助模块。
+技术祛魅三层：（1）巨纤维等演化硬核反射回路（Zero-Shot）；（2）工程降维补丁；（3）观察者拟人化投射。对比 ANN/RL：突触拓扑决定功能，无需反向传播即可展现复杂反射。
+对本场沙盒：具身闭环可演示“因果可观测”，但社科移植必须叠加资源硬约束与博弈，警惕中庸偏置与工程补丁冒充生命。`,
     embedding: [],
     metadata: {
-      page: "4-11",
-      section: "全脑连接组仿真、神经动力学与工程祛魅",
+      page: "总览 / §1.2–2.3",
+      section: "MaleCNS · Spectacles 闭环 · 灵性祛魅",
       year: 2026,
+      authors: "Pavlo Tkachenko & Stijn Spanhove（博文）；研报二次调查",
+      keywords: ["MaleCNS", "数字苍蝇", "连接组", "具身智能", "Zero-Shot", "Giant Fiber"],
+      domain: "分布式多智能体与博弈",
+      category: "PDF/cyberfly_research_report.pdf"
+    }
+  },
+  {
+    id: "doc-fsm-trading-01",
+    source_title: "基于 FSM 有限状态机与独立出场引擎的量化交易重构方案",
+    chunk_text: `【出处：PDF/基于 FSM 有限状态机与独立出场引擎的量化交易重构方案.pdf】病灶：把“平仓”与“开仓”放在同一条件分支，导致不开单、反向死锁、利润坐过山车。方法论：采用有限状态机，拆为独立引擎——STATE_FLAT / STATE_LONG / STATE_SHORT；出场引擎拥有最高独立裁决权，持仓时关闭大级别趋势过滤，只看微观价格与风险。
+Two-Step Decoupled Reversal：先 ClosePosition 切回 FLAT 并记录冷却，下一 Tick 再由进场引擎独立评估趋势与冷却——利润先落袋，再决定是否反向。辅以填充模式自适应、MTF 数据就绪可观测、三阶梯利润保护矩阵。
+对本场：状态机解耦是可执行认识论的工程样板——门禁（出场）与提案（进场）分离，对应 Harness 的验证/权限分层。`,
+    embedding: [],
+    metadata: {
+      page: "全文 4 页",
+      section: "FSM · Exit Engine · Two-Step Reversal",
+      year: 2026,
+      authors: "量化交易重构方案（据 MQL5 官方文献方法论）",
+      keywords: ["FSM", "有限状态机", "出场引擎", "解耦", "死锁", "可执行认识论"],
+      domain: "科学哲学与方法论",
+      category: "PDF/基于 FSM 有限状态机与独立出场引擎的量化交易重构方案.pdf"
+    }
+  },
+  {
+    id: "doc-futures-01",
+    source_title: "复数未来与未来研究：后AI研究所知识地图",
+    chunk_text: `【出处：PDF/复数未来与未来研究_后AI研究所_压缩版.pdf · 后AI研究所 · 2026】地图并置而非伪造学派谱系：Journal of Futures Studies（知识生产）→ 复数未来（the future → futures）→ UNESCO Futures Literacy Labs（使用未来的能力）→ Jake Dunagan 体验式未来与社会发明 → IFTF 组织化前瞻。
+核心主张：未来研究不只是预测，而是持续感知变化、比较路径、暴露假设、设计原型并校准行动的能力。JFS 五条线索：复数未来、批判未来、参与式未来、设计未来、全球南方/亚太视角。人物锚点含 Dator 替代未来、Inayatullah CLA、Riel Miller Futures Literacy。
+对本场：反事实沙箱与多宇宙推演需要“复数未来”语法——拒绝把大概率趋势误认为唯一终点。`,
+    embedding: [],
+    metadata: {
+      page: "导言 / §1 JFS",
+      section: "复数未来 · Futures Literacy · 分析地图",
+      year: 2026,
+      authors: "后AI研究所",
+      keywords: ["复数未来", "Futures Literacy", "JFS", "IFTF", "反事实", "情景"],
+      domain: "一般认识论",
+      category: "PDF/复数未来与未来研究_后AI研究所_压缩版.pdf"
+    }
+  },
       authors: "Pavlo Tkachenko, Stijn Spanhove, Shiu et al. (Nature 2024)",
       keywords: ["MaleCNS", "全脑连接组", "LIF", "DNp01巨纤维", "生物拓扑"],
       domain: "分布式多智能体与博弈"

@@ -9,3 +9,4 @@ coverage/
 data/*.jsonl
 data/seminar-logs.jsonl
 .vercel
+PDF/_extracted/

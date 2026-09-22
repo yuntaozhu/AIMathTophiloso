@@ -98,7 +98,7 @@ export default function App() {
 - **同步演示引擎**：渲染 68 页完整学术课件讲稿，支持主讲人激光笔与实时全局同步翻页。
 - **课件深度认知引擎同步**：右侧面板实时锁定当前翻页 Slide，自动完成认识论解构、邓煜余维数/弗里德曼大基数跨域映射与 Ontology as Code 接口生成。
 - **KaibanJS 多智能体工作流**：调度【范式认知学者】、【形式化架构师】与【认识论裁判官】三阶协同流水线，杜绝 RLHF 中庸偏置。
-- **动态文献 RAG 知识库**：预装邓煜（无穷维相空间奇异性）、布克马斯特与科尔多瓦（流体爆破与Lean形式化）、弗里德曼（逆向数学与有理立方体）、Joon Park（生成式智能体微架构）等顶尖文献。
+- **动态文献 RAG 知识库**：预装邓煜（无穷维相空间奇异性）、布克马斯特公开声明（PDF/statement_zh.pdf）、**APOLLO / Lean Copilot（LLM×Lean 协作）**、结构发现专论（Liouville–Goldbach）、弗里德曼（逆向数学）、Joon Park（生成式智能体）等顶尖文献。
 - **可执行代码沙盒**：内置 Web IDE 与 ECharts 动力学相变实时图谱渲染。`,
       timestamp: new Date().toLocaleTimeString(),
       slideIndex: 1
