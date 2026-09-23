@@ -279,29 +279,36 @@ const CURATED: Record<string, Omit<AiOverviewPayload, 'query' | 'source'>> = {
   }
 };
 
+import { MATH_ALIASES, MATH_CURATED } from './aiOverviewMathCurated';
+
+function lookupBody(key: string): Omit<AiOverviewPayload, 'query' | 'source'> | null {
+  return CURATED[key] || MATH_CURATED[key] || null;
+}
+
 /** 查询归一化 → curated key */
 export function matchCuratedOverview(query: string): AiOverviewPayload | null {
   const q = query.trim().toLowerCase();
   const aliases: [RegExp, string][] = [
     [/process\s*supervision|过程监督|编译器反馈|prm|lets?\s*verify/i, 'process supervision'],
-    [/lean\s*内核|lean\s*kernel|类型检查|依赖类型/i, 'lean 内核'],
-    [/calculator\s*→\s*lemma|能力谱系|structure\s*discovery|三类能力/i, '能力谱系映射'],
+    [/lean\s*内核|lean\s*kernel|lean\s*4|类型检查|依赖类型|交互式证明/i, 'lean 内核'],
+    [/calculator\s*→\s*lemma|能力谱系|三类能力/i, '能力谱系映射'],
     [/ontology\s*as\s*code|本体即代码|强类型接口/i, 'ontology as code'],
     [/scm|结构因果|混淆|倒果为因|dag|调整集/i, 'scm'],
     [/c[oó]rdoba|mart[ií]nez|涡旋层级联|layer\s*cascade|光滑外力/i, 'córdoba'],
     [/harness|门禁|负知识库|agent\s*=\s*model/i, 'harness'],
-    [/电车|trolley|u_net|道德相界|功利主义|义务论/i, '电车难题']
+    [/电车|trolley|u_net|道德相界|功利主义|义务论/i, '电车难题'],
+    ...MATH_ALIASES
   ];
   for (const [re, key] of aliases) {
     if (re.test(query) || re.test(q)) {
-      const body = CURATED[key];
+      const body = lookupBody(key);
       if (body) return { ...body, query, source: 'curated' };
     }
   }
-  // exact key
-  for (const key of Object.keys(CURATED)) {
-    if (q.includes(key) || key.includes(q)) {
-      return { ...CURATED[key], query, source: 'curated' };
+  for (const key of [...Object.keys(CURATED), ...Object.keys(MATH_CURATED)]) {
+    if (q.includes(key.toLowerCase()) || key.toLowerCase().includes(q)) {
+      const body = lookupBody(key);
+      if (body) return { ...body, query, source: 'curated' };
     }
   }
   return null;
@@ -316,6 +323,18 @@ export function listCuratedConceptLabels(): string[] {
     'DAG / SCM 混淆与倒果为因',
     'Córdoba–Martínez-Zoroa 涡旋层级联',
     'Harness 治理层',
-    '电车难题 · U_net 相界面'
+    '电车难题 · U_net 相界面',
+    '具体数学不完备性',
+    '逆向数学 / The Big Five / SRM',
+    '有理立方体 / 大基数',
+    '哥德尔不完备性',
+    '四色定理',
+    '余维数-1 / Bourgain 区域',
+    '邓煜五重认知阶梯 / 波前',
+    'BKM / Navier–Stokes',
+    'AlphaProof / miniF2F / mathlib / APOLLO',
+    'Curry–Howard / 哥德尔本体论',
+    '结构发现 / Ground Truth / 深蓝时刻',
+    'p-bit 热力学计算'
   ];
 }

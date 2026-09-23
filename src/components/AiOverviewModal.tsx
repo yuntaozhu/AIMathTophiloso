@@ -72,9 +72,43 @@ function ConfoundingDag() {
 export const AiOverviewModal: React.FC<AiOverviewModalProps> = ({ query, onClose, onFollowUp }) => {
   const [data, setData] = useState<AiOverviewPayload | null>(null);
   const [loading, setLoading] = useState(false);
+  const [enriching, setEnriching] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [ask, setAsk] = useState('');
-  const [preferLive, setPreferLive] = useState(false);
+  const [preferLive, setPreferLive] = useState(true);
+  const [onlineStatus, setOnlineStatus] = useState<{
+    onlineAvailable: boolean;
+    firecrawl: boolean;
+    googleCse: boolean;
+    gemini: boolean;
+    aiGateway: boolean;
+  } | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/api/ai-overview/status')
+      .then(r => r.json())
+      .then(s => {
+        if (!cancelled) {
+          setOnlineStatus(s);
+          if (s.onlineAvailable) setPreferLive(true);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setOnlineStatus({
+            onlineAvailable: false,
+            firecrawl: false,
+            googleCse: false,
+            gemini: false,
+            aiGateway: false
+          });
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     if (!query) return;
@@ -82,14 +116,18 @@ export const AiOverviewModal: React.FC<AiOverviewModalProps> = ({ query, onClose
     const run = async () => {
       setLoading(true);
       setError(null);
-      // 先秒开 curated
+      setEnriching(false);
       const local = matchCuratedOverview(query);
-      if (local && !preferLive) setData(local);
+      if (local) setData(local);
+
+      const wantLive = preferLive && (onlineStatus?.onlineAvailable ?? preferLive);
+      if (local && wantLive) setEnriching(true);
+
       try {
         const res = await fetch('/api/ai-overview', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query, preferLive })
+          body: JSON.stringify({ query, preferLive: wantLive })
         });
         if (!res.ok) throw new Error(await res.text());
         const json = (await res.json()) as AiOverviewPayload;
@@ -100,29 +138,42 @@ export const AiOverviewModal: React.FC<AiOverviewModalProps> = ({ query, onClose
           else setError(e instanceof Error ? e.message : '加载失败');
         }
       } finally {
-        if (!cancelled) setLoading(false);
+        if (!cancelled) {
+          setLoading(false);
+          setEnriching(false);
+        }
       }
     };
     void run();
     return () => {
       cancelled = true;
     };
-  }, [query, preferLive]);
+  }, [query, preferLive, onlineStatus?.onlineAvailable]);
 
   const sourceLabel = useMemo(() => {
     switch (data?.source) {
       case 'curated':
         return '本场精编';
       case 'google_search':
-        return '检索 + AI';
+        return 'Google 检索增强';
       case 'live_ai':
-        return 'Gemini';
+        return 'Gemini 在线';
       case 'offline_fallback':
         return '知识库离线';
       default:
         return '';
     }
   }, [data?.source]);
+
+  const backendHint = useMemo(() => {
+    if (!onlineStatus) return '检测中…';
+    const bits: string[] = [];
+    if (onlineStatus.googleCse) bits.push('CSE');
+    if (onlineStatus.firecrawl) bits.push('Firecrawl');
+    if (onlineStatus.gemini) bits.push('Gemini');
+    if (onlineStatus.aiGateway) bits.push('Gateway');
+    return bits.length ? bits.join(' · ') : '未配置在线密钥';
+  }, [onlineStatus]);
 
   if (!query) return null;
 
@@ -138,7 +189,7 @@ export const AiOverviewModal: React.FC<AiOverviewModalProps> = ({ query, onClose
           <div className="flex-1 flex items-center gap-2 rounded-full border border-neutral-300 bg-white px-4 py-2 shadow-sm">
             <Search className="w-4 h-4 text-sky-600 shrink-0" />
             <span className="text-sm text-neutral-800 truncate flex-1">{query}</span>
-            {loading && <Loader2 className="w-4 h-4 animate-spin text-neutral-400" />}
+            {(loading || enriching) && <Loader2 className="w-4 h-4 animate-spin text-neutral-400" />}
           </div>
           <button
             type="button"
@@ -151,8 +202,8 @@ export const AiOverviewModal: React.FC<AiOverviewModalProps> = ({ query, onClose
         </div>
 
         <div className="px-4 sm:px-6 py-4 max-h-[75vh] overflow-y-auto">
-          <div className="flex items-center justify-between gap-2 mb-3">
-            <div className="flex items-center gap-2">
+          <div className="flex items-center justify-between gap-2 mb-3 flex-wrap">
+            <div className="flex items-center gap-2 flex-wrap">
               <Sparkles className="w-5 h-5 text-sky-600" />
               <h2 className="text-lg font-semibold text-neutral-900">AI 概览</h2>
               {sourceLabel && (
@@ -160,15 +211,23 @@ export const AiOverviewModal: React.FC<AiOverviewModalProps> = ({ query, onClose
                   {sourceLabel}
                 </span>
               )}
+              {enriching && (
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-sky-100 text-sky-700 animate-pulse">
+                  正在在线增强…
+                </span>
+              )}
+              <span className="text-[10px] text-neutral-400" title="已检测的后端">
+                {backendHint}
+              </span>
             </div>
             <button
               type="button"
               onClick={() => setPreferLive(v => !v)}
               className="text-[11px] text-sky-700 hover:underline inline-flex items-center gap-1"
-              title="强制走 Firecrawl/Gemini 在线检索"
+              title="切换：在线检索（Google CSE / Firecrawl / Gemini grounding）↔ 仅精编"
             >
               <ExternalLink className="w-3 h-3" />
-              {preferLive ? '使用精编' : '在线检索'}
+              {preferLive ? '仅用精编' : '开启在线增强'}
             </button>
           </div>
 
