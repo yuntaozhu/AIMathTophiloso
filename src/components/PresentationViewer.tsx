@@ -27,6 +27,7 @@ import { resolveSandboxTemplateId } from '../data/sandboxDemoPresets';
 import { CORE_DOCUMENTS } from '../data/knowledgeBase';
 import { openMingQingSimulator } from '../sim/mingqing';
 import { openTrolleyEthicsDemo } from '../sim/trolley';
+import { AiOverviewModal } from './AiOverviewModal';
 import {
   REHEARSAL_45_STOPS,
   getNextRehearsalStop,
@@ -83,9 +84,15 @@ export const PresentationViewer: React.FC<PresentationViewerProps> = ({
   const [selectedText, setSelectedText] = useState<string>('');
   const [selectionBox, setSelectionBox] = useState<{ x: number; y: number } | null>(null);
   const [rehearsalMode, setRehearsalMode] = useState<boolean>(false);
+  const [overviewQuery, setOverviewQuery] = useState<string | null>(null);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const slideContentRef = useRef<HTMLDivElement>(null);
+
+  const openAiOverview = (q: string) => {
+    const t = q.replace(/^#/, '').trim();
+    if (t) setOverviewQuery(t);
+  };
 
   const currentStudyNote = getPresenterStudyNote(currentSlide);
   const paceHint = getPresenterPaceHint(currentIndex);
@@ -270,9 +277,15 @@ export const PresentationViewer: React.FC<PresentationViewerProps> = ({
 
           <div className="flex items-center space-x-1.5 overflow-x-auto scrollbar-none">
             {currentSlide.keywords && currentSlide.keywords.map((kw, i) => (
-              <span key={i} className="text-[11px] px-2 py-0.5 rounded-full bg-neutral-900 text-neutral-400 border border-neutral-800/80 shrink-0">
+              <button
+                key={i}
+                type="button"
+                onClick={() => openAiOverview(kw)}
+                className="text-[11px] px-2 py-0.5 rounded-full bg-neutral-900 text-sky-300/90 border border-sky-500/25 shrink-0 hover:bg-sky-500/15 hover:border-sky-400/50 transition-colors"
+                title={`AI 概览：${kw}`}
+              >
                 #{kw}
-              </span>
+              </button>
             ))}
           </div>
           {!!currentSlide.literatureIds?.length && (
@@ -429,17 +442,25 @@ export const PresentationViewer: React.FC<PresentationViewerProps> = ({
           {currentSlide.bullets && currentSlide.bullets.length > 0 && (
             <ul className="space-y-3.5 my-2 max-w-4xl">
               {currentSlide.bullets.map((bullet, idx) => {
-                // Formatting markdown bold tags: **text**
+                // Formatting markdown bold tags: **text** — 加粗核心概念可点开 AI 概览
                 const parts = bullet.split(/\*\*(.*?)\*\*/g);
                 return (
                   <li key={idx} className="flex items-start space-x-3 text-sm md:text-lg text-neutral-300 leading-relaxed">
                     <span className="mt-2 w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0 shadow-sm" />
                     <span>
-                      {parts.map((p, pIdx) => 
+                      {parts.map((p, pIdx) =>
                         pIdx % 2 === 1 ? (
-                          <strong key={pIdx} className="text-amber-300 font-semibold">{p}</strong>
+                          <button
+                            key={pIdx}
+                            type="button"
+                            onClick={() => openAiOverview(p)}
+                            className="text-amber-300 font-semibold underline decoration-amber-500/40 decoration-dotted underline-offset-4 hover:text-sky-300 hover:decoration-sky-400/60 transition-colors"
+                            title={`点击查看「${p}」AI 概览`}
+                          >
+                            {p}
+                          </button>
                         ) : (
-                          p
+                          <span key={pIdx}>{p}</span>
                         )
                       )}
                     </span>
@@ -633,6 +654,12 @@ export const PresentationViewer: React.FC<PresentationViewerProps> = ({
         currentSlide={currentSlide}
         onSendToSandbox={onSendToSandbox}
         onQuickAsk={onQuickAsk}
+      />
+
+      <AiOverviewModal
+        query={overviewQuery}
+        onClose={() => setOverviewQuery(null)}
+        onFollowUp={q => setOverviewQuery(q)}
       />
     </div>
   );

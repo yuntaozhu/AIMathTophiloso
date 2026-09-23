@@ -12,6 +12,7 @@ import { generateViaAiGateway } from "./src/services/aiGateway";
 import { appendSeminarLog, getSeminarLogs } from "./src/server/seminarLogStore";
 import { vercelPathRestore } from "./src/server/pathRestore";
 import { registerSeminarHarnessRoutes } from "./src/server/routes/seminarHarnessRoutes";
+import { registerAiOverviewRoutes } from "./src/server/routes/aiOverviewRoutes";
 
 dotenv.config();
 
@@ -48,6 +49,7 @@ registerSeminarHarnessRoutes(app, {
   getCurrentSlideIndex: () => currentSlideIndex,
   getAI
 });
+registerAiOverviewRoutes(app, { getAI });
 let activeLaserPointer: { x: number; y: number } | null = null;
 let activeHighlight: string | null = null;
 const connectedUsers = new Map<string, { id: string; name: string; isPresenter: boolean }>();
